@@ -44,9 +44,9 @@ public class Principal {
         //Float monto, Calendar fechaExpedicion, Anios aniosVigencia
         Licencia licenciaejemplo = new Licencia(600f,new GregorianCalendar(),Anios.UNO);
         //Float costo, Calendar fechaExpedicion
-        Tramite tramitePlaca = new TramitePlaca(placaejemplo,placaejemplo.getCosto(),new GregorianCalendar());
+        Tramite tramitePlaca = new TramitePlaca(placaejemplo,placaejemplo.getCosto(),new GregorianCalendar(),personaejemplo);
         //Float costo, Calendar fechaExpedicion
-        Tramite tramiteLicencia = new TramiteLicencia(licenciaejemplo,licenciaejemplo.getMonto(),new GregorianCalendar());
+        Tramite tramiteLicencia = new TramiteLicencia(licenciaejemplo,licenciaejemplo.getMonto(),new GregorianCalendar(),personaejemplo);
         em.persist(personaejemplo);
         em.persist(vehiculoejemplo);
         em.persist(tramitePlaca);

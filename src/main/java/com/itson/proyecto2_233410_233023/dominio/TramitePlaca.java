@@ -33,8 +33,8 @@ public class TramitePlaca extends Tramite implements Serializable {
     public TramitePlaca() {
     }
 
-    public TramitePlaca(Placa placa, Float costo, Calendar fechaExpedicion) {
-        super(costo, fechaExpedicion);
+    public TramitePlaca(Placa placa, Float costo, Calendar fechaExpedicion,Persona persona) {
+        super(costo, fechaExpedicion,persona);
         this.placa = placa;
     }
     

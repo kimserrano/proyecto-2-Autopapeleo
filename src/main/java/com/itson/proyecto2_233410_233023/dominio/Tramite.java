@@ -45,6 +45,12 @@ public class Tramite implements Serializable {
         this.costo = costo;
         this.fechaExpedicion = fechaExpedicion;
     }
+
+    public Tramite(Float costo, Calendar fechaExpedicion, Persona persona) {
+        this.costo = costo;
+        this.fechaExpedicion = fechaExpedicion;
+        this.persona = persona;
+    }
     
 
     public Float getCosto() {

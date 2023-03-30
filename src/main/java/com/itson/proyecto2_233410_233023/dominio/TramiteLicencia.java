@@ -33,8 +33,8 @@ public class TramiteLicencia extends Tramite implements Serializable {
     public TramiteLicencia() {
     }
 
-    public TramiteLicencia(Licencia licencia, Float costo, Calendar fechaExpedicion) {
-        super(costo, fechaExpedicion);
+    public TramiteLicencia(Licencia licencia, Float costo, Calendar fechaExpedicion,Persona persona) {
+        super(costo, fechaExpedicion,persona);
         this.licencia = licencia;
     }
 
