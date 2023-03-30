@@ -9,6 +9,7 @@
     <class>com.itson.proyecto2_233410_233023.dominio.TramitePlaca</class>
     <class>com.itson.proyecto2_233410_233023.dominio.TramiteLicencia</class>
     <class>com.itson.proyecto2_233410_233023.dominio.Licencia</class>
+    <class>com.itson.proyecto2_233410_233023.dominio.Automovil</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3400/PROYECTO2_AUTOPAPELEO?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
