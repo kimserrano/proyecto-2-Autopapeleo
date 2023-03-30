@@ -1,7 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+Clase Placa.java creada el 29/03/2023.
+*/
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
@@ -50,9 +49,6 @@ public class Placa implements Serializable {
     @ManyToOne()
     @JoinColumn(name="id_vehiculo",nullable=false) 
     private Vehiculo vehiculo;
-    
-    @OneToOne(mappedBy = "placa")
-    private TramitePlaca tramitePlaca;
     
     
     public Placa() {

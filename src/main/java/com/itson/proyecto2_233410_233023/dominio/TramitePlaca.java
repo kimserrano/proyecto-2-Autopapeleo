@@ -1,10 +1,11 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+Clase TramitePlaca.java creada el 29/03/2023.
+*/
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,46 +25,32 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "id_tramite_placa")
 public class TramitePlaca extends Tramite implements Serializable {
 
-    @Column(name = "id")
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "placa_id")
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id_placa",nullable=false)
     private Placa placa;
 
-    public Long getId() {
-        return id;
+    public TramitePlaca() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public TramitePlaca(Placa placa, Float costo, Calendar fechaExpedicion) {
+        super(costo, fechaExpedicion);
+        this.placa = placa;
+    }
+    
+    public Placa getPlaca() {
+        return placa;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TramitePlaca)) {
-            return false;
-        }
-        TramitePlaca other = (TramitePlaca) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public void setPlaca(Placa placa) {
+        this.placa = placa;
     }
 
     @Override
     public String toString() {
-        return "com.itson.proyecto2_233410_233023.dominio.TramitePlaca[ id=" + id + " ]";
+        return "TramitePlaca{" + "placa=" + placa + '}';
     }
+    
+    
 
 }
