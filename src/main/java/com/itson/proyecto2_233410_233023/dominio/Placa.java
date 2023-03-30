@@ -1,6 +1,6 @@
 /*
 Clase Placa.java creada el 29/03/2023.
-*/
+ */
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
@@ -22,38 +22,83 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
+ * Clase que representa las placa de un automovil
  *
  * @author Gabriel x Kim
  */
 @Entity
-@Table(name="Placas")
+@Table(name = "Placas")
 public class Placa implements Serializable {
 
+    /**
+     * Id unico que identifica a una placa en especifico de un automovil
+     */
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "numero_alfanumerico",nullable=false,length=10)
+
+    /**
+     * Representa la combinacion de numero y letras que identifican a la placa
+     * de una automovil
+     */
+    @Column(name = "numero_alfanumerico", nullable = false, length = 10)
     private String numeroAlfanumerico;
-    @Column(name = "costo",nullable=false)
+
+    /**
+     * Representa el costo de la placa
+     */
+    @Column(name = "costo", nullable = false)
     private Float costo;
-    @Column(name = "estado",nullable=false)
+
+    /**
+     * Representa el estado de una placa para conocer si se encuentra activa
+     */
+    @Column(name = "estado", nullable = false)
     @Enumerated(EnumType.STRING)
     private Estado estado;
-    @Column(name = "fecha_emision",nullable=false)
+
+    /**
+     * Representa la fecha en la que se crea la placa del vehiculo
+     */
+    @Column(name = "fecha_emision", nullable = false)
     @Temporal(TemporalType.DATE)
     private Calendar fechaEmision;
-    @Column(name = "fecha_recepción",nullable=false)
+
+    /**
+     * Representa la fecha en la que se recibe la placa del vehiculo
+     */
+    @Column(name = "fecha_recepción", nullable = false)
     @Temporal(TemporalType.DATE)
     private Calendar fechaRecepcion;
+
+    /**
+     * Representa el vehiculo que tiene dicha placa
+     */
     @ManyToOne()
-    @JoinColumn(name="id_vehiculo",nullable=false) 
+    @JoinColumn(name = "id_vehiculo", nullable = false)
     private Vehiculo vehiculo;
-    
-    
+
+    /**
+     * Contructor por defecto para crear una placa
+     */
     public Placa() {
     }
 
+    /**
+     * Contructor para crear una placa enviando parametros
+     *
+     * @param numeroAlfanumerico Representa la combinacion de numero y letras
+     * que identifican a la placa de una automovil
+     * @param costo Representa el costo de la placa
+     * @param estado Representa el estado de una placa para conocer si se
+     * encuentra activa
+     * @param fechaEmision Representa la fecha en la que se crea la placa del
+     * vehiculo
+     * @param fechaRecepcion Representa la fecha en la que se recibe la placa
+     * del vehiculo
+     * @param vehiculo Representa el vehiculo que tiene dicha placa
+     */
     public Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision, Calendar fechaRecepcion, Vehiculo vehiculo) {
         this.numeroAlfanumerico = numeroAlfanumerico;
         this.costo = costo;
@@ -63,61 +108,145 @@ public class Placa implements Serializable {
         this.vehiculo = vehiculo;
     }
 
+    /**
+     * Obtiene el id unico que identifica a una placa en especifico de un
+     * automovil
+     *
+     * @return
+     */
     public Long getId() {
         return id;
     }
+
+    /**
+     * Establece el id
+     *
+     * @param id id unico que identifica a una placa en especifico de un
+     * automovil
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Obtiene el numero alfanumerico de la placa
+     *
+     * @return Representa la combinacion de numero y letras que identifican a la
+     * placa de una automovil
+     */
     public String getNumeroAlfanumerico() {
         return numeroAlfanumerico;
     }
 
+    /**
+     * Establece el numero alfanumerico de la placa
+     *
+     * @param numeroAlfanumerico Representa la combinacion de numero y letras
+     * que identifican a la placa de una automovil
+     */
     public void setNumeroAlfanumerico(String numeroAlfanumerico) {
         this.numeroAlfanumerico = numeroAlfanumerico;
     }
 
+    /**
+     * Regresa el costo
+     *
+     * @return Representa el costo de la placa
+     */
     public Float getCosto() {
         return costo;
     }
 
+    /**
+     * Establece el costo
+     *
+     * @param costo Representa el costo de la placa
+     */
     public void setCosto(Float costo) {
         this.costo = costo;
     }
 
+    /**
+     * Obtiene el estado
+     *
+     * @return Representa el estado de una placa para conocer si se encuentra
+     * activa
+     */
     public Estado getEstado() {
         return estado;
     }
 
+    /**
+     * Establece el estado
+     *
+     * @param estado Representa el estado de una placa para conocer si se
+     * encuentra activa
+     */
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
+    /**
+     * Obtiene la fecha de emision
+     *
+     * @return Representa la fecha en la que se crea la placa del vehiculo
+     */
     public Calendar getFechaEmision() {
         return fechaEmision;
     }
 
+    /**
+     * Establece la fecha de emision
+     *
+     * @param fechaEmision Representa la fecha en la que se crea la placa del
+     * vehiculo
+     */
     public void setFechaEmision(Calendar fechaEmision) {
         this.fechaEmision = fechaEmision;
     }
 
+    /**
+     * Obtiene la fecha de recepcion
+     *
+     * @return Representa la fecha en la que se recibe la placa del vehiculo
+     */
     public Calendar getFechaRecepcion() {
         return fechaRecepcion;
     }
 
+    /**
+     * Establece la fecha de recepcion
+     *
+     * @param fechaRecepcion Representa la fecha en la que se recibe la placa
+     * del vehiculo
+     */
     public void setFechaRecepcion(Calendar fechaRecepcion) {
         this.fechaRecepcion = fechaRecepcion;
     }
 
+    /**
+     * Obtiene el vehiculo al que pertenece la placa
+     *
+     * @return Representa el vehiculo que tiene dicha placa
+     */
     public Vehiculo getVehiculo() {
         return vehiculo;
     }
 
+    /**
+     * Establece el vehiculo al que pertenece la placa
+     *
+     * @param vehiculo Representa el vehiculo que tiene dicha placa
+     */
     public void setVehiculo(Vehiculo vehiculo) {
         this.vehiculo = vehiculo;
     }
-    
+
+    /**
+     * Para obtener el numero hash de la placa
+     *
+     * @return regresa el hash de la placa mediante el id
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -125,6 +254,12 @@ public class Placa implements Serializable {
         return hash;
     }
 
+    /**
+     * Compara dos objetos para ver si son iguales
+     *
+     * @param object el objeto que se desea comparar
+     * @return regresa true si son iguales y false en caso contrario
+     */
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -138,9 +273,14 @@ public class Placa implements Serializable {
         return true;
     }
 
+    /**
+     * Escribe los atributos de la placa de manera ordenada
+     *
+     * @return imprime los atributos de la placa generada
+     */
     @Override
     public String toString() {
-        return "com.itson.proyecto2_233410_233023.dominio.Placa[ id=" + id + " ]";
+        return "Placa{" + "id=" + id + ", numeroAlfanumerico=" + numeroAlfanumerico + ", costo=" + costo + ", estado=" + estado + ", fechaEmision=" + fechaEmision + ", fechaRecepcion=" + fechaRecepcion + ", vehiculo=" + vehiculo + '}';
     }
-    
+
 }

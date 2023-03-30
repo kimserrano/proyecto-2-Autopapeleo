@@ -1,6 +1,6 @@
 /*
 Clase Licencia.java creada el 29/03/2023.
-*/
+ */
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
@@ -17,68 +17,143 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
+ * Clase que representa las licencias que puede solicitar una persona
  *
  * @author Gabriel x Kim
  */
 @Entity
-@Table(name="Lincencias")
+@Table(name = "Lincencias")
 public class Licencia implements Serializable {
 
+    /**
+     * Id unico que identifica a una licencia en especifico
+     */
     @Id
-    @Column(name = "id",nullable=false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "monto",nullable=false)
+
+    /**
+     * Monto que representa el costo de la licencia
+     */
+    @Column(name = "monto", nullable = false)
     private Float monto;
-    @Column(name = "fecha_expedicion",nullable=false)
+
+    /**
+     * Representa la fecha en la que la licencia fue realizada
+     */
+    @Column(name = "fecha_expedicion", nullable = false)
     @Temporal(TemporalType.DATE)
     private Calendar fechaExpedicion;
-    @Column(name = "anios_vigencia",nullable=false)
+
+    /**
+     * Representa los anios de vigencia que tiene la licencia
+     */
+    @Column(name = "anios_vigencia", nullable = false)
     @Enumerated(EnumType.STRING)
     private Anios aniosVigencia;
 
+    /**
+     * Constructor por defecto para crear licencias
+     */
     public Licencia() {
     }
 
+    /**
+     * Contructor para construir una licencia pidiendo parametros para su
+     * creacion
+     *
+     * @param monto Monto que representa el costo de la licencia
+     * @param fechaExpedicion Representa la fecha en la que la licencia fue
+     * realizada
+     * @param aniosVigencia Representa los anios de vigencia que tiene la
+     * licencia
+     */
     public Licencia(Float monto, Calendar fechaExpedicion, Anios aniosVigencia) {
         this.monto = monto;
         this.fechaExpedicion = fechaExpedicion;
         this.aniosVigencia = aniosVigencia;
     }
-    
-    
+
+    /**
+     * Obtiene el id
+     *
+     * @return Id unico que identifica a una licencia en especifico
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Establece el id
+     *
+     * @param id Id unico que identifica a una licencia en especifico
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Obtiene el moto
+     *
+     * @return Monto que representa el costo de la licencia
+     */
     public Float getMonto() {
         return monto;
     }
 
+    /**
+     * Establece el monto
+     *
+     * @param monto Monto que representa el costo de la licencia
+     */
     public void setMonto(Float monto) {
         this.monto = monto;
     }
 
+    /**
+     * Obtiene la fecha de expedision de la licencia
+     *
+     * @return Representa la fecha en la que la licencia fue realizada
+     */
     public Calendar getFechaExpedicion() {
         return fechaExpedicion;
     }
 
+    /**
+     * Establece la fecha de expedision de la licencia
+     *
+     * @param fechaExpedicion Representa la fecha en la que la licencia fue
+     * realizada
+     */
     public void setFechaExpedicion(Calendar fechaExpedicion) {
         this.fechaExpedicion = fechaExpedicion;
     }
 
+    /**
+     * Obtiene los anios de vigencia de la licencia
+     *
+     * @return Representa los anios de vigencia que tiene la licencia
+     */
     public Anios getAniosVigencia() {
         return aniosVigencia;
     }
 
+    /**
+     * Establece los anios de vigencia de la licencia
+     *
+     * @param aniosVigencia Representa los anios de vigencia que tiene la
+     * licencia
+     */
     public void setAniosVigencia(Anios aniosVigencia) {
         this.aniosVigencia = aniosVigencia;
     }
 
+    /**
+     * Obtiene el hash de una licencia en especifico usando el id
+     *
+     * @return regresa el hasg de la licencia
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -86,6 +161,12 @@ public class Licencia implements Serializable {
         return hash;
     }
 
+    /**
+     * Compara un ejemplo con otro para saber si son iguales
+     *
+     * @param object objeto que deseas comparar
+     * @return true si el objeto es igual y false de caso contrario
+     */
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -99,9 +180,14 @@ public class Licencia implements Serializable {
         return true;
     }
 
+    /**
+     * Escribe los atributos de la licencia de manera ordenada
+     *
+     * @return imprime los atributos de la licencia generada
+     */
     @Override
     public String toString() {
-        return "com.itson.proyecto2_233410_233023.dominio.Licencia[ id=" + id + " ]";
+        return "Licencia{" + "id=" + id + ", monto=" + monto + ", fechaExpedicion=" + fechaExpedicion + ", aniosVigencia=" + aniosVigencia + '}';
     }
-    
+
 }

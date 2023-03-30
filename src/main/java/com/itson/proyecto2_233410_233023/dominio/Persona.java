@@ -1,6 +1,6 @@
 /*
 Clase Persona.java creada el 29/03/2023.
-*/
+ */
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 
 /**
  * Clase que representa la entidad Persona para ser mapeada en la base de datos
+ *
  * @author Gabriel x Kim
  */
 @Table(name = "Personas")
@@ -28,80 +29,87 @@ import javax.persistence.TemporalType;
 public class Persona implements Serializable {
 
     /**
-     * Atributo que sirve para identificar a una persona en especifico 
+     * Atributo que sirve para identificar a una persona en especifico
      */
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     /**
      * Atributo que identifica a una persona de otra
      */
-    @Column(name = "rfc", nullable= false, length=13)
+    @Column(name = "rfc", nullable = false, length = 13)
     private String rfc;
-    
+
     /**
-     * Atributo para conocer los nombres que tiene la persona 
+     * Atributo para conocer los nombres que tiene la persona
      */
-    @Column(name = "nombres", nullable= false, length=50)
+    @Column(name = "nombres", nullable = false, length = 50)
     private String nombres;
-    
+
     /**
      * Atributo para conocer el apellido paterno de la persona
      */
-    @Column(name = "apellidoPaterno", nullable=false, length=50)
+    @Column(name = "apellidoPaterno", nullable = false, length = 50)
     private String apellidoPaterno;
-    
+
     /**
      * Atributo para conoces el apellido Materno de la persona
      */
-    @Column(name = "apellidoMaterno", nullable= false, length=50)
+    @Column(name = "apellidoMaterno", nullable = false, length = 50)
     private String apellidoMaterno;
-    
+
     /**
-     * Atributo para conocer si una persona presenta alguna discapacidad 
+     * Atributo para conocer si una persona presenta alguna discapacidad
      */
-    @Column(name = "discapacitado", nullable= false)
+    @Column(name = "discapacitado", nullable = false)
     @Enumerated(EnumType.STRING)
     private Discapacitado discapacitado;
-    
+
     /**
      * Atributo que syuda a conocer el telefono de una persona para su contacto
      */
-    @Column(name = "telefono", nullable=true, length=50)
+    @Column(name = "telefono", nullable = true, length = 50)
     private String telefono;
-    
+
     /**
-     * Atributo para conocer el dia en que nacio una persona para asi conocer su 
-     * edad 
+     * Atributo para conocer el dia en que nacio una persona para asi conocer su
+     * edad
      */
     @Temporal(TemporalType.DATE)
-    @Column(name = "fechaNacimiento", nullable= false)
+    @Column(name = "fechaNacimiento", nullable = false)
     private Calendar fechaNacimiento;
-    
-    
-    @OneToMany(mappedBy = "persona") 
-    private List<Vehiculo> vehiculos;
-    
-    @OneToMany(mappedBy = "persona") 
-    private List<Tramite> tramites;
+
     /**
-     * Constructor por defecto para crear personas dentro de la base de datos 
+     * Lista de vehiculos que pertenecen a la persona
+     */
+    @OneToMany(mappedBy = "persona")
+    private List<Vehiculo> vehiculos;
+
+    /**
+     * Lista de tramites que pertenecen a la persona
+     */
+    @OneToMany(mappedBy = "persona")
+    private List<Tramite> tramites;
+
+    /**
+     * Constructor por defecto para crear personas dentro de la base de datos
      */
     public Persona() {
     }
 
     /**
-     * Constructor para registrar a una persona dentro de la base de datos, especificando 
-     * algunos atributos 
+     * Constructor para registrar a una persona dentro de la base de datos,
+     * especificando algunos atributos
+     *
      * @param rfc especifica el rfc de la persona
      * @param nombres son los nombres que tiene la persona
-     * @param apellidoPaterno apellido paterno de la persona 
-     * @param apellidoMaterno apellido materno de la persona 
+     * @param apellidoPaterno apellido paterno de la persona
+     * @param apellidoMaterno apellido materno de la persona
      * @param discapacitado para conocer si la persona es discapacitada
-     * @param telefono para una forma de contacto con la persona 
-     * @param fechaNacimiento para saber la fecha en que nacio la persona 
+     * @param telefono para una forma de contacto con la persona
+     * @param fechaNacimiento para saber la fecha en que nacio la persona
      */
     public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, String telefono, Calendar fechaNacimiento) {
         this.rfc = rfc;
@@ -114,14 +122,15 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Constructor para registrar a una persona dentro de la base de datos, especificando 
-     * algunos atributos 
+     * Constructor para registrar a una persona dentro de la base de datos,
+     * especificando algunos atributos
+     *
      * @param rfc especifica el rfc de la persona
      * @param nombres son los nombres que tiene la persona
-     * @param apellidoPaterno apellido paterno de la persona 
-     * @param apellidoMaterno apellido materno de la persona 
+     * @param apellidoPaterno apellido paterno de la persona
+     * @param apellidoMaterno apellido materno de la persona
      * @param discapacitado para conocer si la persona es discapacitada
-     * @param fechaNacimiento para saber la fecha en que nacio la persona 
+     * @param fechaNacimiento para saber la fecha en que nacio la persona
      */
     public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, Calendar fechaNacimiento) {
         this.rfc = rfc;
@@ -131,8 +140,10 @@ public class Persona implements Serializable {
         this.discapacitado = discapacitado;
         this.fechaNacimiento = fechaNacimiento;
     }
+
     /**
-     * Obtiene el id que identifica a esa persona 
+     * Obtiene el id que identifica a esa persona
+     *
      * @return id que identifica a esa persona
      */
     public Long getId() {
@@ -140,14 +151,17 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Establece el id que identifica a esa persona 
-     * @param id id que identifica a esa persona 
+     * Establece el id que identifica a esa persona
+     *
+     * @param id id que identifica a esa persona
      */
     public void setId(Long id) {
         this.id = id;
     }
+
     /**
-     * Para obtener el rfc de la persona 
+     * Para obtener el rfc de la persona
+     *
      * @return string que representa el rfc de la persona
      */
     public String getRfc() {
@@ -155,8 +169,9 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Para definirle un rfc a la persona 
-     * @param rfc rfc de la persona 
+     * Para definirle un rfc a la persona
+     *
+     * @param rfc rfc de la persona
      */
     public void setRfc(String rfc) {
         this.rfc = rfc;
@@ -164,6 +179,7 @@ public class Persona implements Serializable {
 
     /**
      * Obtiene los nombres de la persona
+     *
      * @return string con los nombres de la persona
      */
     public String getNombres() {
@@ -171,7 +187,8 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Establece el nombre de la persona 
+     * Establece el nombre de la persona
+     *
      * @param nombres nombres de la persona
      */
     public void setNombres(String nombres) {
@@ -179,15 +196,17 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Obtiene el apellido paterno de la persona 
-     * @return apellido paterno de la persona 
+     * Obtiene el apellido paterno de la persona
+     *
+     * @return apellido paterno de la persona
      */
     public String getApellidoPaterno() {
         return apellidoPaterno;
     }
 
     /**
-     * Establece el apellido paterno de la persona 
+     * Establece el apellido paterno de la persona
+     *
      * @param apellidoPaterno apellido paterno de la persona
      */
     public void setApellidoPaterno(String apellidoPaterno) {
@@ -195,7 +214,8 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Obtiene el apellido materno de la persona 
+     * Obtiene el apellido materno de la persona
+     *
      * @return apellido materno de la persona
      */
     public String getApellidoMaterno() {
@@ -204,6 +224,7 @@ public class Persona implements Serializable {
 
     /**
      * Establece el apellido materno de la persona
+     *
      * @param apellidoMaterno apellido materno de la persona
      */
     public void setApellidoMaterno(String apellidoMaterno) {
@@ -211,23 +232,26 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Obtiene si una persona presenta una discapacidad 
-     * @return la discapacidad de la persona 
+     * Obtiene si una persona presenta una discapacidad
+     *
+     * @return la discapacidad de la persona
      */
     public Discapacitado getDiscapacitado() {
         return discapacitado;
     }
 
     /**
-     * Establece si una persona es discapacitada 
-     * @param discapacitado la discapacidad de la persona 
+     * Establece si una persona es discapacitada
+     *
+     * @param discapacitado la discapacidad de la persona
      */
     public void setDiscapacitado(Discapacitado discapacitado) {
         this.discapacitado = discapacitado;
     }
 
     /**
-     * Obtiene el telefono de la persona 
+     * Obtiene el telefono de la persona
+     *
      * @return string con el telefono de la persona
      */
     public String getTelefono() {
@@ -235,8 +259,9 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Establece el telefono de la persona 
-     * @param telefono el telefono de la persona 
+     * Establece el telefono de la persona
+     *
+     * @param telefono el telefono de la persona
      */
     public void setTelefono(String telefono) {
         this.telefono = telefono;
@@ -244,6 +269,7 @@ public class Persona implements Serializable {
 
     /**
      * Obtiene la fecha de nacimiento de la persona
+     *
      * @return la fecha de nacimiento de la persona
      */
     public Calendar getFechaNacimiento() {
@@ -252,39 +278,53 @@ public class Persona implements Serializable {
 
     /**
      * Establece la fecha de nacimiento de la persona
+     *
      * @param fechaNacimiento la fecha de nacimiento de la persona
      */
     public void setFechaNacimiento(Calendar fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+
     /**
      * Obtiene la lista de vehículos de la persona
+     *
      * @return lista de vehículos de la persona
      */
     public List<Vehiculo> getVehiculos() {
         return vehiculos;
     }
+
     /**
      * Establece los vehículos de la persona
+     *
      * @param vehiculos vehículos de la persona
      */
     public void setVehiculos(List<Vehiculo> vehiculos) {
         this.vehiculos = vehiculos;
     }
 
+    /**
+     * Obtiene la lista de tramites que pertenecen a la persona
+     *
+     * @return la lista de tramites que pertenecen a la persona
+     */
     public List<Tramite> getTramites() {
         return tramites;
     }
 
+    /**
+     * Establece la lista de tramites que pertenecen a la persona
+     *
+     * @param tramites tramites que solicita la persona
+     */
     public void setTramites(List<Tramite> tramites) {
         this.tramites = tramites;
     }
 
-    
-    
     /**
      * Para obtener el numero hash de la persona
-     * @return numero hash 
+     *
+     * @return numero hash
      */
     @Override
     public int hashCode() {
@@ -294,9 +334,10 @@ public class Persona implements Serializable {
     }
 
     /**
-     * Para comparar un objeto con otro 
+     * Para comparar un objeto con otro
+     *
      * @param object objeto que deseas comprar
-     * @return regresa falso si son distintos y verdadero en caso contrario 
+     * @return regresa falso si son distintos y verdadero en caso contrario
      */
     @Override
     public boolean equals(Object object) {
@@ -313,11 +354,11 @@ public class Persona implements Serializable {
 
     /**
      * Metodo usado para escribir y con ello conocer los atributos de la persona
+     *
      * @return atributos de la persona en orden
      */
     @Override
     public String toString() {
-        return "Persona{" + "id=" + id + ", rfc=" + rfc + ", nombres=" + nombres + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", discapacitado=" + discapacitado + ", telefono=" + telefono + ", fechaNacimiento=" + fechaNacimiento + '}';
+        return "Persona{" + "id=" + id + ", rfc=" + rfc + ", nombres=" + nombres + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", discapacitado=" + discapacitado + ", telefono=" + telefono + ", fechaNacimiento=" + fechaNacimiento + ", vehiculos=" + vehiculos + ", tramites=" + tramites + '}';
     }
-
 }
