@@ -3,13 +3,14 @@
   <persistence-unit name="com.mycompany_proyecto2_233410_233023" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.itson.proyecto2_233410_233023.dominio.Persona</class>
-    <class>com.itson.proyecto2_233410_233023.dominio.Vehiculo</class>
-    <class>com.itson.proyecto2_233410_233023.dominio.Placa</class>
+    <class>com.itson.proyecto2_233410_233023.dominio.Tramite</class>
+    <class>com.itson.proyecto2_233410_233023.dominio.TramitePlaca</class>
+    <class>com.itson.proyecto2_233410_233023.dominio.TramiteLicencia</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/PROYECTO2_AUTOPAPELEO?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3400/PROYECTO2_AUTOPAPELEO?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="12345678"/>
+      <property name="javax.persistence.jdbc.password" value="twentyonepilots123"/>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
   </persistence-unit>

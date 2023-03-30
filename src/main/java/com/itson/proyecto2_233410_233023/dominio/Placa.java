@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,6 +50,9 @@ public class Placa implements Serializable {
     @ManyToOne()
     @JoinColumn(name="id_vehiculo",nullable=false) 
     private Vehiculo vehiculo;
+    
+    @OneToOne(mappedBy = "placa")
+    private TramitePlaca tramitePlaca;
     
     
     public Placa() {
