@@ -1,5 +1,5 @@
 /*
-Clase Persona.Java creada el 29/03/2023.
+Clase Persona.java creada el 29/03/2023.
 */
 package com.itson.proyecto2_233410_233023.dominio;
 
@@ -83,6 +83,9 @@ public class Persona implements Serializable {
     
     @OneToMany(mappedBy = "persona") 
     private List<Vehiculo> vehiculos;
+    
+    @OneToMany(mappedBy = "persona") 
+    private List<Tramite> tramites;
     /**
      * Constructor por defecto para crear personas dentro de la base de datos 
      */
@@ -128,7 +131,21 @@ public class Persona implements Serializable {
         this.discapacitado = discapacitado;
         this.fechaNacimiento = fechaNacimiento;
     }
+    /**
+     * Obtiene el id que identifica a esa persona 
+     * @return id que identifica a esa persona
+     */
+    public Long getId() {
+        return id;
+    }
 
+    /**
+     * Establece el id que identifica a esa persona 
+     * @param id id que identifica a esa persona 
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
     /**
      * Para obtener el rfc de la persona 
      * @return string que representa el rfc de la persona
@@ -255,22 +272,16 @@ public class Persona implements Serializable {
         this.vehiculos = vehiculos;
     }
 
-    /**
-     * Obtiene el id que identifica a esa persona 
-     * @return id que identifica a esa persona
-     */
-    public Long getId() {
-        return id;
+    public List<Tramite> getTramites() {
+        return tramites;
     }
 
-    /**
-     * Establece el id que identifica a esa persona 
-     * @param id id que identifica a esa persona 
-     */
-    public void setId(Long id) {
-        this.id = id;
+    public void setTramites(List<Tramite> tramites) {
+        this.tramites = tramites;
     }
 
+    
+    
     /**
      * Para obtener el numero hash de la persona
      * @return numero hash 

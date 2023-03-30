@@ -1,6 +1,5 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+Clase Vehiculo.java creada el 29/03/2023.
  */
 package com.itson.proyecto2_233410_233023.dominio;
 
@@ -21,29 +20,29 @@ import javax.persistence.Table;
  * @author Gabriel x Kim
  */
 @Entity
-@Table(name="Vehiculos")
+@Table(name = "Vehiculos")
 public class Vehiculo implements Serializable {
 
-   
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "numero_serie",nullable=false,length=6)
+    @Column(name = "numero_serie", nullable = false, length = 6)
     private String numeroSerie;
-    @Column(name = "modelo",nullable=false,length=50)
+    @Column(name = "modelo", nullable = false, length = 50)
     private String modelo;
-    @Column(name = "marca",nullable=false,length=50)
+    @Column(name = "marca", nullable = false, length = 50)
     private String marca;
-    @Column(name = "linea",nullable=false,length=50)
+    @Column(name = "linea", nullable = false, length = 50)
     private String linea;
-    @Column(name = "color",nullable=false,length=30)
+    @Column(name = "color", nullable = false, length = 30)
     private String color;
     @ManyToOne()
-    @JoinColumn(name="id_persona",nullable=false) 
+    @JoinColumn(name = "id_persona", nullable = false)
     private Persona persona;
-    @OneToMany(mappedBy = "vehiculo") 
+    @OneToMany(mappedBy = "vehiculo")
     private List<Placa> placas;
+
     public Vehiculo() {
     }
 
@@ -65,8 +64,6 @@ public class Vehiculo implements Serializable {
         this.persona = persona;
         this.placas = placas;
     }
-    
-    
 
     public String getNumeroSerie() {
         return numeroSerie;
@@ -115,8 +112,7 @@ public class Vehiculo implements Serializable {
     public void setPersona(Persona persona) {
         this.persona = persona;
     }
-    
-    
+
     public Long getId() {
         return id;
     }
@@ -132,7 +128,7 @@ public class Vehiculo implements Serializable {
     public void setPlacas(List<Placa> placas) {
         this.placas = placas;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -157,5 +153,5 @@ public class Vehiculo implements Serializable {
     public String toString() {
         return "com.itson.proyecto2_233410_233023.dominio.Vehiculo[ id=" + id + " ]";
     }
-    
+
 }
