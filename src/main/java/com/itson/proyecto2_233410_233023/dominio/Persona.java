@@ -1,16 +1,20 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+Clase Persona.Java creada el 29/03/2023.
+*/
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -58,8 +62,9 @@ public class Persona implements Serializable {
     /**
      * Atributo para conocer si una persona presenta alguna discapacidad 
      */
-    @Column(name = "discapacitado", nullable= false, length=50)
-    private String discapacitado;
+    @Column(name = "discapacitado", nullable= false)
+    @Enumerated(EnumType.STRING)
+    private Discapacitado discapacitado;
     
     /**
      * Atributo que syuda a conocer el telefono de una persona para su contacto
@@ -74,7 +79,10 @@ public class Persona implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "fechaNacimiento", nullable= false)
     private Calendar fechaNacimiento;
-
+    
+    
+    @OneToMany(mappedBy = "persona") 
+    private List<Vehiculo> vehiculos;
     /**
      * Constructor por defecto para crear personas dentro de la base de datos 
      */
@@ -92,7 +100,7 @@ public class Persona implements Serializable {
      * @param telefono para una forma de contacto con la persona 
      * @param fechaNacimiento para saber la fecha en que nacio la persona 
      */
-    public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, String telefono, Calendar fechaNacimiento) {
+    public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, String telefono, Calendar fechaNacimiento) {
         this.rfc = rfc;
         this.nombres = nombres;
         this.apellidoPaterno = apellidoPaterno;
@@ -112,7 +120,7 @@ public class Persona implements Serializable {
      * @param discapacitado para conocer si la persona es discapacitada
      * @param fechaNacimiento para saber la fecha en que nacio la persona 
      */
-    public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento) {
+    public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, Calendar fechaNacimiento) {
         this.rfc = rfc;
         this.nombres = nombres;
         this.apellidoPaterno = apellidoPaterno;
@@ -189,7 +197,7 @@ public class Persona implements Serializable {
      * Obtiene si una persona presenta una discapacidad 
      * @return la discapacidad de la persona 
      */
-    public String getDiscapacitado() {
+    public Discapacitado getDiscapacitado() {
         return discapacitado;
     }
 
@@ -197,7 +205,7 @@ public class Persona implements Serializable {
      * Establece si una persona es discapacitada 
      * @param discapacitado la discapacidad de la persona 
      */
-    public void setDiscapacitado(String discapacitado) {
+    public void setDiscapacitado(Discapacitado discapacitado) {
         this.discapacitado = discapacitado;
     }
 
@@ -232,10 +240,24 @@ public class Persona implements Serializable {
     public void setFechaNacimiento(Calendar fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+    /**
+     * Obtiene la lista de vehículos de la persona
+     * @return lista de vehículos de la persona
+     */
+    public List<Vehiculo> getVehiculos() {
+        return vehiculos;
+    }
+    /**
+     * Establece los vehículos de la persona
+     * @param vehiculos vehículos de la persona
+     */
+    public void setVehiculos(List<Vehiculo> vehiculos) {
+        this.vehiculos = vehiculos;
+    }
 
     /**
      * Obtiene el id que identifica a esa persona 
-     * @return id que identifica a esa persona 
+     * @return id que identifica a esa persona
      */
     public Long getId() {
         return id;
