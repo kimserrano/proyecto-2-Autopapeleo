@@ -3,6 +3,7 @@ Clase Principal.java creada el 29/03/2023.
  */
 package com.itson.proyecto2_233410_233023.principal;
 
+import com.itosn.proyecto2_233410_233023.UI.FrmMenu;
 import com.itson.proyecto2_233410_233023.dominio.Anios;
 import com.itson.proyecto2_233410_233023.dominio.Automovil;
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
@@ -14,6 +15,7 @@ import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
 import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
 import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
+import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import java.util.GregorianCalendar;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,10 +33,10 @@ public class Principal {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("com.mycompany_proyecto2_233410_233023");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaccion = em.getTransaction();
-
+        ConexionBD conexionBD = new ConexionBD("com.itson.proyecto2_233410_233023");
+        new FrmMenu().setVisible(true);
+        EntityTransaction transaccion = conexionBD.getEM().getTransaction();
+        
         transaccion.begin();
         //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento
         Persona personaejemplo = new Persona("1992983kska", "gabriel", "mancinas", "cota", Discapacitado.SI, new GregorianCalendar());
@@ -48,11 +50,11 @@ public class Principal {
         Tramite tramitePlaca = new TramitePlaca(placaejemplo, placaejemplo.getCosto(), new GregorianCalendar(), personaejemplo);
         //Float costo, Calendar fechaExpedicion
         Tramite tramiteLicencia = new TramiteLicencia(licenciaejemplo, licenciaejemplo.getMonto(), new GregorianCalendar(), personaejemplo);
-        em.persist(personaejemplo);
-        em.persist(vehiculoejemplo);
-        em.persist(tramitePlaca);
-        em.persist(tramiteLicencia);
-        em.getTransaction().commit();
+        conexionBD.getEM().persist(personaejemplo);
+        conexionBD.getEM().persist(vehiculoejemplo);
+        conexionBD.getEM().persist(tramitePlaca);
+        conexionBD.getEM().persist(tramiteLicencia);
+        conexionBD.getEM().getTransaction().commit();
     }
 
 }
