@@ -37,24 +37,24 @@ public class Principal {
         new FrmMenu().setVisible(true);
         EntityTransaction transaccion = conexionBD.getEM().getTransaction();
         
-        transaccion.begin();
-        //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento
-        Persona personaejemplo = new Persona("1992983kska", "gabriel", "mancinas", "cota", Discapacitado.SI, new GregorianCalendar());
-        //String numeroSerie, String modelo, String marca, String linea, String color
-        Vehiculo vehiculoejemplo = new Automovil("AAA233", "Papu", "SDLG", "CP", "Verde", personaejemplo);
-        //String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision, Calendar fechaRecepcion, Vehiculo vehiculo
-        Placa placaejemplo = new Placa("234-BVV", 1600.00f, Estado.ACTIVA, new GregorianCalendar(), new GregorianCalendar(), vehiculoejemplo);
-        //Float monto, Calendar fechaExpedicion, Anios aniosVigencia
-        Licencia licenciaejemplo = new Licencia(600f, new GregorianCalendar(), Anios.UNO);
-        //Float costo, Calendar fechaExpedicion
-        Tramite tramitePlaca = new TramitePlaca(placaejemplo, placaejemplo.getCosto(), new GregorianCalendar(), personaejemplo);
-        //Float costo, Calendar fechaExpedicion
-        Tramite tramiteLicencia = new TramiteLicencia(licenciaejemplo, licenciaejemplo.getMonto(), new GregorianCalendar(), personaejemplo);
-        conexionBD.getEM().persist(personaejemplo);
-        conexionBD.getEM().persist(vehiculoejemplo);
-        conexionBD.getEM().persist(tramitePlaca);
-        conexionBD.getEM().persist(tramiteLicencia);
-        conexionBD.getEM().getTransaction().commit();
+//        transaccion.begin();
+//        //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento
+//        Persona personaejemplo = new Persona("1992983kska", "gabriel", "mancinas", "cota", Discapacitado.SI, new GregorianCalendar());
+//        //String numeroSerie, String modelo, String marca, String linea, String color
+//        Vehiculo vehiculoejemplo = new Automovil("AAA233", "Papu", "SDLG", "CP", "Verde", personaejemplo);
+//        //String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision, Calendar fechaRecepcion, Vehiculo vehiculo
+//        Placa placaejemplo = new Placa("234-BVV", 1600.00f, Estado.ACTIVA, new GregorianCalendar(), new GregorianCalendar(), vehiculoejemplo);
+//        //Float monto, Calendar fechaExpedicion, Anios aniosVigencia
+//        Licencia licenciaejemplo = new Licencia(600f, new GregorianCalendar(), Anios.UNO);
+//        //Float costo, Calendar fechaExpedicion
+//        Tramite tramitePlaca = new TramitePlaca(placaejemplo, placaejemplo.getCosto(), new GregorianCalendar(), personaejemplo);
+//        //Float costo, Calendar fechaExpedicion
+//        Tramite tramiteLicencia = new TramiteLicencia(licenciaejemplo, licenciaejemplo.getMonto(), new GregorianCalendar(), personaejemplo);
+//        conexionBD.getEM().persist(personaejemplo);
+//        conexionBD.getEM().persist(vehiculoejemplo);
+//        conexionBD.getEM().persist(tramitePlaca);
+//        conexionBD.getEM().persist(tramiteLicencia);
+//        conexionBD.getEM().getTransaction().commit();
    
     }
 
