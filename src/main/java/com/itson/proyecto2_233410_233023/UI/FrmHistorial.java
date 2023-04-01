@@ -17,6 +17,9 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     public FrmHistorial() {
         initComponents();
+        txtRfc.setEnabled(false);
+        txtNombres.setEnabled(false);
+        dtpFechaNacimiento.setEnabled(false);
     }
     
   
