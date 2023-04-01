@@ -13,7 +13,7 @@ import java.awt.geom.RoundRectangle2D;
 public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     /**
-     * Creates new form FrmMenu
+     * Creates new form FrmRegistrarVehiculo
      */
     public FrmRegistrarVehiculo() {
         initComponents();

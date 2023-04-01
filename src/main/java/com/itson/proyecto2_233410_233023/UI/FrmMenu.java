@@ -210,7 +210,9 @@ public class FrmMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-        // TODO add your handling code here:
+        FrmTramitarLicencias frmtl = new FrmTramitarLicencias();
+       this.setVisible(false);
+       frmtl.setVisible(true);
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
 
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
@@ -224,7 +226,9 @@ public class FrmMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInsercionActionPerformed
 
     private void btnHistorial1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorial1ActionPerformed
-        // TODO add your handling code here:
+     FrmHistorial frmh = new FrmHistorial();
+       this.setVisible(false);
+       frmh.setVisible(true);
     }//GEN-LAST:event_btnHistorial1ActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed

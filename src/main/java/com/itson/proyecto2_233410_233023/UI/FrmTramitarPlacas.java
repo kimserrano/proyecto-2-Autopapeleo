@@ -13,7 +13,7 @@ import java.awt.geom.RoundRectangle2D;
 public class FrmTramitarPlacas extends javax.swing.JFrame {
 
     /**
-     * Creates new form FrmMenu
+     * Creates new form FrmTramitarPlacas
      */
     public FrmTramitarPlacas() {
         initComponents();
