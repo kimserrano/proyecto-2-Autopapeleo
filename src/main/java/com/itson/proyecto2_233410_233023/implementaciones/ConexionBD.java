@@ -14,6 +14,7 @@ import javax.persistence.Persistence;
 public class ConexionBD {
     private EntityManager entityManager;
     private String nombrePersistencia;
+    
     public ConexionBD(String nombrePersistencia){
         this.nombrePersistencia=nombrePersistencia;
          EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(nombrePersistencia);

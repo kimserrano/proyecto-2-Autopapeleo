@@ -3,7 +3,7 @@ Clase Principal.java creada el 29/03/2023.
  */
 package com.itson.proyecto2_233410_233023.principal;
 
-import com.itosn.proyecto2_233410_233023.UI.FrmMenu;
+import com.itson.proyecto2_233410_233023.UI.FrmMenu;
 import com.itson.proyecto2_233410_233023.dominio.Anios;
 import com.itson.proyecto2_233410_233023.dominio.Automovil;
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
@@ -55,6 +55,7 @@ public class Principal {
         conexionBD.getEM().persist(tramitePlaca);
         conexionBD.getEM().persist(tramiteLicencia);
         conexionBD.getEM().getTransaction().commit();
+   
     }
 
 }
