@@ -34,12 +34,12 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         jRadioBtnNombre = new javax.swing.JRadioButton();
         jRadioBtnRFC = new javax.swing.JRadioButton();
         jRadioBtnID = new javax.swing.JRadioButton();
-        jScrollPaneTabla = new javax.swing.JScrollPane();
-        jTablePersonas = new javax.swing.JTable();
         jLblIndicacion = new javax.swing.JLabel();
         jLblId = new javax.swing.JLabel();
         jTextFieldBuscarId = new javax.swing.JTextField();
         btnSeleccionar = new javax.swing.JButton();
+        jScrollPane = new javax.swing.JScrollPane();
+        tblPersonas = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Seleccionar persona");
@@ -112,33 +112,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         jRadioBtnID.setText("ID");
         jRadioBtnID.setBorder(null);
 
-        jTablePersonas.setBackground(new java.awt.Color(255, 255, 255));
-        jTablePersonas.setFont(new java.awt.Font("Microsoft JhengHei", 0, 12)); // NOI18N
-        jTablePersonas.setForeground(new java.awt.Color(129, 0, 127));
-        jTablePersonas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "Nombre", "RFC", "Fecha de Nacimiento", "Discapacitado", "Teléfono"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jTablePersonas.setGridColor(new java.awt.Color(129, 0, 127));
-        jTablePersonas.setSelectionBackground(new java.awt.Color(233, 219, 253));
-        jTablePersonas.setSelectionForeground(new java.awt.Color(129, 0, 127));
-        jScrollPaneTabla.setViewportView(jTablePersonas);
-
         jLblIndicacion.setFont(new java.awt.Font("Microsoft JhengHei", 0, 12)); // NOI18N
         jLblIndicacion.setForeground(new java.awt.Color(129, 0, 127));
         jLblIndicacion.setText("(Id de la persona a la cual se quiere seleccionar)");
@@ -169,6 +142,28 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
             }
         });
 
+        tblPersonas.setBackground(new java.awt.Color(233, 219, 253));
+        tblPersonas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "RFC", "Fecha Nacimiento", "Discapacitado", "Teléfono"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Long.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.String.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane.setViewportView(tblPersonas);
+
         javax.swing.GroupLayout jPanelFondoLayout = new javax.swing.GroupLayout(jPanelFondo);
         jPanelFondo.setLayout(jPanelFondoLayout);
         jPanelFondoLayout.setHorizontalGroup(
@@ -176,32 +171,33 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
             .addGroup(jPanelFondoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPaneTabla, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoLayout.createSequentialGroup()
-                            .addGap(39, 39, 39)
-                            .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLblIndicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanelFondoLayout.createSequentialGroup()
-                                    .addComponent(jLblId, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jTextFieldBuscarId, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(38, 38, 38)))))
                     .addGroup(jPanelFondoLayout.createSequentialGroup()
-                        .addComponent(jTextFieldBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
                         .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLblIndicacion, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanelFondoLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jRadioBtnNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioBtnRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLblId, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextFieldBuscarId, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(272, 272, 272)
+                                .addComponent(btnSeleccionar, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(jPanelFondoLayout.createSequentialGroup()
+                        .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanelBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanelFondoLayout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addComponent(jRadioBtnID, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jTextFieldBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanelFondoLayout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jRadioBtnNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jRadioBtnRFC, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanelFondoLayout.createSequentialGroup()
+                                        .addGap(84, 84, 84)
+                                        .addComponent(jRadioBtnID, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanelFondoLayout.setVerticalGroup(
             jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,9 +212,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jRadioBtnID))
                     .addComponent(jTextFieldBusqueda))
-                .addGap(28, 28, 28)
-                .addComponent(jScrollPaneTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
                 .addComponent(jLblIndicacion)
                 .addGap(18, 18, 18)
                 .addGroup(jPanelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -258,6 +254,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
         // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_btnSeleccionarActionPerformed
 
 
@@ -271,10 +268,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioBtnID;
     private javax.swing.JRadioButton jRadioBtnNombre;
     private javax.swing.JRadioButton jRadioBtnRFC;
-    private javax.swing.JScrollPane jScrollPaneTabla;
-    private javax.swing.JTable jTablePersonas;
+    private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextField jTextFieldBuscarId;
     private javax.swing.JTextField jTextFieldBusqueda;
     private javax.swing.JLabel lblAutoPapeleo;
+    private javax.swing.JTable tblPersonas;
     // End of variables declaration//GEN-END:variables
 }
