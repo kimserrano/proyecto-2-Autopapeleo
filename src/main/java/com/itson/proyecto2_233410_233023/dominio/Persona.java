@@ -3,6 +3,7 @@ Clase Persona.java creada el 29/03/2023.
  */
 package com.itson.proyecto2_233410_233023.dominio;
 
+import com.itson.proyecto2_233410_233023.implementaciones.EncriptacionAES;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
@@ -113,9 +114,9 @@ public class Persona implements Serializable {
      */
     public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, String telefono, Calendar fechaNacimiento) {
         this.rfc = rfc;
-        this.nombres = nombres;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
+        this.nombres = EncriptacionAES.encriptar(nombres);
+        this.apellidoPaterno = EncriptacionAES.encriptar(apellidoPaterno);
+        this.apellidoMaterno = EncriptacionAES.encriptar(apellidoMaterno);
         this.discapacitado = discapacitado;
         this.telefono = telefono;
         this.fechaNacimiento = fechaNacimiento;
@@ -134,9 +135,9 @@ public class Persona implements Serializable {
      */
     public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, Calendar fechaNacimiento) {
         this.rfc = rfc;
-        this.nombres = nombres;
-        this.apellidoPaterno = apellidoPaterno;
-        this.apellidoMaterno = apellidoMaterno;
+        this.nombres = EncriptacionAES.encriptar(nombres);
+        this.apellidoPaterno = EncriptacionAES.encriptar(apellidoPaterno);
+        this.apellidoMaterno = EncriptacionAES.encriptar(apellidoMaterno);
         this.discapacitado = discapacitado;
         this.fechaNacimiento = fechaNacimiento;
     }
@@ -183,7 +184,7 @@ public class Persona implements Serializable {
      * @return string con los nombres de la persona
      */
     public String getNombres() {
-        return nombres;
+        return EncriptacionAES.desencriptar(nombres);
     }
 
     /**
@@ -192,7 +193,7 @@ public class Persona implements Serializable {
      * @param nombres nombres de la persona
      */
     public void setNombres(String nombres) {
-        this.nombres = nombres;
+        this.nombres = EncriptacionAES.encriptar(nombres);
     }
 
     /**
@@ -201,7 +202,7 @@ public class Persona implements Serializable {
      * @return apellido paterno de la persona
      */
     public String getApellidoPaterno() {
-        return apellidoPaterno;
+        return EncriptacionAES.desencriptar(apellidoPaterno); 
     }
 
     /**
@@ -210,7 +211,7 @@ public class Persona implements Serializable {
      * @param apellidoPaterno apellido paterno de la persona
      */
     public void setApellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoPaterno = EncriptacionAES.encriptar(apellidoPaterno);
     }
 
     /**
@@ -219,7 +220,7 @@ public class Persona implements Serializable {
      * @return apellido materno de la persona
      */
     public String getApellidoMaterno() {
-        return apellidoMaterno;
+        return EncriptacionAES.desencriptar(apellidoMaterno);
     }
 
     /**
@@ -228,7 +229,7 @@ public class Persona implements Serializable {
      * @param apellidoMaterno apellido materno de la persona
      */
     public void setApellidoMaterno(String apellidoMaterno) {
-        this.apellidoMaterno = apellidoMaterno;
+        this.apellidoMaterno = EncriptacionAES.encriptar(apellidoMaterno);
     }
 
     /**

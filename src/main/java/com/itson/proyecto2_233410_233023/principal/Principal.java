@@ -36,7 +36,7 @@ public class Principal {
         ConexionBD conexionBD = new ConexionBD("com.itson.proyecto2_233410_233023");
         new FrmMenu().setVisible(true);
         EntityTransaction transaccion = conexionBD.getEM().getTransaction();
-        
+
 //        transaccion.begin();
 //        //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento
 //        Persona personaejemplo = new Persona("1992983kska", "gabriel", "mancinas", "cota", Discapacitado.SI, new GregorianCalendar());
@@ -55,7 +55,7 @@ public class Principal {
 //        conexionBD.getEM().persist(tramitePlaca);
 //        conexionBD.getEM().persist(tramiteLicencia);
 //        conexionBD.getEM().getTransaction().commit();
-   
+        
     }
 
 }
