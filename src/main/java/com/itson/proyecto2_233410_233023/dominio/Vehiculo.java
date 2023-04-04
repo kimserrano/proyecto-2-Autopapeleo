@@ -40,7 +40,7 @@ public class Vehiculo implements Serializable {
     /**
      * Representa el numero de serie del vehiculo
      */
-    @Column(name = "numero_serie", nullable = false, length = 6)
+    @Column(name = "numero_serie", nullable = false, length = 6, unique = true)
     private String numeroSerie;
 
     /**
