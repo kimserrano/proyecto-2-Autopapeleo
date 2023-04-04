@@ -1,5 +1,5 @@
-/*
-ConexionBD.java creada el 31/03/2023
+/**
+ConexionBD.java creada el 31/03/2023.
 */
 package com.itson.proyecto2_233410_233023.implementaciones;
 

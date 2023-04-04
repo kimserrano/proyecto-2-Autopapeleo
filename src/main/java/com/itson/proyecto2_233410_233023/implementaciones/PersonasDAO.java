@@ -1,7 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+/**
+  Clase PersonasDAO.java creada el 03/04/2023.
+*/
 package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
@@ -26,12 +25,19 @@ import javax.persistence.criteria.Root;
 public class PersonasDAO implements IPersonasDAO {
     private final IConexionBD conexionBD;
     
-
+    /**
+     * Método constructor el cual inicializa el atributo conexionBD al valor del parámetro enviado.
+     * @param conexionBD conexionBD a iniciar.
+     */
     public PersonasDAO(IConexionBD conexionBD){
         this.conexionBD=conexionBD;
     }
     
     @Override
+    /**
+     * Método para realizar la inserción masiva de 20 personas a la base de datos.
+     * @return Valor booleano.
+     */
     public boolean insercionMasivaPersonas() {
         GregorianCalendar fn = new GregorianCalendar(2003, 3, 3); // año, mes y día. mes empiza del 0
 
@@ -59,7 +65,7 @@ public class PersonasDAO implements IPersonasDAO {
         Persona p19 = new Persona("MAPE908902", "Adrian", "Martínez", "Pérez", Discapacitado.NO, "662 901 2345", new GregorianCalendar(1984, 11, 29));
         Persona p20 = new Persona("JIMA871218", "Alejandra", "Jiménez", "Martínez", Discapacitado.NO, "744 987 6543", new GregorianCalendar(1985, 12, 30));
 
-        //Agregar a una lista
+        //Agregar a una lista y persistir
         conexionBD.getEM().getTransaction().begin();
         List<Persona> personas = Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20);
         for (Persona persona : personas) {
@@ -69,6 +75,11 @@ public class PersonasDAO implements IPersonasDAO {
         return true;
     }
     @Override
+    /**
+     * Método para consultar una lista de personas.
+     * @param config Configuración del paginado.
+     * @return Lista de personas.
+     */
     public List<Persona> consultarPersonas(ConfiguracionPaginado config){
         String consulta = "SELECT p from Persona p";
         Query query = conexionBD.getEM().createQuery(consulta);
@@ -78,6 +89,13 @@ public class PersonasDAO implements IPersonasDAO {
         return personas;
     }
     @Override
+    /**
+     * Método para consultar una lista de personas a partir de los filtros enviados.
+     * @param filtro Filtro enviado (ID,RFC o Nombre).
+     * @param dato Dato recuperado.
+     * @param config Configuración del paginado.
+     * @return Lista de personas.
+     */
     public List<Persona> consultarPersonasFiltro(String filtroSeleccionado,String dato,ConfiguracionPaginado config){
         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
@@ -92,6 +110,11 @@ public class PersonasDAO implements IPersonasDAO {
     }
 
     @Override
+    /**
+     * Método para obtener una persona a partir de la ID enviada.
+     * @param id ID de la persona.
+     * @return Persona obtenida.
+     */
     public Persona obtenerPersona(Long id) {
         String consulta = "SELECT p FROM Persona p WHERE p.id = :id";
         Query query = conexionBD.getEM().createQuery(consulta);

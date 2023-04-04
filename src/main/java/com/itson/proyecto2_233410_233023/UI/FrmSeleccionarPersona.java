@@ -1,6 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+/**
+ * Clase FrmSeleccionarPersona.java creada el 29/03/2023.
  */
 package com.itson.proyecto2_233410_233023.UI;
 
@@ -19,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author kim
+ * @author Gabriel x Kim
  */
 public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private final IPersonasDAO personasDAO;
@@ -31,7 +30,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private Persona personaSeleccionada = null;
     private Boolean tramite;
     /**
-     * Creates new form FrmSeleccionarPersona
+     * Método constructor que inicializa sus atributos al valor de los parámetros enviados.
      */
     public FrmSeleccionarPersona(IPersonasDAO personasDAO,Boolean tramite) {
         this.personasDAO=personasDAO;
@@ -39,7 +38,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         this.tramite=tramite;
         initComponents();
     }
-
+    /**
+     * Método para validar el TextField de búsqueda el cuál valida dependiendo de la opción seleccionada.
+     * @return Valor booleano para comprobar la validación.
+     */
     public boolean validarBusqueda(){
         if(filtro.equals("id")){
             return validador.validaID(obtenerBusqueda());
@@ -49,6 +51,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
             return validador.validaRFC(obtenerBusqueda());
         }
     }
+    /**
+     * Método para cargar la tabla de personas en la interfaz de usuario. Si no se ha seleccionado o escrito ningún filtro simplemente muestra todos los registros de Persona.
+     */
     public void cargarTablaPersonas(){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         if(filtro!=null && !txtBusqueda.getText().isEmpty()){
@@ -74,12 +79,20 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         }
      }
     }
+    /**
+     * Método para obtener el texto del TextField de búsqueda.
+     * @return Texto de búsqueda.
+     */
     public String obtenerBusqueda(){
     if(!txtBusqueda.getText().isEmpty() || txtBusqueda.getText()!=null){
         return txtBusqueda.getText();
     }
     return "";
     }
+    /**
+     * Método para obtener la ID del TextField de ID.
+     * @return ID obtenida.
+     */
     public String obtenerID(){
       if(!txtBusqueda.getText().isEmpty() || txtid.getText()!=null){
           return txtid.getText();
@@ -87,7 +100,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
       return "";
       
     }
-    
+    /**
+     * Método para obtener la persona a partir de la ID recuperada.
+     */
     public void seleccionarPersona(){
     if(validador.validaID(obtenerID())){
     this.personaSeleccionada = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
@@ -96,9 +111,25 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         mostrarMensaje("Ingrese una ID correcta para seleccionar a la persona");
     }
     }
-    
+    /**
+     * Método para mostrar un mensaje en un JOptionPane.
+     * @param msj Mensaje a mostrar.
+     */
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+    /**
+     * Método para mostrar un Frame de trámite dependiendo su elección.
+     */
+    private void mostrarFrm(){
+       JFrame frm;
+       if(this.tramite){
+       frm = new FrmTramitarLicencias(personasDAO,personaSeleccionada);  
+       }else{
+       frm = new FrmTramitarPlacas(personasDAO,personaSeleccionada);
+       }
+       this.setVisible(false);
+       frm.setVisible(true);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -180,11 +211,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         txtBusqueda.setForeground(new java.awt.Color(124, 63, 163));
         txtBusqueda.setToolTipText("");
         txtBusqueda.setBorder(null);
-        txtBusqueda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtBusquedaActionPerformed(evt);
-            }
-        });
 
         rbnNombre.setBackground(new java.awt.Color(233, 219, 253));
         btnGrupo.add(rbnNombre);
@@ -301,11 +327,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
                 cbxPaginadoItemStateChanged(evt);
             }
         });
-        cbxPaginado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxPaginadoActionPerformed(evt);
-            }
-        });
 
         btnConsultar.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnConsultar.setForeground(new java.awt.Color(129, 0, 127));
@@ -412,49 +433,52 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Evento que ocurre cuando un usuario da un click en el botón para volver al menú.
+     *
+     * @param evt Evento al dar click en el botón.
+     */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
        FrmMenu frmm = new FrmMenu(personasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
-    private void txtBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBusquedaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtBusquedaActionPerformed
-
     private void txtidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtidActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtidActionPerformed
-
+     /**
+     * Evento que ocurre cuando un usuario da un click en el botón siguiente del paginado.
+     *
+     * @param evt Evento al dar click en el botón.
+     */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
        this.paginado.avanzarPagina();
        cargarTablaPersonas();
     }//GEN-LAST:event_btnSiguienteActionPerformed
-
+    /**
+     * Evento que ocurre cuando un usuario da un click en el botón para seleccionar una persona.
+     *
+     * @param evt Evento al dar click en el botón.
+     */
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
        seleccionarPersona();
-       JFrame frm;
-       if(this.tramite){
-       frm = new FrmTramitarPlacas(personasDAO,personaSeleccionada);
-       }else{
-       frm = new FrmTramitarLicencias(personasDAO,personaSeleccionada);  
-       }
-       this.setVisible(false);
-       frm.setVisible(true);
-       
-
+       mostrarFrm();
     }//GEN-LAST:event_btnSeleccionarActionPerformed
-
+    /**
+     * Evento que ocurre cuando un usuario da un click en el botón para regresar del paginado.
+     *
+     * @param evt Evento al dar click en el botón.
+     */
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         this.paginado.retrocederPagina();
         cargarTablaPersonas();
     }//GEN-LAST:event_btnRegresarActionPerformed
-
-    private void cbxPaginadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaginadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbxPaginadoActionPerformed
-
+     /**
+     * Evento que ocurre cuando un usuario cambia de opción en el Combobox de paginado.
+     *
+     * @param evt Evento al cambiar de selección.
+     */
     private void cbxPaginadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxPaginadoItemStateChanged
       if (evt.getStateChange() == ItemEvent.SELECTED) {
             int elementosPorPagina = Integer.parseInt((String) this.cbxPaginado.getSelectedItem());
@@ -462,25 +486,41 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
             this.cargarTablaPersonas();
         }
     }//GEN-LAST:event_cbxPaginadoItemStateChanged
-
+     /**
+     * Evento que ocurre cuando un usuario cambia de opción en el grupo de radiobutton.
+     *
+     * @param evt Evento al cambiar de selección.
+     */
     private void rbnNombreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnNombreItemStateChanged
        if (evt.getStateChange() == ItemEvent.SELECTED) {
            this.filtro="nombre";
        }
     }//GEN-LAST:event_rbnNombreItemStateChanged
-
+    /**
+     * Evento que ocurre cuando un usuario cambia de opción en el grupo de radiobutton.
+     *
+     * @param evt Evento al cambiar de selección.
+     */
     private void rbnRFCItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnRFCItemStateChanged
          if (evt.getStateChange() == ItemEvent.SELECTED) {
            this.filtro="rfc";
        }
     }//GEN-LAST:event_rbnRFCItemStateChanged
-
+    /**
+     * Evento que ocurre cuando un usuario cambia de opción en el grupo de radiobutton.
+     *
+     * @param evt Evento al cambiar de selección.
+     */
     private void rbnIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnIDItemStateChanged
        if (evt.getStateChange() == ItemEvent.SELECTED) {
            this.filtro="id";
        }
     }//GEN-LAST:event_rbnIDItemStateChanged
-
+    /**
+     * Evento que ocurre cuando un usuario da un click en el botón para consultar la tabla.
+     *
+     * @param evt Evento al dar click en el botón.
+     */
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         cargarTablaPersonas();
     }//GEN-LAST:event_btnConsultarActionPerformed
