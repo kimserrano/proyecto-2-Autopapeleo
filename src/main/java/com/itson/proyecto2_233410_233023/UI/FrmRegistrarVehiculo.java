@@ -4,6 +4,8 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
+import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -11,12 +13,15 @@ import java.awt.geom.RoundRectangle2D;
  * @author kim
  */
 public class FrmRegistrarVehiculo extends javax.swing.JFrame {
-
+     IPersonasDAO personasDAO;
+     Persona personaSeleccionada;
     /**
      * Creates new form FrmRegistrarVehiculo
      */
-    public FrmRegistrarVehiculo() {
+    public FrmRegistrarVehiculo(IPersonasDAO personasDAO,Persona persona) {
         initComponents();
+         this.personasDAO=personasDAO;
+         this.personaSeleccionada=persona;
     }
     
  
@@ -263,7 +268,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas();
+        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO,personaSeleccionada);
         this.setVisible(false);
         frmtp.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed

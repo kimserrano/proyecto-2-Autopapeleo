@@ -7,6 +7,7 @@ package com.itson.proyecto2_233410_233023.UI;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
@@ -19,14 +20,13 @@ import javax.swing.JOptionPane;
  */
 public class FrmMenu extends javax.swing.JFrame {
 
-    ConexionBD conexionBD = new ConexionBD("com.itson.proyecto2_233410_233023");
-
-    EntityTransaction transaccion = conexionBD.getEM().getTransaction();
+    IPersonasDAO personasDAO;
 
     /**
      * Creates new form FrmMenu
      */
-    public FrmMenu() {
+    public FrmMenu(IPersonasDAO personasDAO) {
+        this.personasDAO=personasDAO;
         initComponents();
 
     }
@@ -224,26 +224,22 @@ public class FrmMenu extends javax.swing.JFrame {
         new JOptionPane().showMessageDialog(this, mensaje, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-        FrmTramitarLicencias frmtl = new FrmTramitarLicencias();
-        this.setVisible(false);
-        frmtl.setVisible(true);
+       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,true);
+       this.setVisible(false);
+       frmsp.setVisible(true);
+
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
 
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas();
-        this.setVisible(false);
-        frmtp.setVisible(true);
+     FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,false);
+       this.setVisible(false);
+       frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed
 
     private void btnInsercionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsercionActionPerformed
-        PersonasDAO objetoPersona = new PersonasDAO();
-        List<Persona> personas = objetoPersona.insercionMasivaPersonas();
-        transaccion.begin();
-        for (Persona persona : personas) {
-            conexionBD.getEM().persist(persona);
+        if(personasDAO.insercionMasivaPersonas()){
+             mensajeConfirmacion("Registro de personas realizado correctamente", "Confirmación");
         }
-        conexionBD.getEM().getTransaction().commit();
-        mensajeConfirmacion("Registro de personas realizado correctamente", "Confirmación");
     }//GEN-LAST:event_btnInsercionActionPerformed
 
     private void btnHistorial1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorial1ActionPerformed

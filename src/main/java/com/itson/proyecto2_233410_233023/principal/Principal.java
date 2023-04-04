@@ -17,6 +17,8 @@ import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
 import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
 import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,8 +37,17 @@ public class Principal {
     public static void main(String[] args) {
         // TODO code application logic here
         ConexionBD conexionBD = new ConexionBD("com.itson.proyecto2_233410_233023");
-        new FrmMenu().setVisible(true);
-        EntityTransaction transaccion = conexionBD.getEM().getTransaction();
+        IPersonasDAO personasDAO = new PersonasDAO(conexionBD);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        
+//        for (Persona personas : personasDAO.consultarPersonasFiltro("id","5")) {
+//            GregorianCalendar fechaNacimiento = (GregorianCalendar) personas.getFechaNacimiento();
+//            String fechaNacimientoFormateada = formatter.format(fechaNacimiento.getTime());
+//        System.out.println(personas);
+//            System.out.println(fechaNacimientoFormateada);
+//        }
+        new FrmMenu(personasDAO).setVisible(true);
+       // EntityTransaction transaccion = conexionBD.getEM().getTransaction();
         
 //        transaccion.begin();
 //        //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento

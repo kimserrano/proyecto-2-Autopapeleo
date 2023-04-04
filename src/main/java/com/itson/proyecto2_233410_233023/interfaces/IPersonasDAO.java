@@ -5,6 +5,7 @@
 package com.itson.proyecto2_233410_233023.interfaces;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.implementaciones.ConfiguracionPaginado;
 import java.util.List;
 
 /**
@@ -13,5 +14,8 @@ import java.util.List;
  */
 public interface IPersonasDAO {
     
-    List<Persona> insercionMasivaPersonas(); 
+    boolean insercionMasivaPersonas(); 
+    List<Persona> consultarPersonas(ConfiguracionPaginado config);
+    List<Persona> consultarPersonasFiltro(String filtro, String dato,ConfiguracionPaginado config);
+    Persona obtenerPersona(Long id);
 }

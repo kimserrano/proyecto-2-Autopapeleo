@@ -6,18 +6,33 @@ package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 
 /**
  *
  * @author Gabriel x Kim
  */
 public class PersonasDAO implements IPersonasDAO {
+    private final IConexionBD conexionBD;
+    
 
+    public PersonasDAO(IConexionBD conexionBD){
+        this.conexionBD=conexionBD;
+    }
+    
     @Override
-    public List<Persona> insercionMasivaPersonas() {
+    public boolean insercionMasivaPersonas() {
         GregorianCalendar fn = new GregorianCalendar(2003, 3, 3); // año, mes y día. mes empiza del 0
 
         //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, Calendar fechaNacimiento
@@ -45,8 +60,44 @@ public class PersonasDAO implements IPersonasDAO {
         Persona p20 = new Persona("JIMA871218", "Alejandra", "Jiménez", "Martínez", Discapacitado.NO, "744 987 6543", new GregorianCalendar(1985, 12, 30));
 
         //Agregar a una lista
-        List<Persona> personas = List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20);
-
+        conexionBD.getEM().getTransaction().begin();
+        List<Persona> personas = Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20);
+        for (Persona persona : personas) {
+            conexionBD.getEM().persist(persona);
+        }
+        conexionBD.getEM().getTransaction().commit();
+        return true;
+    }
+    @Override
+    public List<Persona> consultarPersonas(ConfiguracionPaginado config){
+        String consulta = "SELECT p from Persona p";
+        Query query = conexionBD.getEM().createQuery(consulta);
+        query.setFirstResult(config.getElementosASaltar());
+        query.setMaxResults(config.getElementosPorPagina());
+        List<Persona> personas = query.getResultList();
         return personas;
     }
+    @Override
+    public List<Persona> consultarPersonasFiltro(String filtroSeleccionado,String dato,ConfiguracionPaginado config){
+        CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+        CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
+        Root<Persona> entidad = criteriaQuery.from(Persona.class);
+        Predicate filtro = criteriaBuilder.like(entidad.get(filtroSeleccionado), ("%"+dato+"%"));
+        criteriaQuery.where(filtro);
+        TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
+        typedQuery.setFirstResult(config.getElementosASaltar());
+        typedQuery.setMaxResults(config.getElementosPorPagina());
+        List<Persona> personas = typedQuery.getResultList();
+        return personas;
+    }
+
+    @Override
+    public Persona obtenerPersona(Long id) {
+        String consulta = "SELECT p FROM Persona p WHERE p.id = :id";
+        Query query = conexionBD.getEM().createQuery(consulta);
+        query.setParameter("id", id);
+        Persona persona = (Persona) query.getSingleResult();
+        return persona;
+    }
+    
 }

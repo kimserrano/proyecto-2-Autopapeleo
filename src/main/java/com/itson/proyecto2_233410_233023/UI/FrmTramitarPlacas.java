@@ -4,6 +4,8 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
+import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -11,15 +13,19 @@ import java.awt.geom.RoundRectangle2D;
  * @author kim
  */
 public class FrmTramitarPlacas extends javax.swing.JFrame {
-
+     IPersonasDAO personasDAO;
+     Persona personaSeleccionada;
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmTramitarPlacas() {
+    public FrmTramitarPlacas(IPersonasDAO personasDAO,Persona persona) {
         initComponents();
+        this.personasDAO = personasDAO;
+        this.personaSeleccionada=persona;
         btnBuscar.setVisible(false);
         lblPlacasAnteriores.setVisible(false);
         txtPlacasAnteriores.setVisible(false);
+        lblNombrePersona.setText(persona.getNombres()+" "+persona.getApellidoPaterno());
     }
     
     public void mostrarOpciones(){
@@ -68,6 +74,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         txtCosto = new javax.swing.JTextField();
         btnRealizarTramite = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
+        btnSeleccionarPersona = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Autopapeleo Menú ");
@@ -200,6 +207,15 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             .addGap(0, 12, Short.MAX_VALUE)
         );
 
+        btnSeleccionarPersona.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        btnSeleccionarPersona.setText("Seleccionar persona");
+        btnSeleccionarPersona.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
+        btnSeleccionarPersona.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionarPersonaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelFondoMenuLayout = new javax.swing.GroupLayout(jPanelFondoMenu);
         jPanelFondoMenu.setLayout(jPanelFondoMenuLayout);
         jPanelFondoMenuLayout.setHorizontalGroup(
@@ -216,27 +232,25 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                                 .addComponent(lblPlacasAnteriores)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtPlacasAnteriores, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtPlacasAnteriores, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblCosto)
+                            .addComponent(lblNuevaPlaca)
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                .addComponent(lblNumeroSerie)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblCosto)
-                                    .addComponent(lblNuevaPlaca)
-                                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                        .addComponent(lblNumeroSerie)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtNuevaPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtNumeroSerie, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(txtNuevaPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtNumeroSerie, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                                 .addGap(45, 45, 45)
                                 .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(34, 34, 34))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                                .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnSeleccionarPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(17, 17, 17)))))
                 .addContainerGap())
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
@@ -274,7 +288,8 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNuevaPlaca)
-                    .addComponent(txtNuevaPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNuevaPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSeleccionarPersona))
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGap(29, 29, 29)
@@ -305,7 +320,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu();
+        FrmMenu frmm = new FrmMenu(personasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -319,16 +334,23 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxVehiculoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-       FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo();
+       FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO,personaSeleccionada);
        this.setVisible(false);
        frmrv.setVisible(true);
     }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void btnSeleccionarPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarPersonaActionPerformed
+//       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona();
+//       this.setVisible(false);
+//       frmsp.setVisible(true);
+    }//GEN-LAST:event_btnSeleccionarPersonaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnRealizarTramite;
     private javax.swing.JButton btnRegistrar;
+    private javax.swing.JButton btnSeleccionarPersona;
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> cbxVehiculo;
     private javax.swing.JPanel jPanel1;

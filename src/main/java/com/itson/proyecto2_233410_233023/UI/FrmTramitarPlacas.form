@@ -69,23 +69,17 @@
                                   <Component id="lblPlacasAnteriores" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="txtPlacasAnteriores" min="-2" pref="113" max="-2" attributes="0"/>
-                                  <EmptySpace min="35" max="32767" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
+                              <Component id="lblCosto" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblNuevaPlaca" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="lblNumeroSerie" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="lblCosto" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lblNuevaPlaca" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="lblNumeroSerie" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="txtNuevaPlaca" min="-2" pref="113" max="-2" attributes="0"/>
-                                              <Component id="txtNumeroSerie" min="-2" pref="113" max="-2" attributes="0"/>
-                                              <Component id="txtCosto" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
+                                      <Component id="txtNuevaPlaca" min="-2" pref="113" max="-2" attributes="0"/>
+                                      <Component id="txtNumeroSerie" min="-2" pref="113" max="-2" attributes="0"/>
+                                      <Component id="txtCosto" alignment="0" min="-2" pref="113" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace min="150" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -95,7 +89,10 @@
                                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="btnRealizarTramite" min="-2" pref="147" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="btnSeleccionarPersona" min="-2" pref="147" max="-2" attributes="0"/>
+                                      <Component id="btnRealizarTramite" min="-2" pref="147" max="-2" attributes="0"/>
+                                  </Group>
                                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -144,6 +141,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblNuevaPlaca" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtNuevaPlaca" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnSeleccionarPersona" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
@@ -435,6 +433,24 @@
             </DimensionLayout>
           </Layout>
         </Container>
+        <Component class="javax.swing.JButton" name="btnSeleccionarPersona">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Microsoft JhengHei" size="14" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Seleccionar persona"/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                <LineBorder>
+                  <Color PropertyName="color" blue="a3" green="3f" red="7c" type="rgb"/>
+                </LineBorder>
+              </Border>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSeleccionarPersonaActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

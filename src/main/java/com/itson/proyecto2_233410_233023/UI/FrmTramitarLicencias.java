@@ -4,6 +4,8 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
+import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -11,12 +13,16 @@ import java.awt.geom.RoundRectangle2D;
  * @author kim
  */
 public class FrmTramitarLicencias extends javax.swing.JFrame {
-
+     IPersonasDAO personasDAO;
+     Persona personaSeleccionada;
     /**
      * Creates new form FrmTramitarLicencias
      */
-    public FrmTramitarLicencias() {
+    public FrmTramitarLicencias(IPersonasDAO personasDAO,Persona persona) {
        initComponents();
+        this.personasDAO=personasDAO;
+        this.personaSeleccionada=persona;
+        lblNombrePersona.setText(persona.getNombres()+" "+persona.getApellidoPaterno());
     }
     
     
@@ -40,6 +46,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         lblVigencia = new javax.swing.JLabel();
         lblMonto = new javax.swing.JLabel();
         txtMonto = new javax.swing.JTextField();
+        btnSeleccionarPersona = new javax.swing.JButton();
         btnRealizarTramite = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -120,6 +127,15 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         txtMonto.setEditable(false);
         txtMonto.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
 
+        btnSeleccionarPersona.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        btnSeleccionarPersona.setText("Seleccionar persona");
+        btnSeleccionarPersona.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
+        btnSeleccionarPersona.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeleccionarPersonaActionPerformed(evt);
+            }
+        });
+
         btnRealizarTramite.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnRealizarTramite.setText("Realizar trámite");
         btnRealizarTramite.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
@@ -134,25 +150,28 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         jPanelFondoMenuLayout.setHorizontalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelBarra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                .addContainerGap(30, Short.MAX_VALUE)
+                .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(lblVigencia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cbxVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblMonto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 45, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                        .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                        .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42))))
+                    .addComponent(btnSeleccionarPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                        .addComponent(lblVigencia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbxVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblMonto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                    .addContainerGap(346, Short.MAX_VALUE)
+                    .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(32, 32, 32)))
         );
         jPanelFondoMenuLayout.setVerticalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,9 +185,14 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                     .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(149, 149, 149))
+                .addGap(38, 38, 38)
+                .addComponent(btnSeleccionarPersona)
+                .addGap(152, 152, 152))
+            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                    .addGap(115, 115, 115)
+                    .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(139, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -190,22 +214,29 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu();
+        FrmMenu frmm = new FrmMenu(personasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
-    private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRealizarTramiteActionPerformed
+    private void btnSeleccionarPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarPersonaActionPerformed
+//       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona();
+//       this.setVisible(false);
+//       frmsp.setVisible(true);
+    }//GEN-LAST:event_btnSeleccionarPersonaActionPerformed
 
     private void cbxVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVehiculoActionPerformed
 
     }//GEN-LAST:event_cbxVehiculoActionPerformed
 
+    private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRealizarTramiteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRealizarTramite;
+    private javax.swing.JButton btnSeleccionarPersona;
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> cbxVehiculo;
     private javax.swing.JPanel jPanelBarra;
