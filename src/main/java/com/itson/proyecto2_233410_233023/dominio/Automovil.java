@@ -41,8 +41,8 @@ public class Automovil extends Vehiculo implements Serializable {
      * @param color Representa el color del vehiculo
      * @param persona Representa a la persona duenia del vehiculo
      */
-    public Automovil(String numeroSerie, String modelo, String marca, String linea, String color, Persona persona) {
-        super(numeroSerie, modelo, marca, linea, color, persona);
+    public Automovil(String numeroSerie, String marca, String linea, String color, String modelo, Persona persona) {
+        super(numeroSerie, marca, linea, color, modelo, persona);
     }
 
     /**
@@ -57,8 +57,8 @@ public class Automovil extends Vehiculo implements Serializable {
      * @param placas Representa la lista de placas que tiene o ha tenido el
      * vehiculo
      */
-    public Automovil(String numeroSerie, String modelo, String marca, String linea, String color, Persona persona, List<Placa> placas) {
-        super(numeroSerie, modelo, marca, linea, color, persona, placas);
+    public Automovil(String numeroSerie, String marca, String linea, String color, String modelo, Persona persona, List<Placa> placas) {
+        super(numeroSerie, marca, linea, color, modelo, persona, placas);
     }
 
 }

@@ -5,6 +5,7 @@ package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -40,7 +41,7 @@ public class Vehiculo implements Serializable {
     /**
      * Representa el numero de serie del vehiculo
      */
-    @Column(name = "numero_serie", nullable = false, length = 6, unique = true)
+    @Column(name = "numero_serie", nullable = false, length = 7, unique = true)
     private String numeroSerie;
 
     /**
@@ -96,7 +97,7 @@ public class Vehiculo implements Serializable {
      * @param color Representa el color del vehiculo
      * @param persona Representa a la persona duenia del vehiculo
      */
-    public Vehiculo(String numeroSerie, String modelo, String marca, String linea, String color, Persona persona) {
+    public Vehiculo(String numeroSerie, String marca, String linea, String color, String modelo, Persona persona) {
         this.numeroSerie = numeroSerie;
         this.modelo = modelo;
         this.marca = marca;
@@ -117,7 +118,7 @@ public class Vehiculo implements Serializable {
      * @param placas Representa la lista de placas que tiene o ha tenido el
      * vehiculo
      */
-    public Vehiculo(String numeroSerie, String modelo, String marca, String linea, String color, Persona persona, List<Placa> placas) {
+    public Vehiculo(String numeroSerie, String marca, String linea, String color, String modelo, Persona persona, List<Placa> placas) {
         this.numeroSerie = numeroSerie;
         this.modelo = modelo;
         this.marca = marca;
@@ -290,18 +291,24 @@ public class Vehiculo implements Serializable {
      * @param object objeto que deseas comparar
      * @return true si el objeto es igual y false de caso contrario
      */
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Vehiculo)) {
+   @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Vehiculo other = (Vehiculo) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        return true;
+        final Vehiculo other = (Vehiculo) obj;
+        if (!Objects.equals(this.numeroSerie, other.numeroSerie)) {
+            return false;
+        }
+        return Objects.equals(this.id, other.id);
     }
+    
 
     /**
      * Escribe los atributos del vehiculo de manera ordenada
@@ -312,5 +319,7 @@ public class Vehiculo implements Serializable {
     public String toString() {
         return "Vehiculo{" + "id=" + id + ", numeroSerie=" + numeroSerie + ", modelo=" + modelo + ", marca=" + marca + ", linea=" + linea + ", color=" + color + ", persona=" + persona + ", placas=" + placas + '}';
     }
+
+    
 
 }

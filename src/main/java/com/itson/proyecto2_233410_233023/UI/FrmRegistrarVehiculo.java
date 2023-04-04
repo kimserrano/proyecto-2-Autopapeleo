@@ -3,28 +3,101 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
+import com.itson.proyecto2_233410_233023.dominio.Automovil;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
+import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
+import com.itson.proyecto2_233410_233023.implementaciones.Validador;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
+import java.awt.event.ItemEvent;
 import java.awt.geom.RoundRectangle2D;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author kim
  */
 public class FrmRegistrarVehiculo extends javax.swing.JFrame {
-     IPersonasDAO personasDAO;
-     Persona personaSeleccionada;
+
+    IPersonasDAO personasDAO;
+    IVehiculosDAO vehiculosDAO;
+    Persona personaSeleccionada;
+    Validador validador = new Validador();
+    String tipo = "Automovil";
+    String numSerie = "";
+
     /**
      * Creates new form FrmRegistrarVehiculo
      */
-    public FrmRegistrarVehiculo(IPersonasDAO personasDAO,Persona persona) {
+    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona) {
         initComponents();
-         this.personasDAO=personasDAO;
-         this.personaSeleccionada=persona;
+        this.personasDAO = personasDAO;
+        this.vehiculosDAO = vehiculosDAO;
+        this.personaSeleccionada = persona;
+        
     }
-    
- 
-    
+
+    public Boolean validarDatos(Vehiculo vehiculo) {
+        try{
+            validador.validaNumeroSerie(vehiculo.getNumeroSerie());
+            validador.validaTexto(vehiculo.getMarca(),"Marca");
+            validador.validaTexto(vehiculo.getLinea(),"Linea");
+            validador.validaTexto(vehiculo.getColor(),"Color");
+            validador.validaModelo(vehiculo.getModelo());
+            return true;
+        }catch(PersistenciaException ex){
+            mostrarMensaje(ex.getMessage());
+            return false;
+        }
+    }
+
+    public Vehiculo obtenerDatos() {
+        Vehiculo vehiculo = null;
+        String numeroSerie = txtNumeroSerie.getText();
+        String marca = txtMarca.getText();
+        String linea = txtLinea.getText();
+        String color = txtColor.getText();
+        String modelo = txtModelo.getText();
+        if (tipo.equals("Automovil")) {
+            vehiculo = new Automovil(numeroSerie, marca, linea, color, modelo, personaSeleccionada);
+        }
+        return vehiculo;
+
+    }
+    public boolean validarVehiculo(Vehiculo vehiculo) throws Exception{
+    Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
+    if(vehiculoObtenido!=null){
+    if(vehiculo.getNumeroSerie().equalsIgnoreCase(vehiculoObtenido.getNumeroSerie())){
+      mostrarMensaje("Ya hay un vehículo con ese número de serie.");
+      return false;
+    }
+    }
+    return true;
+    }
+    public boolean registrarVehiculo() {
+        Vehiculo vehiculo = obtenerDatos();
+        try {
+            if(validarDatos(vehiculo) || validarVehiculo(vehiculo)){
+            vehiculosDAO.registrarVehiculo(vehiculo);
+            numSerie=vehiculo.getNumeroSerie();
+            mostrarMensaje("Vehiculo registrado");
+            return true;
+        }
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Método para mostrar un mensaje en un JOptionPane.
+     *
+     * @param msj Mensaje a mostrar.
+     */
+    private void mostrarMensaje(String msj) {
+        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,12 +122,14 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         btnRegistrar = new javax.swing.JButton();
         lblColor1 = new javax.swing.JLabel();
         lblNumeroSerie1 = new javax.swing.JLabel();
-        txtNumeroSerie1 = new javax.swing.JTextField();
+        txtNumeroSerie = new javax.swing.JTextField();
         txtLinea = new javax.swing.JTextField();
+        txtModelo = new javax.swing.JTextField();
         txtColor = new javax.swing.JTextField();
-        txtColor1 = new javax.swing.JTextField();
         lblColor2 = new javax.swing.JLabel();
         cbxTipo = new javax.swing.JComboBox<>();
+        lblNumeroSerie2 = new javax.swing.JLabel();
+        lblNumeroSerie3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Autopapeleo Menú ");
@@ -119,6 +194,11 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         lblNumeroSerie.setText("Número de ");
 
         txtMarca.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        txtMarca.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMarcaKeyTyped(evt);
+            }
+        });
 
         lblMarca.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblMarca.setForeground(new java.awt.Color(124, 63, 163));
@@ -149,13 +229,33 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         lblNumeroSerie1.setForeground(new java.awt.Color(124, 63, 163));
         lblNumeroSerie1.setText("serie");
 
-        txtNumeroSerie1.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        txtNumeroSerie.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        txtNumeroSerie.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumeroSerieKeyTyped(evt);
+            }
+        });
 
         txtLinea.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        txtLinea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtLineaKeyTyped(evt);
+            }
+        });
+
+        txtModelo.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        txtModelo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtModeloKeyTyped(evt);
+            }
+        });
 
         txtColor.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-
-        txtColor1.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        txtColor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtColorKeyTyped(evt);
+            }
+        });
 
         lblColor2.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblColor2.setForeground(new java.awt.Color(124, 63, 163));
@@ -163,6 +263,19 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
         cbxTipo.setFont(new java.awt.Font("Microsoft JhengHei UI", 0, 14)); // NOI18N
         cbxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Automovil" }));
+        cbxTipo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxTipoItemStateChanged(evt);
+            }
+        });
+
+        lblNumeroSerie2.setFont(new java.awt.Font("Microsoft JhengHei", 1, 10)); // NOI18N
+        lblNumeroSerie2.setForeground(new java.awt.Color(124, 63, 163));
+        lblNumeroSerie2.setText("Formato (AAA-123)");
+
+        lblNumeroSerie3.setFont(new java.awt.Font("Microsoft JhengHei", 1, 10)); // NOI18N
+        lblNumeroSerie3.setForeground(new java.awt.Color(124, 63, 163));
+        lblNumeroSerie3.setText("(Año)");
 
         javax.swing.GroupLayout jPanelFondoMenuLayout = new javax.swing.GroupLayout(jPanelFondoMenu);
         jPanelFondoMenu.setLayout(jPanelFondoMenuLayout);
@@ -173,9 +286,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                        .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,9 +294,9 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                                     .addComponent(lblColor2))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtColor, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                                    .addComponent(txtModelo, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                                     .addComponent(cbxTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtColor1, javax.swing.GroupLayout.Alignment.TRAILING)))
+                                    .addComponent(txtColor, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoMenuLayout.createSequentialGroup()
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblMarca)
@@ -200,26 +310,36 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                                     .addComponent(lblNumeroSerie, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(lblNumeroSerie1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtNumeroSerie1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblNumeroSerie2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                        .addComponent(txtNumeroSerie, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNumeroSerie3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelFondoMenuLayout.setVerticalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addComponent(jPanelBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblNumeroSerie2, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addComponent(lblNumeroSerie, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblNumeroSerie1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtNumeroSerie1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNumeroSerie, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                         .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(216, 216, 216))
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
@@ -236,13 +356,15 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                                 .addComponent(txtLinea, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtColor1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblColor))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtColor, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblColor1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(1, 1, 1)
+                        .addComponent(lblNumeroSerie3, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(cbxTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblColor2))))
@@ -258,7 +380,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
         );
 
         pack();
@@ -267,14 +389,68 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO,personaSeleccionada);
+        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, personaSeleccionada,"");
         this.setVisible(false);
         frmtp.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+    if(registrarVehiculo()){
+    FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO,vehiculosDAO,personaSeleccionada,numSerie);
+    frmtp.setVisible(true);
+    this.dispose();
+    }
     }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void cbxTipoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTipoItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            tipo = (String) this.cbxTipo.getSelectedItem();
+        }
+    }//GEN-LAST:event_cbxTipoItemStateChanged
+
+    private void txtMarcaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMarcaKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetterOrDigit(c) && !Character.isSpaceChar(c) || txtMarca.getText().length() >= 20) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtMarcaKeyTyped
+
+    private void txtLineaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLineaKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetterOrDigit(c) && !Character.isSpaceChar(c) || txtLinea.getText().length() >= 20) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtLineaKeyTyped
+
+    private void txtColorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColorKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isLetter(c) && !Character.isSpaceChar(c) || txtColor.getText().length() >= 20) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtColorKeyTyped
+
+    private void txtModeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)  || txtModelo.getText().length() >= 4) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtModeloKeyTyped
+
+    private void txtNumeroSerieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroSerieKeyTyped
+       String numeroSerie = txtNumeroSerie.getText();
+    char c = evt.getKeyChar();
+    if (!(Character.isLetterOrDigit(c) || c == '-') || numeroSerie.length() >= 7) {
+        evt.consume();
+    } else if (numeroSerie.length() == 3 && c != '-') {
+        evt.consume();
+    } else if (numeroSerie.length() == 4 && !Character.isDigit(c)) {
+        evt.consume();
+    } else if (numeroSerie.length() == 5 && !Character.isDigit(c)) {
+        evt.consume();
+    } else if (numeroSerie.length() == 6 && !Character.isDigit(c)) {
+        evt.consume();
+    }
+    }//GEN-LAST:event_txtNumeroSerieKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -292,11 +468,13 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     private javax.swing.JLabel lblNuevaPlaca;
     private javax.swing.JLabel lblNumeroSerie;
     private javax.swing.JLabel lblNumeroSerie1;
+    private javax.swing.JLabel lblNumeroSerie2;
+    private javax.swing.JLabel lblNumeroSerie3;
     private javax.swing.JTextField txtColor;
-    private javax.swing.JTextField txtColor1;
     private javax.swing.JTextField txtLinea;
     private javax.swing.JTextField txtMarca;
-    private javax.swing.JTextField txtNumeroSerie1;
+    private javax.swing.JTextField txtModelo;
+    private javax.swing.JTextField txtNumeroSerie;
     private javax.swing.JLabel txtRegistrar;
     // End of variables declaration//GEN-END:variables
 }

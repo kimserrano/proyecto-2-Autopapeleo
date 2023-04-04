@@ -8,6 +8,7 @@ import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 import javax.persistence.EntityTransaction;
@@ -22,12 +23,14 @@ public class FrmMenu extends javax.swing.JFrame {
      * Este atributo representa la DAO de Personas.
      */
     IPersonasDAO personasDAO;
+    IVehiculosDAO vehiculosDAO;
 
     /**
      * Método constructor que inicializa sus atributos al valor de los parámetros enviados.
      */
-    public FrmMenu(IPersonasDAO personasDAO) {
+    public FrmMenu(IPersonasDAO personasDAO,IVehiculosDAO vehiculosDAO) {
         this.personasDAO=personasDAO;
+        this.vehiculosDAO=vehiculosDAO;
         initComponents();
 
     }
@@ -224,14 +227,14 @@ public class FrmMenu extends javax.swing.JFrame {
     }
     
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,true);
+       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,vehiculosDAO,true);
        this.setVisible(false);
        frmsp.setVisible(true);
 
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
 
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
-     FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,false);
+     FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,vehiculosDAO,false);
        this.setVisible(false);
        frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed

@@ -4,6 +4,7 @@
 package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -12,6 +13,7 @@ import java.awt.geom.RoundRectangle2D;
  */
 public class FrmHistorial extends javax.swing.JFrame {
  IPersonasDAO personasDAO;
+ IVehiculosDAO vehiculosDAO;
     /**
      * Creates new form FrmTramitarPlacas
      */
@@ -398,7 +400,7 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed

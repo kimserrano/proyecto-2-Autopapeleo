@@ -63,5 +63,38 @@ public class Validador {
         Matcher matcher = p.matcher(rfc);
         return matcher.matches();
     }
-
+    
+    public boolean validaNumeroSerie(String num) throws PersistenciaException{
+        String patron = "^[A-Z]{3}-\\d{3}$";
+        Pattern p = Pattern.compile(patron);
+        Matcher matcher = p.matcher(num);
+        if(matcher.matches()){
+            return true;
+        }else{
+            throw new PersistenciaException("Número de serie inválido");
+        }
+    }
+    public boolean validaTexto(String texto,String tipo) throws PersistenciaException{
+        String patron = "^[A-Za-z0-9 ]{1,20}$";
+        Pattern p = Pattern.compile(patron);
+        Matcher matcher = p.matcher(texto);
+        if(matcher.matches()){
+            return true;
+        }else{
+            throw new PersistenciaException(tipo+" inválido");
+        }
+        
+    }
+    public boolean validaModelo(String modelo) throws PersistenciaException{
+        String patron = "^(?!0{4})\\d{4}$";
+        Pattern p = Pattern.compile(patron);
+        Matcher matcher = p.matcher(modelo);
+        if(matcher.matches()){
+            return true;
+        }else{
+            throw new PersistenciaException("Modelo inválido");
+        }
+    }
+    
+    
 }
