@@ -1,6 +1,6 @@
 /**
-  Clase PersonasDAO.java creada el 03/04/2023.
-*/
+ * Clase PersonasDAO.java creada el 03/04/2023.
+ */
 package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
@@ -14,28 +14,33 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
 
 /**
  *
  * @author Gabriel x Kim
  */
 public class PersonasDAO implements IPersonasDAO {
+
     private final IConexionBD conexionBD;
-    
+
     /**
-     * Método constructor el cual inicializa el atributo conexionBD al valor del parámetro enviado.
+     * Método constructor el cual inicializa el atributo conexionBD al valor del
+     * parámetro enviado.
+     *
      * @param conexionBD conexionBD a iniciar.
      */
-    public PersonasDAO(IConexionBD conexionBD){
-        this.conexionBD=conexionBD;
+    public PersonasDAO(IConexionBD conexionBD) {
+        this.conexionBD = conexionBD;
     }
-    
+
     @Override
     /**
-     * Método para realizar la inserción masiva de 20 personas a la base de datos.
+     * Método para realizar la inserción masiva de 20 personas a la base de
+     * datos.
+     *
      * @return Valor booleano.
      */
     public boolean insercionMasivaPersonas() {
@@ -74,13 +79,15 @@ public class PersonasDAO implements IPersonasDAO {
         conexionBD.getEM().getTransaction().commit();
         return true;
     }
+
     @Override
     /**
      * Método para consultar una lista de personas.
+     *
      * @param config Configuración del paginado.
      * @return Lista de personas.
      */
-    public List<Persona> consultarPersonas(ConfiguracionPaginado config){
+    public List<Persona> consultarPersonas(ConfiguracionPaginado config) {
         String consulta = "SELECT p from Persona p";
         Query query = conexionBD.getEM().createQuery(consulta);
         query.setFirstResult(config.getElementosASaltar());
@@ -88,30 +95,41 @@ public class PersonasDAO implements IPersonasDAO {
         List<Persona> personas = query.getResultList();
         return personas;
     }
+
     @Override
     /**
-     * Método para consultar una lista de personas a partir de los filtros enviados.
+     * Método para consultar una lista de personas a partir de los filtros
+     * enviados.
+     *
      * @param filtro Filtro enviado (ID,RFC o Nombre).
      * @param dato Dato recuperado.
      * @param config Configuración del paginado.
      * @return Lista de personas.
      */
-    public List<Persona> consultarPersonasFiltro(String filtroSeleccionado,String dato,ConfiguracionPaginado config){
+    public List<Persona> consultarPersonasFiltro(String filtroSeleccionado, String dato, ConfiguracionPaginado config) {
         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
         Root<Persona> entidad = criteriaQuery.from(Persona.class);
-        Predicate filtro = criteriaBuilder.like(entidad.get(filtroSeleccionado), ("%"+dato+"%"));
-        criteriaQuery.where(filtro);
+        if (filtroSeleccionado.equals("nombre")) {
+            Predicate predicate = criteriaBuilder.equal(entidad.get("nombre"), dato);
+            //Predicate predicate = criteriaBuilder.like(criteriaBuilder.lower(entidad.get("nombre")), "%" + dato.toLowerCase() + "%");
+            criteriaQuery.where(predicate);
+        } else {
+            Predicate filtro = criteriaBuilder.like(entidad.get(filtroSeleccionado), ("%" + dato + "%"));
+            criteriaQuery.where(filtro);
+        }
         TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
         typedQuery.setFirstResult(config.getElementosASaltar());
         typedQuery.setMaxResults(config.getElementosPorPagina());
         List<Persona> personas = typedQuery.getResultList();
+
         return personas;
     }
 
     @Override
     /**
      * Método para obtener una persona a partir de la ID enviada.
+     *
      * @param id ID de la persona.
      * @return Persona obtenida.
      */
@@ -122,5 +140,5 @@ public class PersonasDAO implements IPersonasDAO {
         Persona persona = (Persona) query.getSingleResult();
         return persona;
     }
-    
+
 }

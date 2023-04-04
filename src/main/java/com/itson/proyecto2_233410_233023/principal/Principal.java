@@ -50,7 +50,7 @@ public class Principal {
        // EntityTransaction transaccion = conexionBD.getEM().getTransaction();
         
 //        transaccion.begin();
-//        //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento
+    //        //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, String discapacitado, Calendar fechaNacimiento
 //        Persona personaejemplo = new Persona("1992983kska", "kim", "serrano", "uribe", Discapacitado.SI, new GregorianCalendar());
 //        //String numeroSerie, String modelo, String marca, String linea, String color
 //        Vehiculo vehiculoejemplo = new Automovil("AAA233", "Papu", "SDLG", "CP", "Verde", personaejemplo);

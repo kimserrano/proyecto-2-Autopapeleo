@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Gabriel x Kim
  */
 public class FrmSeleccionarPersona extends javax.swing.JFrame {
+
     private final IPersonasDAO personasDAO;
     private ConfiguracionPaginado paginado;
     private Validador validador = new Validador();
@@ -29,108 +30,132 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private String filtro = null;
     private Persona personaSeleccionada = null;
     private Boolean tramite;
+
     /**
-     * Método constructor que inicializa sus atributos al valor de los parámetros enviados.
+     * Método constructor que inicializa sus atributos al valor de los
+     * parámetros enviados.
      */
-    public FrmSeleccionarPersona(IPersonasDAO personasDAO,Boolean tramite) {
-        this.personasDAO=personasDAO;
-        this.paginado= new ConfiguracionPaginado(this.numeroPagina,this.elementosPorPagina);
-        this.tramite=tramite;
+    public FrmSeleccionarPersona(IPersonasDAO personasDAO, Boolean tramite) {
+        this.personasDAO = personasDAO;
+        this.paginado = new ConfiguracionPaginado(this.numeroPagina, this.elementosPorPagina);
+        this.tramite = tramite;
         initComponents();
+        cargarTablaPersonas();
     }
+
     /**
-     * Método para validar el TextField de búsqueda el cuál valida dependiendo de la opción seleccionada.
+     * Método para validar el TextField de búsqueda el cuál valida dependiendo
+     * de la opción seleccionada.
+     *
      * @return Valor booleano para comprobar la validación.
      */
-    public boolean validarBusqueda(){
-        if(filtro.equals("id")){
+    public boolean validarBusqueda() {
+        if (filtro.equals("id")) {
             return validador.validaID(obtenerBusqueda());
-        }else if(filtro.equals("nombre")){
-           return validador.validaNombre(obtenerBusqueda());
-        }else{
+        } else if (filtro.equals("nombre")) {
+            return validador.validaNombre(obtenerBusqueda());
+        } else {
             return validador.validaRFC(obtenerBusqueda());
         }
     }
+
     /**
-     * Método para cargar la tabla de personas en la interfaz de usuario. Si no se ha seleccionado o escrito ningún filtro simplemente muestra todos los registros de Persona.
+     * Método para cargar la tabla de personas en la interfaz de usuario. Si no
+     * se ha seleccionado o escrito ningún filtro simplemente muestra todos los
+     * registros de Persona.
      */
-    public void cargarTablaPersonas(){
+    public void cargarTablaPersonas() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        if(filtro!=null && !txtBusqueda.getText().isEmpty()){
-        if(validarBusqueda()){
-        List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, this.txtBusqueda.getText(),paginado);
-        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
-        modeloTablaPersonas.setRowCount(0);
-        for (Persona persona : personas) { 
-                        Object[] filaNueva = {persona.getId(), persona.getNombres()+" "+persona.getApellidoPaterno(),persona.getRfc(),formatter.format(((GregorianCalendar)persona.getFechaNacimiento()).getTime()),persona.getDiscapacitado(),persona.getDiscapacitado(),persona.getTelefono()};
-                        modeloTablaPersonas.addRow(filaNueva);
+        if (filtro != null && !txtBusqueda.getText().isEmpty()) {
+            if (validarBusqueda()) {
+                List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, this.txtBusqueda.getText(), paginado);
+                DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
+                modeloTablaPersonas.setRowCount(0);
+                for (Persona persona : personas) {
+                    Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
+                        + persona.getApellidoPaterno(), persona.getRfc(),
+                        formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
+                        persona.getDiscapacitado(), persona.getDiscapacitado(), persona.getTelefono()};
+                    modeloTablaPersonas.addRow(filaNueva);
+                }
+            } else {
+                mostrarMensaje("Formato inválido de " + filtro + ", por favor ingrese parámetros correctos");
+            }
+
+        } else {
+            List<Persona> personas = personasDAO.consultarPersonas(paginado);
+            DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
+            modeloTablaPersonas.setRowCount(0);
+            for (Persona persona : personas) {
+                Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
+                    + persona.getApellidoPaterno(), persona.getRfc(),
+                    formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
+                    persona.getDiscapacitado(), persona.getTelefono()};
+                modeloTablaPersonas.addRow(filaNueva);
+            }
         }
-        }else{
-             mostrarMensaje("Formato inválido de "+filtro+", por favor ingrese parámetros correctos");
-        }
-           
-        }else{
-             List<Persona> personas = personasDAO.consultarPersonas(paginado);
-        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
-        modeloTablaPersonas.setRowCount(0);
-        for (Persona persona : personas) {
-                        Object[] filaNueva = {persona.getId(), persona.getNombres()+" "+persona.getApellidoPaterno(),persona.getRfc(),formatter.format(((GregorianCalendar)persona.getFechaNacimiento()).getTime()),persona.getDiscapacitado(),persona.getTelefono()};
-                        modeloTablaPersonas.addRow(filaNueva);
-        }
-     }
     }
+
     /**
      * Método para obtener el texto del TextField de búsqueda.
+     *
      * @return Texto de búsqueda.
      */
-    public String obtenerBusqueda(){
-    if(!txtBusqueda.getText().isEmpty() || txtBusqueda.getText()!=null){
-        return txtBusqueda.getText();
+    public String obtenerBusqueda() {
+        if (!txtBusqueda.getText().isEmpty() || txtBusqueda.getText() != null) {
+            return txtBusqueda.getText();
+        }
+        return "";
     }
-    return "";
-    }
+
     /**
      * Método para obtener la ID del TextField de ID.
+     *
      * @return ID obtenida.
      */
-    public String obtenerID(){
-      if(!txtBusqueda.getText().isEmpty() || txtid.getText()!=null){
-          return txtid.getText();
-      }
-      return "";
-      
+    public String obtenerID() {
+        if (!txtBusqueda.getText().isEmpty() || txtid.getText() != null) {
+            return txtid.getText();
+        }
+        return "";
+
     }
+
     /**
      * Método para obtener la persona a partir de la ID recuperada.
      */
-    public void seleccionarPersona(){
-    if(validador.validaID(obtenerID())){
-    this.personaSeleccionada = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
-    mostrarMensaje(personaSeleccionada.getNombres()+" "+personaSeleccionada.getApellidoPaterno()+" "+"ha sido seleccionado.");
-    }else{
-        mostrarMensaje("Ingrese una ID correcta para seleccionar a la persona");
+    public void seleccionarPersona() {
+        if (validador.validaID(obtenerID())) {
+            this.personaSeleccionada = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
+            mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
+        } else {
+            mostrarMensaje("Ingrese una ID correcta para seleccionar a la persona");
+        }
     }
-    }
+
     /**
      * Método para mostrar un mensaje en un JOptionPane.
+     *
      * @param msj Mensaje a mostrar.
      */
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
+
     /**
      * Método para mostrar un Frame de trámite dependiendo su elección.
      */
-    private void mostrarFrm(){
-       JFrame frm;
-       if(this.tramite){
-       frm = new FrmTramitarLicencias(personasDAO,personaSeleccionada);  
-       }else{
-       frm = new FrmTramitarPlacas(personasDAO,personaSeleccionada);
-       }
-       this.setVisible(false);
-       frm.setVisible(true);
+    private void mostrarFrm() {
+        JFrame frm;
+        if (this.tramite) {
+            frm = new FrmTramitarLicencias(personasDAO, personaSeleccionada);
+        } else {
+            frm = new FrmTramitarPlacas(personasDAO, personaSeleccionada);
+        }
+        this.setVisible(false);
+        frm.setVisible(true);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -220,6 +245,11 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         rbnNombre.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 rbnNombreItemStateChanged(evt);
+            }
+        });
+        rbnNombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbnNombreActionPerformed(evt);
             }
         });
 
@@ -325,6 +355,11 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         cbxPaginado.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cbxPaginadoItemStateChanged(evt);
+            }
+        });
+        cbxPaginado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxPaginadoActionPerformed(evt);
             }
         });
 
@@ -434,12 +469,13 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     /**
-     * Evento que ocurre cuando un usuario da un click en el botón para volver al menú.
+     * Evento que ocurre cuando un usuario da un click en el botón para volver
+     * al menú.
      *
      * @param evt Evento al dar click en el botón.
      */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-       FrmMenu frmm = new FrmMenu(personasDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -447,26 +483,29 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private void txtidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtidActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtidActionPerformed
-     /**
-     * Evento que ocurre cuando un usuario da un click en el botón siguiente del paginado.
+    /**
+     * Evento que ocurre cuando un usuario da un click en el botón siguiente del
+     * paginado.
      *
      * @param evt Evento al dar click en el botón.
      */
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-       this.paginado.avanzarPagina();
-       cargarTablaPersonas();
+        this.paginado.avanzarPagina();
+        cargarTablaPersonas();
     }//GEN-LAST:event_btnSiguienteActionPerformed
     /**
-     * Evento que ocurre cuando un usuario da un click en el botón para seleccionar una persona.
+     * Evento que ocurre cuando un usuario da un click en el botón para
+     * seleccionar una persona.
      *
      * @param evt Evento al dar click en el botón.
      */
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
-       seleccionarPersona();
-       mostrarFrm();
+        seleccionarPersona();
+        mostrarFrm();
     }//GEN-LAST:event_btnSeleccionarActionPerformed
     /**
-     * Evento que ocurre cuando un usuario da un click en el botón para regresar del paginado.
+     * Evento que ocurre cuando un usuario da un click en el botón para regresar
+     * del paginado.
      *
      * @param evt Evento al dar click en el botón.
      */
@@ -474,56 +513,70 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         this.paginado.retrocederPagina();
         cargarTablaPersonas();
     }//GEN-LAST:event_btnRegresarActionPerformed
-     /**
-     * Evento que ocurre cuando un usuario cambia de opción en el Combobox de paginado.
+    /**
+     * Evento que ocurre cuando un usuario cambia de opción en el Combobox de
+     * paginado.
      *
      * @param evt Evento al cambiar de selección.
      */
     private void cbxPaginadoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxPaginadoItemStateChanged
-      if (evt.getStateChange() == ItemEvent.SELECTED) {
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
             int elementosPorPagina = Integer.parseInt((String) this.cbxPaginado.getSelectedItem());
             this.paginado.setElementosPorPagina(elementosPorPagina);
             this.cargarTablaPersonas();
         }
     }//GEN-LAST:event_cbxPaginadoItemStateChanged
-     /**
-     * Evento que ocurre cuando un usuario cambia de opción en el grupo de radiobutton.
+    /**
+     * Evento que ocurre cuando un usuario cambia de opción en el grupo de
+     * radiobutton.
      *
      * @param evt Evento al cambiar de selección.
      */
     private void rbnNombreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnNombreItemStateChanged
-       if (evt.getStateChange() == ItemEvent.SELECTED) {
-           this.filtro="nombre";
-       }
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            
+            this.filtro = "nombre";
+        }
     }//GEN-LAST:event_rbnNombreItemStateChanged
     /**
-     * Evento que ocurre cuando un usuario cambia de opción en el grupo de radiobutton.
+     * Evento que ocurre cuando un usuario cambia de opción en el grupo de
+     * radiobutton.
      *
      * @param evt Evento al cambiar de selección.
      */
     private void rbnRFCItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnRFCItemStateChanged
-         if (evt.getStateChange() == ItemEvent.SELECTED) {
-           this.filtro="rfc";
-       }
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            this.filtro = "rfc";
+        }
     }//GEN-LAST:event_rbnRFCItemStateChanged
     /**
-     * Evento que ocurre cuando un usuario cambia de opción en el grupo de radiobutton.
+     * Evento que ocurre cuando un usuario cambia de opción en el grupo de
+     * radiobutton.
      *
      * @param evt Evento al cambiar de selección.
      */
     private void rbnIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnIDItemStateChanged
-       if (evt.getStateChange() == ItemEvent.SELECTED) {
-           this.filtro="id";
-       }
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            this.filtro = "id";
+        }
     }//GEN-LAST:event_rbnIDItemStateChanged
     /**
-     * Evento que ocurre cuando un usuario da un click en el botón para consultar la tabla.
+     * Evento que ocurre cuando un usuario da un click en el botón para
+     * consultar la tabla.
      *
      * @param evt Evento al dar click en el botón.
      */
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         cargarTablaPersonas();
     }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void rbnNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbnNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rbnNombreActionPerformed
+
+    private void cbxPaginadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaginadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxPaginadoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

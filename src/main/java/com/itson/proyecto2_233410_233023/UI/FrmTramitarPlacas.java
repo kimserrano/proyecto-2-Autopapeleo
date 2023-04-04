@@ -24,7 +24,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         btnBuscar.setVisible(false);
         lblPlacasAnteriores.setVisible(false);
         txtPlacasAnteriores.setVisible(false);
-        lblNombrePersona.setText(persona.getNombres()+" "+persona.getApellidoPaterno());
+        lblNombrePersona.setText(persona.getNombre()+" "+persona.getApellidoPaterno());
     }
     
     public void mostrarOpciones(){

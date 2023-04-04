@@ -21,7 +21,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
        initComponents();
         this.personasDAO=personasDAO;
         this.personaSeleccionada=persona;
-        lblNombrePersona.setText(persona.getNombres()+" "+persona.getApellidoPaterno());
+        lblNombrePersona.setText(persona.getNombre()+" "+persona.getApellidoPaterno());
     }
     
     

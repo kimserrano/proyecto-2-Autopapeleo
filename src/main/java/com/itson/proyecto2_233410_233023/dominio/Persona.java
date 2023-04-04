@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -46,19 +47,22 @@ public class Persona implements Serializable {
     /**
      * Atributo para conocer los nombres que tiene la persona
      */
-    @Column(name = "nombres", nullable = false, length = 50)
-    private String nombres;
+    @Column(name = "nombre", nullable = false)
+    @Convert(converter = EncriptacionAES.class)
+    private String nombre;
 
     /**
      * Atributo para conocer el apellido paterno de la persona
      */
     @Column(name = "apellidoPaterno", nullable = false, length = 50)
+    @Convert(converter = EncriptacionAES.class)
     private String apellidoPaterno;
 
     /**
      * Atributo para conoces el apellido Materno de la persona
      */
     @Column(name = "apellidoMaterno", nullable = false, length = 50)
+    @Convert(converter = EncriptacionAES.class)
     private String apellidoMaterno;
 
     /**
@@ -114,9 +118,9 @@ public class Persona implements Serializable {
      */
     public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, String telefono, Calendar fechaNacimiento) {
         this.rfc = rfc;
-        this.nombres = EncriptacionAES.encriptar(nombres);
-        this.apellidoPaterno = EncriptacionAES.encriptar(apellidoPaterno);
-        this.apellidoMaterno = EncriptacionAES.encriptar(apellidoMaterno);
+        this.nombre = nombres;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.discapacitado = discapacitado;
         this.telefono = telefono;
         this.fechaNacimiento = fechaNacimiento;
@@ -135,9 +139,9 @@ public class Persona implements Serializable {
      */
     public Persona(String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, Calendar fechaNacimiento) {
         this.rfc = rfc;
-        this.nombres = EncriptacionAES.encriptar(nombres);
-        this.apellidoPaterno = EncriptacionAES.encriptar(apellidoPaterno);
-        this.apellidoMaterno = EncriptacionAES.encriptar(apellidoMaterno);
+        this.nombre = nombres;
+        this.apellidoPaterno = apellidoPaterno;
+        this.apellidoMaterno = apellidoMaterno;
         this.discapacitado = discapacitado;
         this.fechaNacimiento = fechaNacimiento;
     }
@@ -183,8 +187,8 @@ public class Persona implements Serializable {
      *
      * @return string con los nombres de la persona
      */
-    public String getNombres() {
-        return EncriptacionAES.desencriptar(nombres);
+    public String getNombre() {
+        return nombre;
     }
 
     /**
@@ -192,8 +196,8 @@ public class Persona implements Serializable {
      *
      * @param nombres nombres de la persona
      */
-    public void setNombres(String nombres) {
-        this.nombres = EncriptacionAES.encriptar(nombres);
+    public void setNombre(String nombres) {
+        this.nombre = nombres;
     }
 
     /**
@@ -202,7 +206,7 @@ public class Persona implements Serializable {
      * @return apellido paterno de la persona
      */
     public String getApellidoPaterno() {
-        return EncriptacionAES.desencriptar(apellidoPaterno); 
+        return apellidoPaterno;
     }
 
     /**
@@ -211,7 +215,7 @@ public class Persona implements Serializable {
      * @param apellidoPaterno apellido paterno de la persona
      */
     public void setApellidoPaterno(String apellidoPaterno) {
-        this.apellidoPaterno = EncriptacionAES.encriptar(apellidoPaterno);
+        this.apellidoPaterno = apellidoPaterno;
     }
 
     /**
@@ -220,7 +224,7 @@ public class Persona implements Serializable {
      * @return apellido materno de la persona
      */
     public String getApellidoMaterno() {
-        return EncriptacionAES.desencriptar(apellidoMaterno);
+        return apellidoMaterno;
     }
 
     /**
@@ -229,7 +233,7 @@ public class Persona implements Serializable {
      * @param apellidoMaterno apellido materno de la persona
      */
     public void setApellidoMaterno(String apellidoMaterno) {
-        this.apellidoMaterno = EncriptacionAES.encriptar(apellidoMaterno);
+        this.apellidoMaterno = apellidoMaterno;
     }
 
     /**
@@ -360,6 +364,6 @@ public class Persona implements Serializable {
      */
     @Override
     public String toString() {
-        return "Persona{" + "id=" + id + ", rfc=" + rfc + ", nombres=" + nombres + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", discapacitado=" + discapacitado + ", telefono=" + telefono + ", fechaNacimiento=" + fechaNacimiento + ", vehiculos=" + vehiculos + ", tramites=" + tramites + '}';
+        return "Persona{" + "id=" + id + ", rfc=" + rfc + ", nombres=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", discapacitado=" + discapacitado + ", telefono=" + telefono + ", fechaNacimiento=" + fechaNacimiento + ", vehiculos=" + vehiculos + ", tramites=" + tramites + '}';
     }
 }
