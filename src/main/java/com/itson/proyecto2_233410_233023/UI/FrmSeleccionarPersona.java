@@ -6,6 +6,7 @@ package com.itson.proyecto2_233410_233023.UI;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.implementaciones.ConfiguracionPaginado;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
+import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.event.ItemEvent;
@@ -25,6 +26,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     private final IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
+    ILicenciasDAO licenciasDAO;
     private ConfiguracionPaginado paginado;
     private Validador validador = new Validador();
     private int numeroPagina = 0;
@@ -37,9 +39,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
      */
-    public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO,Boolean tramite) {
+    public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO,Boolean tramite, ILicenciasDAO licenciasDAO) {
         this.personasDAO = personasDAO;
         this.vehiculosDAO=vehiculosDAO;
+        this.licenciasDAO = licenciasDAO;
         this.paginado = new ConfiguracionPaginado(this.numeroPagina, this.elementosPorPagina);
         this.tramite = tramite;
         initComponents();
@@ -151,9 +154,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private void mostrarFrm() {
         JFrame frm;
         if (this.tramite) {
-            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO,personaSeleccionada);
+            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO,personaSeleccionada, licenciasDAO);
         } else {
-            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO,personaSeleccionada,"");
+            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO,personaSeleccionada,"", licenciasDAO);
         }
         this.setVisible(false);
         frm.setVisible(true);
@@ -478,7 +481,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO, licenciasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed

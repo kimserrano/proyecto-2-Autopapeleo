@@ -4,6 +4,7 @@
 package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
@@ -15,14 +16,16 @@ import java.awt.geom.RoundRectangle2D;
 public class FrmTramitarPlacas extends javax.swing.JFrame {
      IPersonasDAO personasDAO;
      IVehiculosDAO vehiculosDAO;
+     ILicenciasDAO licenciasDAO;
      Persona personaSeleccionada;
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmTramitarPlacas(IPersonasDAO personasDAO,IVehiculosDAO vehiculosDAO,Persona persona,String numSerie) {
+    public FrmTramitarPlacas(IPersonasDAO personasDAO,IVehiculosDAO vehiculosDAO,Persona persona,String numSerie,ILicenciasDAO licenciasDAO ) {
         initComponents();
         this.personasDAO = personasDAO;
         this.vehiculosDAO=vehiculosDAO;
+        this.licenciasDAO= licenciasDAO;
         this.personaSeleccionada=persona;
         btnBuscar.setVisible(false);
         txtNumeroSerie.setText(numSerie);
@@ -309,7 +312,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO, licenciasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -323,7 +326,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxVehiculoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-       FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO,vehiculosDAO,personaSeleccionada);
+       FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO,vehiculosDAO,personaSeleccionada, licenciasDAO);
        this.setVisible(false);
        frmrv.setVisible(true);
     }//GEN-LAST:event_btnRegistrarActionPerformed

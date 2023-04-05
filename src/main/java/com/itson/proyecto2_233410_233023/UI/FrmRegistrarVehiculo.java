@@ -8,6 +8,7 @@ import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
 import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
+import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.event.ItemEvent;
@@ -22,6 +23,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
+    ILicenciasDAO licenciasDAO;
     Persona personaSeleccionada;
     Validador validador = new Validador();
     String tipo = "Automovil";
@@ -30,23 +32,24 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     /**
      * Creates new form FrmRegistrarVehiculo
      */
-    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona) {
+    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ILicenciasDAO licenciasDAO) {
         initComponents();
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
+        this.licenciasDAO = licenciasDAO;
         this.personaSeleccionada = persona;
-        
+
     }
 
     public Boolean validarDatos(Vehiculo vehiculo) {
-        try{
+        try {
             validador.validaNumeroSerie(vehiculo.getNumeroSerie());
-            validador.validaTexto(vehiculo.getMarca(),"Marca");
-            validador.validaTexto(vehiculo.getLinea(),"Linea");
-            validador.validaTexto(vehiculo.getColor(),"Color");
+            validador.validaTexto(vehiculo.getMarca(), "Marca");
+            validador.validaTexto(vehiculo.getLinea(), "Linea");
+            validador.validaTexto(vehiculo.getColor(), "Color");
             validador.validaModelo(vehiculo.getModelo());
             return true;
-        }catch(PersistenciaException ex){
+        } catch (PersistenciaException ex) {
             mostrarMensaje(ex.getMessage());
             return false;
         }
@@ -65,25 +68,27 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         return vehiculo;
 
     }
-    public boolean validarVehiculo(Vehiculo vehiculo) throws Exception{
-    Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
-    if(vehiculoObtenido!=null){
-    if(vehiculo.getNumeroSerie().equalsIgnoreCase(vehiculoObtenido.getNumeroSerie())){
-      mostrarMensaje("Ya hay un vehículo con ese número de serie.");
-      return false;
+
+    public boolean validarVehiculo(Vehiculo vehiculo) throws Exception {
+        Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
+        if (vehiculoObtenido != null) {
+            if (vehiculo.getNumeroSerie().equalsIgnoreCase(vehiculoObtenido.getNumeroSerie())) {
+                mostrarMensaje("Ya hay un vehículo con ese número de serie.");
+                return false;
+            }
+        }
+        return true;
     }
-    }
-    return true;
-    }
+
     public boolean registrarVehiculo() {
         Vehiculo vehiculo = obtenerDatos();
         try {
-            if(validarDatos(vehiculo) || validarVehiculo(vehiculo)){
-            vehiculosDAO.registrarVehiculo(vehiculo);
-            numSerie=vehiculo.getNumeroSerie();
-            mostrarMensaje("Vehiculo registrado");
-            return true;
-        }
+            if (validarDatos(vehiculo) || validarVehiculo(vehiculo)) {
+                vehiculosDAO.registrarVehiculo(vehiculo);
+                numSerie = vehiculo.getNumeroSerie();
+                mostrarMensaje("Vehiculo registrado");
+                return true;
+            }
         } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
         }
@@ -389,17 +394,17 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, personaSeleccionada,"");
+        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, personaSeleccionada, "", licenciasDAO);
         this.setVisible(false);
         frmtp.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-    if(registrarVehiculo()){
-    FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO,vehiculosDAO,personaSeleccionada,numSerie);
-    frmtp.setVisible(true);
-    this.dispose();
-    }
+        if (registrarVehiculo()) {
+            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, personaSeleccionada, numSerie, licenciasDAO);
+            frmtp.setVisible(true);
+            this.dispose();
+        }
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void cbxTipoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTipoItemStateChanged
@@ -431,25 +436,25 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     private void txtModeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloKeyTyped
         char c = evt.getKeyChar();
-        if (!Character.isDigit(c)  || txtModelo.getText().length() >= 4) {
+        if (!Character.isDigit(c) || txtModelo.getText().length() >= 4) {
             evt.consume();
         }
     }//GEN-LAST:event_txtModeloKeyTyped
 
     private void txtNumeroSerieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroSerieKeyTyped
-       String numeroSerie = txtNumeroSerie.getText();
-    char c = evt.getKeyChar();
-    if (!(Character.isLetterOrDigit(c) || c == '-') || numeroSerie.length() >= 7) {
-        evt.consume();
-    } else if (numeroSerie.length() == 3 && c != '-') {
-        evt.consume();
-    } else if (numeroSerie.length() == 4 && !Character.isDigit(c)) {
-        evt.consume();
-    } else if (numeroSerie.length() == 5 && !Character.isDigit(c)) {
-        evt.consume();
-    } else if (numeroSerie.length() == 6 && !Character.isDigit(c)) {
-        evt.consume();
-    }
+        String numeroSerie = txtNumeroSerie.getText();
+        char c = evt.getKeyChar();
+        if (!(Character.isLetterOrDigit(c) || c == '-') || numeroSerie.length() >= 7) {
+            evt.consume();
+        } else if (numeroSerie.length() == 3 && c != '-') {
+            evt.consume();
+        } else if (numeroSerie.length() == 4 && !Character.isDigit(c)) {
+            evt.consume();
+        } else if (numeroSerie.length() == 5 && !Character.isDigit(c)) {
+            evt.consume();
+        } else if (numeroSerie.length() == 6 && !Character.isDigit(c)) {
+            evt.consume();
+        }
     }//GEN-LAST:event_txtNumeroSerieKeyTyped
 
 

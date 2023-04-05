@@ -3,31 +3,76 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
+import com.itson.proyecto2_233410_233023.dominio.Anios;
+import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
+import com.itson.proyecto2_233410_233023.dominio.Licencia;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
+import com.itson.proyecto2_233410_233023.implementaciones.Validador;
+import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author kim
  */
 public class FrmTramitarLicencias extends javax.swing.JFrame {
-     IPersonasDAO personasDAO;
-     IVehiculosDAO vehiculosDAO;
-     Persona personaSeleccionada;
+
+    DefaultComboBoxModel<Anios> modeloComboBox = new DefaultComboBoxModel<>(Anios.values());
+    IPersonasDAO personasDAO;
+    IVehiculosDAO vehiculosDAO;
+    Persona personaSeleccionada;
+    ILicenciasDAO licenciasDAO;
+
     /**
      * Creates new form FrmTramitarLicencias
      */
-    public FrmTramitarLicencias(IPersonasDAO personasDAO,IVehiculosDAO vehiculosDAO,Persona persona) {
-       initComponents();
-        this.personasDAO=personasDAO;
-        this.vehiculosDAO=vehiculosDAO;
-        this.personaSeleccionada=persona;
-        lblNombrePersona.setText(persona.getNombre()+" "+persona.getApellidoPaterno());
+    public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ILicenciasDAO licenciasDAO) {
+        initComponents();
+        cbxVigencia.setModel(modeloComboBox);
+        this.personasDAO = personasDAO;
+        this.vehiculosDAO = vehiculosDAO;
+        this.licenciasDAO = licenciasDAO;
+        this.personaSeleccionada = persona;
+        lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
     }
-    
-    
+
+    private void mostrarMensaje(String msj) {
+        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public boolean registrarLicencia() {
+        Licencia licencia = obtenerDatos();
+        try {
+            licenciasDAO.registrarLicencia(licencia);
+            mostrarMensaje("Licencia registrada");
+            return true;
+
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+        return false;
+    }
+
+    public Licencia obtenerDatos() {
+
+        Calendar fechaActual = Calendar.getInstance();
+        int anio = fechaActual.get(Calendar.YEAR);
+        int mes = fechaActual.get(Calendar.MONTH);
+        int dia = fechaActual.get(Calendar.DAY_OF_MONTH);
+        Calendar fechaExpedicion = new GregorianCalendar(anio, mes, dia);
+        Anios vigencia = (Anios) cbxVigencia.getSelectedItem();
+        float monto = Float.parseFloat(txtMonto.getText());
+        // Float monto, Calendar fechaExpedicion, Anios aniosVigencia
+        Licencia licencia = new Licencia(monto, fechaExpedicion, vigencia);
+        return licencia;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -44,7 +89,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         btnVolver = new javax.swing.JButton();
         lblTramitarLicencia = new javax.swing.JLabel();
         lblNombrePersona = new javax.swing.JLabel();
-        cbxVehiculo = new javax.swing.JComboBox<>();
+        cbxVigencia = new javax.swing.JComboBox<>();
         lblVigencia = new javax.swing.JLabel();
         lblMonto = new javax.swing.JLabel();
         txtMonto = new javax.swing.JTextField();
@@ -109,12 +154,12 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 .addComponent(lblNombrePersona))
         );
 
-        cbxVehiculo.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        cbxVehiculo.setForeground(new java.awt.Color(124, 63, 163));
-        cbxVehiculo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
-        cbxVehiculo.addActionListener(new java.awt.event.ActionListener() {
+        cbxVigencia.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        cbxVigencia.setForeground(new java.awt.Color(124, 63, 163));
+        cbxVigencia.setModel(modeloComboBox);
+        cbxVigencia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxVehiculoActionPerformed(evt);
+                cbxVigenciaActionPerformed(evt);
             }
         });
 
@@ -163,7 +208,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addComponent(lblVigencia)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbxVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblMonto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -181,7 +226,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 .addComponent(jPanelBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbxVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblVigencia)
                     .addComponent(lblMonto)
                     .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -216,7 +261,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, licenciasDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -227,12 +272,40 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 //       frmsp.setVisible(true);
     }//GEN-LAST:event_btnSeleccionarPersonaActionPerformed
 
-    private void cbxVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVehiculoActionPerformed
+    public void costos() {
+        if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
+            txtMonto.setText("600.00");
+        } else if (cbxVigencia.getSelectedItem().equals(Anios.DOS)) {
+            txtMonto.setText("900.00");
+        } else if (cbxVigencia.getSelectedItem().equals(Anios.TRES)) {
+            txtMonto.setText("1100.00");
+        }
+    }
 
-    }//GEN-LAST:event_cbxVehiculoActionPerformed
+    public void costosDiscapacidos() {
+        if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
+            txtMonto.setText("200.00");
+        } else if (cbxVigencia.getSelectedItem().equals(Anios.DOS)) {
+            txtMonto.setText("500.00");
+        } else if (cbxVigencia.getSelectedItem().equals(Anios.TRES)) {
+            txtMonto.setText("700.00");
+        }
+    }
+
+    private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
+        if (personaSeleccionada.getDiscapacitado().equals(Discapacitado.SI)) {
+            costosDiscapacidos();
+        } else {
+            costos();
+        }
+    }//GEN-LAST:event_cbxVigenciaActionPerformed
 
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
         // TODO add your handling code here:
+
+        if (registrarLicencia()) {
+            this.dispose();
+        }
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
 
 
@@ -240,7 +313,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     private javax.swing.JButton btnRealizarTramite;
     private javax.swing.JButton btnSeleccionarPersona;
     private javax.swing.JButton btnVolver;
-    private javax.swing.JComboBox<String> cbxVehiculo;
+    private javax.swing.JComboBox<Anios> cbxVigencia;
     private javax.swing.JPanel jPanelBarra;
     private javax.swing.JPanel jPanelFondoMenu;
     private javax.swing.JToolBar jToolBarMenu;

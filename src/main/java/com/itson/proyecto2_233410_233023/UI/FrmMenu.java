@@ -7,6 +7,7 @@ import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
+import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
@@ -19,21 +20,26 @@ import javax.swing.JOptionPane;
  * @author Gabriel x Kim
  */
 public class FrmMenu extends javax.swing.JFrame {
+
     /**
      * Este atributo representa la DAO de Personas.
      */
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
+    ILicenciasDAO licenciasDAO;
 
     /**
-     * Método constructor que inicializa sus atributos al valor de los parámetros enviados.
+     * Método constructor que inicializa sus atributos al valor de los
+     * parámetros enviados.
      */
-    public FrmMenu(IPersonasDAO personasDAO,IVehiculosDAO vehiculosDAO) {
-        this.personasDAO=personasDAO;
-        this.vehiculosDAO=vehiculosDAO;
+    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ILicenciasDAO licenciasDAO) {
+        this.personasDAO = personasDAO;
+        this.licenciasDAO = licenciasDAO;
+        this.vehiculosDAO = vehiculosDAO;
         initComponents();
 
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -219,29 +225,30 @@ public class FrmMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     /**
      * Método que genera un mensaje de confirmación a través de un JOptionPane.
+     *
      * @param mensaje Mensaje a enviar.
      * @param titulo Titulo del mensaje.
      */
     private void mensajeConfirmacion(String mensaje, String titulo) {
         new JOptionPane().showMessageDialog(this, mensaje, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,vehiculosDAO,true);
-       this.setVisible(false);
-       frmsp.setVisible(true);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, licenciasDAO);
+        this.setVisible(false);
+        frmsp.setVisible(true);
 
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
 
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
-     FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO,vehiculosDAO,false);
-       this.setVisible(false);
-       frmsp.setVisible(true);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, licenciasDAO);
+        this.setVisible(false);
+        frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed
 
     private void btnInsercionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsercionActionPerformed
-        if(personasDAO.insercionMasivaPersonas()){
-             mensajeConfirmacion("Registro de personas realizado correctamente", "Confirmación");
+        if (personasDAO.insercionMasivaPersonas()) {
+            mensajeConfirmacion("Registro de personas realizado correctamente", "Confirmación");
         }
     }//GEN-LAST:event_btnInsercionActionPerformed
 
