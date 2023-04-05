@@ -6,6 +6,7 @@ package com.itson.proyecto2_233410_233023.dominio;
 import java.io.Serializable;
 import java.util.Calendar;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +24,8 @@ import javax.persistence.Table;
  * @author Gabriel x Kim
  */
 @Table(name = "Tramites")
-@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name="tipo")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
 public class Tramite implements Serializable {
 

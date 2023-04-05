@@ -7,8 +7,8 @@ import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
-import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
@@ -26,15 +26,15 @@ public class FrmMenu extends javax.swing.JFrame {
      */
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
-    ILicenciasDAO licenciasDAO;
+    ITramitesDAO tramitesDAO;
 
     /**
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
      */
-    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ILicenciasDAO licenciasDAO) {
+    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO) {
         this.personasDAO = personasDAO;
-        this.licenciasDAO = licenciasDAO;
+        this.tramitesDAO = tramitesDAO;
         this.vehiculosDAO = vehiculosDAO;
         initComponents();
 
@@ -234,14 +234,14 @@ public class FrmMenu extends javax.swing.JFrame {
     }
 
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, licenciasDAO);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, tramitesDAO);
         this.setVisible(false);
         frmsp.setVisible(true);
 
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
 
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
-        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, licenciasDAO);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, tramitesDAO);
         this.setVisible(false);
         frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed

@@ -16,11 +16,11 @@ import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
 import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
 import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
 import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
-import com.itson.proyecto2_233410_233023.implementaciones.LicenciasDAO;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
+import com.itson.proyecto2_233410_233023.implementaciones.TramitesDAO;
 import com.itson.proyecto2_233410_233023.implementaciones.VehiculosDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -43,7 +43,7 @@ public class Principal {
         ConexionBD conexionBD = new ConexionBD("com.itson.proyecto2_233410_233023");
         IPersonasDAO personasDAO = new PersonasDAO(conexionBD);
         IVehiculosDAO vehiculosDAO = new VehiculosDAO(conexionBD);
-        ILicenciasDAO licenciasDAO=new LicenciasDAO(conexionBD);
+        ITramitesDAO tramitesDAO = new TramitesDAO(conexionBD);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         
 //        for (Persona personas : personasDAO.consultarPersonasFiltro("id","5")) {
@@ -53,7 +53,7 @@ public class Principal {
 //            System.out.println(fechaNacimientoFormateada);
 //        }
          
-        new FrmMenu(personasDAO,vehiculosDAO, licenciasDAO).setVisible(true);
+        new FrmMenu(personasDAO,vehiculosDAO, tramitesDAO).setVisible(true);
        // EntityTransaction transaccion = conexionBD.getEM().getTransaction();
         
 //        transaccion.begin();

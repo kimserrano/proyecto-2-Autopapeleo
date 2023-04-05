@@ -4,13 +4,15 @@
  */
 package com.itson.proyecto2_233410_233023.interfaces;
 
-
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
+import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
 
 /**
  *
- * @author Gabriel x Kim
+ * @author kim
  */
-public interface ILicenciasDAO {
-    Boolean registrarLicencia(Licencia licencia) throws Exception;
+public interface ITramitesDAO {
+     Boolean registrarLicencia(Licencia licencia) throws Exception;
+     
+     Boolean tramiteLicencia(TramiteLicencia tramite) throws Exception;
 }

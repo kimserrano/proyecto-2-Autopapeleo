@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +24,7 @@ import javax.persistence.Table;
  */
 @Table(name = "tramites_placa")
 @Entity
-@PrimaryKeyJoinColumn(name = "id_tramite_placa")
+@DiscriminatorValue(value = "tramitePlaca")
 public class TramitePlaca extends Tramite implements Serializable {
 
     /**

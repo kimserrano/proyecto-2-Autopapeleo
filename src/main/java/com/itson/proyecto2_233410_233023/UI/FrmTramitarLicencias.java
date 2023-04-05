@@ -7,10 +7,11 @@ import com.itson.proyecto2_233410_233023.dominio.Anios;
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
 import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
-import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
 import java.util.Calendar;
@@ -28,40 +29,23 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     Persona personaSeleccionada;
-    ILicenciasDAO licenciasDAO;
+    ITramitesDAO tramitesDAO;
+    Licencia licencia;
 
     /**
      * Creates new form FrmTramitarLicencias
      */
-    public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ILicenciasDAO licenciasDAO) {
+    public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
         initComponents();
         cbxVigencia.setModel(modeloComboBox);
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
-        this.licenciasDAO = licenciasDAO;
+        this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
         lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
     }
 
-    private void mostrarMensaje(String msj) {
-        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public boolean registrarLicencia() {
-        Licencia licencia = obtenerDatos();
-        try {
-            licenciasDAO.registrarLicencia(licencia);
-            mostrarMensaje("Licencia registrada");
-            return true;
-
-        } catch (Exception ex) {
-            mostrarMensaje(ex.getMessage());
-        }
-        return false;
-    }
-
     public Licencia obtenerDatos() {
-
         Calendar fechaActual = Calendar.getInstance();
         int anio = fechaActual.get(Calendar.YEAR);
         int mes = fechaActual.get(Calendar.MONTH);
@@ -261,7 +245,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, licenciasDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -271,6 +255,23 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 //       this.setVisible(false);
 //       frmsp.setVisible(true);
     }//GEN-LAST:event_btnSeleccionarPersonaActionPerformed
+
+    private void mostrarMensaje(String msj) {
+        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public Boolean registrarLicencia() {
+        licencia = obtenerDatos();
+        try {
+            tramitesDAO.registrarLicencia(licencia);
+            mostrarMensaje("Licencia registrada");
+            return true;
+
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+        return null;
+    }
 
     public void costos() {
         if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
@@ -292,6 +293,20 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }
 
+    public void registrarTramite() {
+        //Licencia licencia, Float costo, Calendar fechaExpedicion, Persona persona
+        TramiteLicencia tramiteLicencia = new TramiteLicencia(licencia,
+                licencia.getMonto(), licencia.getFechaExpedicion(),
+                personaSeleccionada);
+        try {
+            tramitesDAO.tramiteLicencia(tramiteLicencia);
+
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+
+    }
+
     private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
         if (personaSeleccionada.getDiscapacitado().equals(Discapacitado.SI)) {
             costosDiscapacidos();
@@ -302,10 +317,12 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
         // TODO add your handling code here:
-
         if (registrarLicencia()) {
+           // registrarTramite();
             this.dispose();
         }
+        registrarTramite();
+        new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO).setVisible(true);
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
 
 

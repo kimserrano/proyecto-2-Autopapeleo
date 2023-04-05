@@ -4,8 +4,8 @@
 package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.interfaces.ILicenciasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
 
@@ -14,42 +14,43 @@ import java.awt.geom.RoundRectangle2D;
  * @author kim
  */
 public class FrmTramitarPlacas extends javax.swing.JFrame {
-     IPersonasDAO personasDAO;
-     IVehiculosDAO vehiculosDAO;
-     ILicenciasDAO licenciasDAO;
-     Persona personaSeleccionada;
+
+    IPersonasDAO personasDAO;
+    IVehiculosDAO vehiculosDAO;
+    ITramitesDAO tramitesDAO;
+    Persona personaSeleccionada;
+
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmTramitarPlacas(IPersonasDAO personasDAO,IVehiculosDAO vehiculosDAO,Persona persona,String numSerie,ILicenciasDAO licenciasDAO ) {
+    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, String numSerie, ITramitesDAO tramitesDAO) {
         initComponents();
         this.personasDAO = personasDAO;
-        this.vehiculosDAO=vehiculosDAO;
-        this.licenciasDAO= licenciasDAO;
-        this.personaSeleccionada=persona;
+        this.vehiculosDAO = vehiculosDAO;
+        this.tramitesDAO = tramitesDAO;
+        this.personaSeleccionada = persona;
         btnBuscar.setVisible(false);
         txtNumeroSerie.setText(numSerie);
         lblPlacasAnteriores.setVisible(false);
         txtPlacasAnteriores.setVisible(false);
-        lblNombrePersona.setText(persona.getNombre()+" "+persona.getApellidoPaterno());
+        lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
     }
-    
-    public void mostrarOpciones(){
-        if(cbxVehiculo.getSelectedItem().toString().equalsIgnoreCase("Nuevo")){
-          btnRegistrar.setVisible(true);
-          btnBuscar.setVisible(false);
-          lblPlacasAnteriores.setVisible(false);
-          txtPlacasAnteriores.setVisible(false);
-          txtCosto.setText("$ 1500.00");
-      }else{
-          btnRegistrar.setVisible(false);
-          btnBuscar.setVisible(true);
-          txtPlacasAnteriores.setVisible(true);
-          lblPlacasAnteriores.setVisible(true);
-          txtCosto.setText("$ 1000.00");
-      }
+
+    public void mostrarOpciones() {
+        if (cbxVehiculo.getSelectedItem().toString().equalsIgnoreCase("Nuevo")) {
+            btnRegistrar.setVisible(true);
+            btnBuscar.setVisible(false);
+            lblPlacasAnteriores.setVisible(false);
+            txtPlacasAnteriores.setVisible(false);
+            txtCosto.setText("$ 1500.00");
+        } else {
+            btnRegistrar.setVisible(false);
+            btnBuscar.setVisible(true);
+            txtPlacasAnteriores.setVisible(true);
+            lblPlacasAnteriores.setVisible(true);
+            txtCosto.setText("$ 1000.00");
+        }
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -312,7 +313,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO, licenciasDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -322,13 +323,13 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
 
     private void cbxVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVehiculoActionPerformed
-      mostrarOpciones();
+        mostrarOpciones();
     }//GEN-LAST:event_cbxVehiculoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-       FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO,vehiculosDAO,personaSeleccionada, licenciasDAO);
-       this.setVisible(false);
-       frmrv.setVisible(true);
+        FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO);
+        this.setVisible(false);
+        frmrv.setVisible(true);
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
 
