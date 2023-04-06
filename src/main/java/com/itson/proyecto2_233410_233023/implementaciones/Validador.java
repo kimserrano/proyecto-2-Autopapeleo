@@ -95,6 +95,15 @@ public class Validador {
             throw new PersistenciaException("Modelo inválido");
         }
     }
-    
+    public boolean validaPlacas(String placas) throws PersistenciaException{
+        String patron = "^[A-Z]{3}-\\d{3}$";
+        Pattern p = Pattern.compile(patron);
+        Matcher matcher = p.matcher(placas);
+        if(matcher.matches()){
+            return true;
+        }else{
+            throw new PersistenciaException("Fórmato de placas inválido.");
+        }
+    }
     
 }

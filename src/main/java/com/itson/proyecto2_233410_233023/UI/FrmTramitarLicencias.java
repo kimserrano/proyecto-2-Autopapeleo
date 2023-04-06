@@ -77,7 +77,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         lblVigencia = new javax.swing.JLabel();
         lblMonto = new javax.swing.JLabel();
         txtMonto = new javax.swing.JTextField();
-        btnSeleccionarPersona = new javax.swing.JButton();
         btnRealizarTramite = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -158,15 +157,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         txtMonto.setEditable(false);
         txtMonto.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
 
-        btnSeleccionarPersona.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        btnSeleccionarPersona.setText("Seleccionar persona");
-        btnSeleccionarPersona.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
-        btnSeleccionarPersona.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSeleccionarPersonaActionPerformed(evt);
-            }
-        });
-
         btnRealizarTramite.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnRealizarTramite.setText("Realizar trámite");
         btnRealizarTramite.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
@@ -187,16 +177,13 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSeleccionarPersona, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                        .addComponent(lblVigencia)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblMonto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(lblVigencia)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblMonto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
@@ -216,9 +203,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                     .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
-                .addComponent(btnSeleccionarPersona)
-                .addGap(152, 152, 152))
+                .addGap(212, 212, 212))
             .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                     .addGap(115, 115, 115)
@@ -249,12 +234,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
-
-    private void btnSeleccionarPersonaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarPersonaActionPerformed
-//       FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona();
-//       this.setVisible(false);
-//       frmsp.setVisible(true);
-    }//GEN-LAST:event_btnSeleccionarPersonaActionPerformed
 
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -299,7 +278,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 licencia.getMonto(), licencia.getFechaExpedicion(),
                 personaSeleccionada);
         try {
-            tramitesDAO.tramiteLicencia(tramiteLicencia);
+            tramitesDAO.tramitarLicencia(tramiteLicencia);
 
         } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
@@ -328,7 +307,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRealizarTramite;
-    private javax.swing.JButton btnSeleccionarPersona;
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<Anios> cbxVigencia;
     private javax.swing.JPanel jPanelBarra;

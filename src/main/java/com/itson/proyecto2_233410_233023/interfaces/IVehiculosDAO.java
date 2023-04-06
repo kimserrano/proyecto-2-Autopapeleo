@@ -12,5 +12,7 @@ import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
 public interface IVehiculosDAO {
     
     Boolean registrarVehiculo(Vehiculo vehiculo) throws Exception;
-    public Vehiculo obtenerVehiculo(String numeroSerie) throws Exception;
+    Vehiculo obtenerVehiculo(String numeroSerie) throws Exception;
+    Vehiculo obtenerVehiculoUsado(String placa) throws Exception;
+    Vehiculo obtenerVehiculoSinHistorial(String numeroSerie) throws Exception;
 }

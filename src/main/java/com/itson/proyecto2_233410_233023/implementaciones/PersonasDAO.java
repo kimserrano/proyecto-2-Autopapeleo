@@ -134,11 +134,15 @@ public class PersonasDAO implements IPersonasDAO {
      * @return Persona obtenida.
      */
     public Persona obtenerPersona(Long id) {
+        try{
         String consulta = "SELECT p FROM Persona p WHERE p.id = :id";
         Query query = conexionBD.getEM().createQuery(consulta);
         query.setParameter("id", id);
         Persona persona = (Persona) query.getSingleResult();
         return persona;
+        }catch(Exception ex){
+        return null;        
+        }
     }
 
 }

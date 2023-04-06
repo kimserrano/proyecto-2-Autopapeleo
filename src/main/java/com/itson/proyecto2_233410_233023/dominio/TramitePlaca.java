@@ -31,7 +31,7 @@ public class TramitePlaca extends Tramite implements Serializable {
      * Representa la placa a la que pertenece el tramite
      */
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_placa", nullable = false)
+    @JoinColumn(name = "id_placa", nullable = true)
     private Placa placa;
 
     /**

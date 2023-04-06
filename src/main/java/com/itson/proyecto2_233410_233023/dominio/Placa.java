@@ -42,7 +42,7 @@ public class Placa implements Serializable {
      * Representa la combinacion de numero y letras que identifican a la placa
      * de una automovil
      */
-    @Column(name = "numero_alfanumerico", nullable = false, length = 10)
+    @Column(name = "numero_alfanumerico", nullable = false, length = 10,unique = true)
     private String numeroAlfanumerico;
 
     /**
@@ -68,7 +68,7 @@ public class Placa implements Serializable {
     /**
      * Representa la fecha en la que se recibe la placa del vehiculo
      */
-    @Column(name = "fecha_recepción", nullable = false)
+    @Column(name = "fecha_recepcion", nullable = true)
     @Temporal(TemporalType.DATE)
     private Calendar fechaRecepcion;
 
@@ -107,6 +107,33 @@ public class Placa implements Serializable {
         this.fechaRecepcion = fechaRecepcion;
         this.vehiculo = vehiculo;
     }
+    /**
+     * Contructor para crear una placa enviando parametros
+     *
+     * @param numeroAlfanumerico Representa la combinacion de numero y letras
+     * que identifican a la placa de una automovil
+     * @param costo Representa el costo de la placa
+     * @param estado Representa el estado de una placa para conocer si se
+     * encuentra activa
+     * @param fechaEmision Representa la fecha en la que se crea la placa del
+     * vehiculo
+     * @param vehiculo Representa el vehiculo al cual se le tramitan las placas.
+     */
+    public Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision,Vehiculo vehiculo) {
+        this.numeroAlfanumerico = numeroAlfanumerico;
+        this.costo = costo;
+        this.estado = estado;
+        this.fechaEmision = fechaEmision;
+        this.vehiculo=vehiculo;
+    }
+
+    public Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision) {
+        this.numeroAlfanumerico = numeroAlfanumerico;
+        this.costo = costo;
+        this.estado = estado;
+        this.fechaEmision = fechaEmision;
+    }
+    
 
     /**
      * Obtiene el id unico que identifica a una placa en especifico de un

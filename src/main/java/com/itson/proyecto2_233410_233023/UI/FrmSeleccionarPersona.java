@@ -27,6 +27,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private final IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
+
     private ConfiguracionPaginado paginado;
     private Validador validador = new Validador();
     private int numeroPagina = 0;
@@ -34,6 +35,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private String filtro = null;
     private Persona personaSeleccionada = null;
     private Boolean tramite;
+    
 
     /**
      * Método constructor que inicializa sus atributos al valor de los
@@ -87,7 +89,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
             } else {
                 mostrarMensaje("Formato inválido de " + filtro + ", por favor ingrese parámetros correctos");
             }
-
         } else {
             List<Persona> personas = personasDAO.consultarPersonas(paginado);
             DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
@@ -126,16 +127,27 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         return "";
 
     }
-
+    public boolean validarPersona(){
+        String id = obtenerID();
+        if(validador.validaID(id)){
+            Persona personaObtenida = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
+            if(personaObtenida!=null){
+               this.personaSeleccionada=personaObtenida;
+               return true;
+            }
+        }
+       return false;
+    }
     /**
      * Método para obtener la persona a partir de la ID recuperada.
      */
-    public void seleccionarPersona() {
-        if (validador.validaID(obtenerID())) {
-            this.personaSeleccionada = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
+    public boolean seleccionarPersona() {
+        if (validarPersona()) {
             mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
+            return true;
         } else {
             mostrarMensaje("Ingrese una ID correcta para seleccionar a la persona");
+            return false;
         }
     }
 
@@ -156,7 +168,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         if (this.tramite) {
             frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO,personaSeleccionada, tramitesDAO);
         } else {
-            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO,personaSeleccionada,"", tramitesDAO);
+            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO,tramitesDAO,personaSeleccionada,"");
         }
         this.setVisible(false);
         frm.setVisible(true);
@@ -293,9 +305,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         txtid.setForeground(new java.awt.Color(124, 63, 163));
         txtid.setToolTipText("");
         txtid.setBorder(null);
-        txtid.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtidActionPerformed(evt);
+        txtid.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtidKeyTyped(evt);
             }
         });
 
@@ -485,10 +497,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
-
-    private void txtidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtidActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtidActionPerformed
     /**
      * Evento que ocurre cuando un usuario da un click en el botón siguiente del
      * paginado.
@@ -506,8 +514,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
-        seleccionarPersona();
-        mostrarFrm();
+        if(seleccionarPersona()){
+           mostrarFrm(); 
+        }
     }//GEN-LAST:event_btnSeleccionarActionPerformed
     /**
      * Evento que ocurre cuando un usuario da un click en el botón para regresar
@@ -573,7 +582,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        cargarTablaPersonas();
+    cargarTablaPersonas();
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void rbnNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbnNombreActionPerformed
@@ -583,6 +592,13 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private void cbxPaginadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaginadoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxPaginadoActionPerformed
+
+    private void txtidKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtidKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtidKeyTyped
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

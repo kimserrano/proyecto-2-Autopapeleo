@@ -4,26 +4,13 @@ Clase Principal.java creada el 29/03/2023.
 package com.itson.proyecto2_233410_233023.principal;
 
 import com.itson.proyecto2_233410_233023.UI.FrmMenu;
-import com.itson.proyecto2_233410_233023.dominio.Anios;
-import com.itson.proyecto2_233410_233023.dominio.Automovil;
-import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
-import com.itson.proyecto2_233410_233023.dominio.Estado;
-import com.itson.proyecto2_233410_233023.dominio.Licencia;
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.dominio.Placa;
-import com.itson.proyecto2_233410_233023.dominio.Tramite;
-import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
-import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
-import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
-import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
-import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
-import com.itson.proyecto2_233410_233023.implementaciones.TramitesDAO;
-import com.itson.proyecto2_233410_233023.implementaciones.VehiculosDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
+import com.itson.proyecto2_233410_233023.dominio.*;
+import com.itson.proyecto2_233410_233023.implementaciones.*;
+import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -46,14 +33,17 @@ public class Principal {
         ITramitesDAO tramitesDAO = new TramitesDAO(conexionBD);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         
+        
 //        for (Persona personas : personasDAO.consultarPersonasFiltro("id","5")) {
 //            GregorianCalendar fechaNacimiento = (GregorianCalendar) personas.getFechaNacimiento();
 //            String fechaNacimientoFormateada = formatter.format(fechaNacimiento.getTime());
 //        System.out.println(personas);
 //            System.out.println(fechaNacimientoFormateada);
 //        }
-         
-        new FrmMenu(personasDAO,vehiculosDAO, tramitesDAO).setVisible(true);
+
+      
+       
+       new FrmMenu(personasDAO,vehiculosDAO, tramitesDAO).setVisible(true);
        // EntityTransaction transaccion = conexionBD.getEM().getTransaction();
         
 //        transaccion.begin();

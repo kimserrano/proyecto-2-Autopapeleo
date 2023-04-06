@@ -30,8 +30,8 @@ public class TramiteLicencia extends Tramite implements Serializable {
     /**
      * Representa la licencia a la que pertenece el tramite
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "id_licencia", nullable = false)
+    //@OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "id_licencia", nullable = true)
     private Licencia licencia;
 
     /**

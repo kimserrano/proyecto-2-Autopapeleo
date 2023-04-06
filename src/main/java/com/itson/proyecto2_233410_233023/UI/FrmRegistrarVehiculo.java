@@ -13,6 +13,8 @@ import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.event.ItemEvent;
 import java.awt.geom.RoundRectangle2D;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -69,21 +71,27 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     }
 
-    public boolean validarVehiculo(Vehiculo vehiculo) throws Exception {
-        Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
-        if (vehiculoObtenido != null) {
+    public boolean validarVehiculo(Vehiculo vehiculo) {
+        try {
+            Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
+            if(vehiculoObtenido!=null){
             if (vehiculo.getNumeroSerie().equalsIgnoreCase(vehiculoObtenido.getNumeroSerie())) {
                 mostrarMensaje("Ya hay un vehículo con ese número de serie.");
                 return false;
             }
+            }else{
+                return true; 
+            }
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
         }
-        return true;
+        return false;
     }
 
     public boolean registrarVehiculo() {
         Vehiculo vehiculo = obtenerDatos();
         try {
-            if (validarDatos(vehiculo) || validarVehiculo(vehiculo)) {
+            if (validarDatos(vehiculo) && validarVehiculo(vehiculo)) {
                 vehiculosDAO.registrarVehiculo(vehiculo);
                 numSerie = vehiculo.getNumeroSerie();
                 mostrarMensaje("Vehiculo registrado");
@@ -394,14 +402,14 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, personaSeleccionada, "", tramitesDAO);
+        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO,personaSeleccionada, "");
         this.setVisible(false);
         frmtp.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (registrarVehiculo()) {
-            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, personaSeleccionada, numSerie, tramitesDAO);
+            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO,personaSeleccionada, numSerie);
             frmtp.setVisible(true);
             this.dispose();
         }
