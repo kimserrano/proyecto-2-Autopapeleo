@@ -54,6 +54,13 @@ public class Licencia implements Serializable {
     private Anios aniosVigencia;
 
     /**
+     * Representa el estado de una placa para conocer si se encuentra activa
+     */
+    @Column(name = "estado", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Estado estado;
+
+    /**
      * Constructor por defecto para crear licencias
      */
     public Licencia() {
@@ -62,17 +69,18 @@ public class Licencia implements Serializable {
     /**
      * Contructor para construir una licencia pidiendo parametros para su
      * creacion
-     *
      * @param monto Monto que representa el costo de la licencia
      * @param fechaExpedicion Representa la fecha en la que la licencia fue
      * realizada
      * @param aniosVigencia Representa los anios de vigencia que tiene la
      * licencia
+     * @param estado 
      */
-    public Licencia(Float monto, Calendar fechaExpedicion, Anios aniosVigencia) {
+    public Licencia(Float monto, Calendar fechaExpedicion, Anios aniosVigencia, Estado estado) {
         this.monto = monto;
         this.fechaExpedicion = fechaExpedicion;
         this.aniosVigencia = aniosVigencia;
+        this.estado = estado;
     }
 
     /**
@@ -180,6 +188,14 @@ public class Licencia implements Serializable {
         return true;
     }
 
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
     /**
      * Escribe los atributos de la licencia de manera ordenada
      *
@@ -187,7 +203,7 @@ public class Licencia implements Serializable {
      */
     @Override
     public String toString() {
-        return "Licencia{" + "id=" + id + ", monto=" + monto + ", fechaExpedicion=" + fechaExpedicion + ", aniosVigencia=" + aniosVigencia + '}';
+        return "Licencia{" + "id=" + id + ", monto=" + monto + ", fechaExpedicion=" + fechaExpedicion + ", aniosVigencia=" + aniosVigencia + ", estado=" + estado + '}';
     }
 
 }

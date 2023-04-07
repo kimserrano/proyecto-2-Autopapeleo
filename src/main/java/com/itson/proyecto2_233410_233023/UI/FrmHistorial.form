@@ -288,18 +288,18 @@
         </Container>
         <Component class="javax.swing.JComboBox" name="cbxTipoTramite">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Microsoft JhengHei" size="14" style="1"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="a3" green="3f" red="7c" type="rgb"/>
-            </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="3">
                 <StringItem index="0" value="Placas"/>
                 <StringItem index="1" value="Licencias"/>
                 <StringItem index="2" value="Ambos"/>
               </StringArray>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Microsoft JhengHei" size="14" style="1"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="a3" green="3f" red="7c" type="rgb"/>
             </Property>
           </Properties>
           <Events>
@@ -378,6 +378,7 @@
         </Container>
         <Component class="javax.swing.JCheckBox" name="jcbRfc">
           <Properties>
+            <Property name="text" type="java.lang.String" value="RFC"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fd" green="db" red="e9" type="rgb"/>
             </Property>
@@ -387,7 +388,6 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="a3" green="3f" red="7c" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="RFC"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jcbRfcActionPerformed"/>
@@ -395,6 +395,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="jcbNombres">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Nombres"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="fd" green="db" red="e9" type="rgb"/>
             </Property>
@@ -404,7 +405,6 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="a3" green="3f" red="7c" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Nombres"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jcbNombresActionPerformed"/>
@@ -519,13 +519,13 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblBuscar4">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Filtro de fecha"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Microsoft JhengHei" size="18" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="a3" green="3f" red="7c" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Filtro de fecha"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lblBuscar5">
@@ -575,9 +575,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnGenerarReporte">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Microsoft JhengHei" size="14" style="1"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Generar reporte"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -585,6 +582,9 @@
                   <Color PropertyName="color" blue="a3" green="3f" red="7c" type="rgb"/>
                 </LineBorder>
               </Border>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Microsoft JhengHei" size="14" style="1"/>
             </Property>
           </Properties>
           <Events>

@@ -24,7 +24,7 @@ import javax.persistence.Table;
  */
 @Table(name = "tramites_licencia")
 @Entity
-@DiscriminatorValue(value = "tramiteLicencia")
+@DiscriminatorValue("tramiteLicencia")
 public class TramiteLicencia extends Tramite implements Serializable {
 
     /**
@@ -53,6 +53,12 @@ public class TramiteLicencia extends Tramite implements Serializable {
         super(costo, fechaExpedicion, persona);
         this.licencia = licencia;
     }
+
+    public TramiteLicencia(Licencia licencia) {
+        this.licencia = licencia;
+    }
+    
+    
 
     /**
      * Obtiene la licencia

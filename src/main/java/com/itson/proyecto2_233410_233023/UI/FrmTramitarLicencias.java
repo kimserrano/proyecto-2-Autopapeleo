@@ -5,15 +5,14 @@ package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Anios;
 import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
+import com.itson.proyecto2_233410_233023.dominio.Estado;
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
-import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
-import com.itson.proyecto2_233410_233023.implementaciones.Validador;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
-import java.awt.geom.RoundRectangle2D;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.DefaultComboBoxModel;
@@ -31,6 +30,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     Persona personaSeleccionada;
     ITramitesDAO tramitesDAO;
     Licencia licencia;
+    Tramite verificacion;
 
     /**
      * Creates new form FrmTramitarLicencias
@@ -43,9 +43,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
         lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
+        calculoVigencia();
     }
 
-    public Licencia obtenerDatos() {
+    public Licencia obtenerDatosLicencia() {
         Calendar fechaActual = Calendar.getInstance();
         int anio = fechaActual.get(Calendar.YEAR);
         int mes = fechaActual.get(Calendar.MONTH);
@@ -53,8 +54,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         Calendar fechaExpedicion = new GregorianCalendar(anio, mes, dia);
         Anios vigencia = (Anios) cbxVigencia.getSelectedItem();
         float monto = Float.parseFloat(txtMonto.getText());
-        // Float monto, Calendar fechaExpedicion, Anios aniosVigencia
-        Licencia licencia = new Licencia(monto, fechaExpedicion, vigencia);
+        Licencia licencia = new Licencia(monto, fechaExpedicion, vigencia, Estado.ACTIVA);
         return licencia;
     }
 
@@ -239,12 +239,51 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public Boolean registrarLicencia() {
-        licencia = obtenerDatos();
+    public TramiteLicencia revisarRegistro() {
+        for (int i = 0; i < tramitesDAO.consultarTramitesLicencia().size(); i++) {
+            if (tramitesDAO.consultarTramitesLicencia().get(i).getPersona().equals(personaSeleccionada)
+                    && tramitesDAO.consultarTramitesLicencia().get(i).getLicencia().getEstado().equals(Estado.ACTIVA)) {
+                TramiteLicencia tramiteLicencia = tramitesDAO.consultarTramitesLicencia().get(i);
+                return tramiteLicencia;
+            }
+        }
+        return null;
+    }
+
+    public void calculoVigencia() {
+        if (revisarRegistro() != null) {
+            Calendar fechaInicio = revisarRegistro().getFechaExpedicion();
+            Anios anios = revisarRegistro().getLicencia().getAniosVigencia();
+            int anioVigencia;
+            if (anios == Anios.UNO) {
+                fechaInicio.add(Calendar.YEAR, 1);
+            } else if (anios == Anios.DOS) {
+                fechaInicio.add(Calendar.YEAR, 2);
+            } else {
+                fechaInicio.add(Calendar.YEAR, 3);
+            }
+            Calendar fechaFin = Calendar.getInstance();
+            if (tramitesDAO.consultarDiasTransurridosSP(fechaInicio, fechaFin) < 0) {
+                mostrarMensaje(" Tu licencia actual vence en: "
+                        + tramitesDAO.consultarDiasTransurridosSP(fechaInicio, fechaFin) * -1 + " días");
+
+            }
+
+        }
+    }
+
+    public void actualizacion() {
+        if (licencia != null && revisarRegistro()!=null ) {
+            tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia(), revisarRegistro());
+        }
+    }
+
+    public Licencia registrarLicencia() {
+        licencia = obtenerDatosLicencia();
         try {
             tramitesDAO.registrarLicencia(licencia);
             mostrarMensaje("Licencia registrada");
-            return true;
+            return licencia;
 
         } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
@@ -272,17 +311,23 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }
 
-    public void registrarTramite() {
+    public TramiteLicencia obtenerDatosTramite() {
         //Licencia licencia, Float costo, Calendar fechaExpedicion, Persona persona
         TramiteLicencia tramiteLicencia = new TramiteLicencia(licencia,
                 licencia.getMonto(), licencia.getFechaExpedicion(),
                 personaSeleccionada);
+        return tramiteLicencia;
+    }
+
+    public TramiteLicencia registrarTramite() {
+        TramiteLicencia tramiteLicencia = obtenerDatosTramite();
         try {
             tramitesDAO.tramitarLicencia(tramiteLicencia);
-
+            return tramiteLicencia;
         } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
         }
+        return null;
 
     }
 
@@ -296,11 +341,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
         // TODO add your handling code here:
-        if (registrarLicencia()) {
-           // registrarTramite();
-            this.dispose();
-        }
+        registrarLicencia();
+        actualizacion();
         registrarTramite();
+        this.dispose();
         new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO).setVisible(true);
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
 

@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +25,7 @@ import javax.persistence.Table;
  * @author Gabriel x Kim
  */
 @Table(name = "Tramites")
-@DiscriminatorColumn(name="tipo")
+@DiscriminatorColumn(name="tipoTramite", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
 public class Tramite implements Serializable {
@@ -84,6 +85,15 @@ public class Tramite implements Serializable {
     public Tramite(Float costo, Calendar fechaExpedicion, Persona persona) {
         this.costo = costo;
         this.fechaExpedicion = fechaExpedicion;
+        this.persona = persona;
+    }
+
+
+    public Persona getPersona() {
+        return persona;
+    }
+
+    public void setPersona(Persona persona) {
         this.persona = persona;
     }
 

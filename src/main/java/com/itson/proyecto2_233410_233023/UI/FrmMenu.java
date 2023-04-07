@@ -253,7 +253,7 @@ public class FrmMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInsercionActionPerformed
 
     private void btnHistorial1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorial1ActionPerformed
-        FrmHistorial frmh = new FrmHistorial();
+        FrmHistorial frmh = new FrmHistorial(personasDAO, tramitesDAO);
         this.setVisible(false);
         frmh.setVisible(true);
     }//GEN-LAST:event_btnHistorial1ActionPerformed

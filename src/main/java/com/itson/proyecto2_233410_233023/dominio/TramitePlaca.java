@@ -24,7 +24,7 @@ import javax.persistence.Table;
  */
 @Table(name = "tramites_placa")
 @Entity
-@DiscriminatorValue(value = "tramitePlaca")
+@DiscriminatorValue("tramitePlaca")
 public class TramitePlaca extends Tramite implements Serializable {
 
     /**
