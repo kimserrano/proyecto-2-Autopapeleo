@@ -5,6 +5,8 @@ package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
+import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
+import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
 import com.itson.proyecto2_233410_233023.implementaciones.ConfiguracionPaginado;
 import com.itson.proyecto2_233410_233023.implementaciones.HistorialDAO;
 import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
@@ -167,18 +169,39 @@ public class FrmHistorial extends javax.swing.JFrame {
         return personas;
     }
 
-//    private void cargarTablaHistorial() {
-//        List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-//        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
-//        modeloTablaPersonas.setRowCount(0);
+    public String definirTipoTramite(int i, Tramite tramite) {
+        String tipo = null;
+        List<Tramite> tramites = tramitesDAO.consultarColumnaTipoTramite();
+
+        if (tramite instanceof TramiteLicencia) {
+            tipo = "TramiteLicencia";
+        } else if (tramite instanceof TramitePlaca) {
+            tipo = "TramitePlaca";
+        }
+        return tipo;
+    }
+
+    private void cargarTablaTramites() {
+
+        List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
+        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
+        modeloTablaPersonas.setRowCount(0);
+
+        for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
+            Tramite tramite = tramitesPersonaSeleccionada.get(i);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
+            String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
+            Object[] filaNueva = {tramite.getId(), definirTipoTramite(i, tramite),
+                fechaExpedicion, tramite.getCosto()};
+            modeloTablaPersonas.addRow(filaNueva);
+        }
+
 //        for (Tramite tramite : tramitesPersonaSeleccionada) {
-//            if (tramitesPersonaSeleccionada.contains(tramitesDAO.consultarColumnaTipoTramite())) {
-//                Object[] filaNueva = {tramite.getId(), tramitesDAO.consultarColumnaTipoTramite().get(1),
-//                    tramite.getFechaExpedicion(), tramite.getCosto()};
-//                modeloTablaPersonas.addRow(filaNueva);
-//            }
+//            Object[] filaNueva = {tramite.getId(), definirTipoTramite(2),
+//                tramite.getFechaExpedicion(), tramite.getCosto()};
+//            modeloTablaPersonas.addRow(filaNueva);
 //        }
-//    }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -556,7 +579,8 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-         cbxPersonas.removeAllItems();
+        cbxPersonas.removeAllItems();
+        tblHistorial.removeAll();
         try {
             cargarComboBoxPersonas();
         } catch (PersistenciaException ex) {
@@ -569,8 +593,8 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxTipoTramiteActionPerformed
 
     private void cbxPersonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPersonasActionPerformed
-
         personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
+        cargarTablaTramites();
     }//GEN-LAST:event_cbxPersonasActionPerformed
 
     private void cbxPaginadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaginadoActionPerformed

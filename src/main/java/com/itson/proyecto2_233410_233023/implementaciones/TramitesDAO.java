@@ -147,8 +147,14 @@ public class TramitesDAO implements ITramitesDAO {
 
     @Override
     public List<Tramite> consultarColumnaTipoTramite() {
-        List<Tramite> tiposTramites = conexionBD.getEM().createQuery("SELECT TYPE(e) FROM Tramite e", Tramite.class)
-                .getResultList(); // Obtener los valores de la columna "tipo"
-        return tiposTramites;
+        List<Tramite> tramites = conexionBD.getEM().createQuery("SELECT a FROM Tramite a", Tramite.class).getResultList();
+//        for (Tramite tramite : tramites) {
+//            if (tramite instanceof TramiteLicencia) {
+//                return "TramiteLicencia";
+//            } else if (tramite instanceof TramitePlaca) {
+//                return "TramitePlaca";
+//            }
+//        }
+        return tramites;
     }
 }
