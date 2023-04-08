@@ -8,6 +8,7 @@ import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
 import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
+import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
@@ -26,6 +27,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
+    IHistorialDAO historialDAO;
     Persona personaSeleccionada;
     Validador validador = new Validador();
     String tipo = "Automovil";
@@ -34,8 +36,9 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     /**
      * Creates new form FrmRegistrarVehiculo
      */
-    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
+    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
         initComponents();
+        this.historialDAO = historialDAO;
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
@@ -74,13 +77,13 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     public boolean validarVehiculo(Vehiculo vehiculo) {
         try {
             Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
-            if(vehiculoObtenido!=null){
-            if (vehiculo.getNumeroSerie().equalsIgnoreCase(vehiculoObtenido.getNumeroSerie())) {
-                mostrarMensaje("Ya hay un vehículo con ese número de serie.");
-                return false;
-            }
-            }else{
-                return true; 
+            if (vehiculoObtenido != null) {
+                if (vehiculo.getNumeroSerie().equalsIgnoreCase(vehiculoObtenido.getNumeroSerie())) {
+                    mostrarMensaje("Ya hay un vehículo con ese número de serie.");
+                    return false;
+                }
+            } else {
+                return true;
             }
         } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
@@ -402,14 +405,14 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO,personaSeleccionada, "");
+        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
         this.setVisible(false);
         frmtp.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (registrarVehiculo()) {
-            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO,personaSeleccionada, numSerie);
+            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, numSerie, historialDAO);
             frmtp.setVisible(true);
             this.dispose();
         }

@@ -11,6 +11,7 @@ import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
 import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
 import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
+import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
@@ -33,6 +34,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
+    IHistorialDAO historialDAO;
     Persona personaSeleccionada;
     String vehiculo = "Nuevo";
     Validador validador = new Validador();
@@ -40,8 +42,9 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO,Persona persona, String numSerie) {
+    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO,Persona persona, String numSerie, IHistorialDAO historialDAO) {
         initComponents();
+        this.historialDAO=historialDAO;
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
@@ -164,7 +167,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         return false;
     }
     public void regresarMenu(){
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }
@@ -527,7 +530,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxVehiculoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO);
+        FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmrv.setVisible(true);
     }//GEN-LAST:event_btnRegistrarActionPerformed

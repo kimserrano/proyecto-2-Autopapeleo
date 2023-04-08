@@ -111,12 +111,13 @@ public class Validador {
         }
     }
 
-    public boolean validaFechaNacimiento(LocalDate fechaNacimiento) throws PersistenciaException{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String dateString = fechaNacimiento.format(formatter);
-        String patron = "\\\\d{4}-\\\\d{2}-\\\\d{2}";
+    public boolean validaFechaNacimiento(String fechaNacimiento) throws PersistenciaException {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        String dateString = fechaNacimiento.format(formatter);
+        String patron = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
         Pattern p = Pattern.compile(patron);
-        if (dateString.matches(patron)) {
+        Matcher matcher = p.matcher(fechaNacimiento);
+        if (matcher.matches()) {
             return true;
         } else {
             throw new PersistenciaException("Fórmato de fecha inválido.");

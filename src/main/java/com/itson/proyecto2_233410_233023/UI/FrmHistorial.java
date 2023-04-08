@@ -4,20 +4,33 @@
 package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
+import com.itson.proyecto2_233410_233023.dominio.Tramite;
+import com.itson.proyecto2_233410_233023.implementaciones.ConfiguracionPaginado;
+import com.itson.proyecto2_233410_233023.implementaciones.HistorialDAO;
 import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDTO;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
+import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
 import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
 import java.awt.geom.RoundRectangle2D;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -29,20 +42,27 @@ public class FrmHistorial extends javax.swing.JFrame {
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
     IHistorialDAO historialDAO;
+    private ConfiguracionPaginado paginado;
+    private int numeroPagina = 0;
+    private int elementosPorPagina = 3;
     private Persona personaSeleccionada = null;
     private String filtro = null;
     private Validador validador = new Validador();
+    DefaultComboBoxModel<Persona> modeloComboBox = new DefaultComboBoxModel<Persona>();
 
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO) {
+    public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
         initComponents();
+        this.historialDAO = historialDAO;
         this.tramitesDAO = tramitesDAO;
         this.personasDAO = personasDAO;
+        this.paginado = new ConfiguracionPaginado(this.numeroPagina, this.elementosPorPagina);
         txtRfc.setEnabled(false);
         txtNombres.setEnabled(false);
         dtpFechaNacimiento.setEnabled(false);
+
     }
 
     /**
@@ -60,19 +80,105 @@ public class FrmHistorial extends javax.swing.JFrame {
         return txtNombres.getText();
     }
 
-    private LocalDate obtenerFechaNacimiento() {
-        return dtpFechaNacimiento.getDate();
+    private String obtenerFechaNacimiento() {
+
+        String fechaFormateada = null;
+        String fechaTexto = dtpFechaNacimiento.getText(); // obtenemos la fecha como una cadena de texto
+        int indiceEspacio = fechaTexto.indexOf(" ");
+        if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
+            String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
+            int cantidadCaracteres = caracteresAntesEspacio.length();
+
+            if (cantidadCaracteres == 1) {
+                fechaTexto = "0" + fechaTexto;
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+            LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
+            fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            return fechaFormateada;
+        }
+        return null;
+
     }
 
-    private void personaDTO() {
-        //String rfc, String nombre, Calendar fechaNacimient
-        ZonedDateTime zonedDateTime = obtenerFechaNacimiento().atStartOfDay(ZoneId.systemDefault());
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(Date.from(zonedDateTime.toInstant()));
-        PersonasDTO personaDTO = new PersonasDTO(obtenerRFC(), obtenerNombres(), calendar);
-        System.out.println(historialDAO.buscar(personaDTO));
-        System.out.println(personaDTO.toString());
+    /**
+     * Método para validar el TextField de búsqueda el cuál valida dependiendo
+     * de la opción seleccionada.
+     *
+     * @return Valor booleano para comprobar la validación.
+     */
+    public boolean validarBusqueda() throws PersistenciaException {
+        if (!obtenerParametrosBusqueda().isEmpty() || obtenerParametrosBusqueda() != null) {
+            if (filtro.equals("nombre")) {
+                return validador.validaNombre(obtenerParametrosBusqueda());
+            } else if (filtro.equals("rfc")) {
+                return validador.validaRFC(obtenerParametrosBusqueda());
+            } else {
+                return validador.validaFechaNacimiento(obtenerParametrosBusqueda());
+            }
+        }
+        return false;
     }
+
+    public void cargarComboBoxPersonas() throws PersistenciaException {
+
+        if (filtro != null && !obtenerParametrosBusqueda().isEmpty()) {
+
+            if (validarBusqueda()) {
+                List<Persona> personas = buscarPersonaConFiltroEspecifico();
+                for (Persona persona : personas) {
+                    modeloComboBox.addElement(persona);
+//                    System.out.println("carga combo");
+                }
+            } else {
+                System.out.println("q paso master???");
+                //mostrarMensaje("Formato inválido de " + filtro + ", por favor ingrese parámetros correctos");
+            }
+
+        }
+        cbxPersonas.setModel(modeloComboBox);
+    }
+
+    private String obtenerParametrosBusqueda() {
+        if (filtro.equals("nombre")) {
+            return obtenerNombres();
+        } else if (filtro.equals("rfc")) {
+            return obtenerRFC();
+        } else if (filtro.equals("fechaNacimiento")) {
+            return obtenerFechaNacimiento();
+        }
+        return null;
+    }
+
+    private PersonasDTO personaDTO() {
+        PersonasDTO personaDTO = new PersonasDTO(obtenerRFC(), obtenerNombres(), obtenerFechaNacimiento());
+        return personaDTO;
+    }
+
+    private List<Persona> buscarPersonaConTodosLosFiltros(PersonasDTO personaDTO) {
+        List<Persona> personas = historialDAO.buscar(personaDTO());
+        return personas;
+    }
+
+    private List<Persona> buscarPersonaConFiltroEspecifico() {
+        List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, obtenerParametrosBusqueda(), paginado);
+        return personas;
+    }
+
+//    private void cargarTablaHistorial() {
+//        List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
+//        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
+//        modeloTablaPersonas.setRowCount(0);
+//        for (Tramite tramite : tramitesPersonaSeleccionada) {
+//            if (tramitesPersonaSeleccionada.contains(tramitesDAO.consultarColumnaTipoTramite())) {
+//                Object[] filaNueva = {tramite.getId(), tramitesDAO.consultarColumnaTipoTramite().get(1),
+//                    tramite.getFechaExpedicion(), tramite.getCosto()};
+//                modeloTablaPersonas.addRow(filaNueva);
+//            }
+//        }
+//    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -117,29 +223,29 @@ public class FrmHistorial extends javax.swing.JFrame {
         jPanelFondoMenu.setForeground(new java.awt.Color(233, 219, 253));
         jPanelFondoMenu.setPreferredSize(new java.awt.Dimension(600, 400));
 
+        jToolBarMenu.setRollover(true);
         jToolBarMenu.setBackground(new java.awt.Color(233, 219, 253));
         jToolBarMenu.setBorder(null);
         jToolBarMenu.setForeground(new java.awt.Color(233, 219, 253));
-        jToolBarMenu.setRollover(true);
 
         jPanelBarra.setBackground(new java.awt.Color(129, 0, 127));
         jPanelBarra.setForeground(new java.awt.Color(129, 0, 127));
         jPanelBarra.setToolTipText("");
 
-        btnVolver.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
-        btnVolver.setForeground(new java.awt.Color(124, 63, 163));
         btnVolver.setText("Volver");
         btnVolver.setBorder(null);
         btnVolver.setBorderPainted(false);
+        btnVolver.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
+        btnVolver.setForeground(new java.awt.Color(124, 63, 163));
         btnVolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVolverActionPerformed(evt);
             }
         });
 
+        lblHistorial.setText("Historial");
         lblHistorial.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblHistorial.setForeground(new java.awt.Color(255, 255, 255));
-        lblHistorial.setText("Historial");
 
         javax.swing.GroupLayout jPanelBarraLayout = new javax.swing.GroupLayout(jPanelBarra);
         jPanelBarra.setLayout(jPanelBarraLayout);
@@ -158,28 +264,28 @@ public class FrmHistorial extends javax.swing.JFrame {
                 .addComponent(lblHistorial))
         );
 
+        cbxTipoTramite.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Placas", "Licencias", "Ambos" }));
         cbxTipoTramite.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         cbxTipoTramite.setForeground(new java.awt.Color(124, 63, 163));
-        cbxTipoTramite.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Placas", "Licencias", "Ambos" }));
         cbxTipoTramite.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxTipoTramiteActionPerformed(evt);
             }
         });
 
+        lblTipoTramite.setText("Tipo de trámite");
         lblTipoTramite.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblTipoTramite.setForeground(new java.awt.Color(124, 63, 163));
-        lblTipoTramite.setText("Tipo de trámite");
 
+        lblHistorialSolicitudes.setText("Historial de solicitudes");
         lblHistorialSolicitudes.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblHistorialSolicitudes.setForeground(new java.awt.Color(124, 63, 163));
-        lblHistorialSolicitudes.setText("Historial de solicitudes");
 
         txtRfc.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
 
-        btnActualizar.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnActualizar.setText("Aplicar filtros");
         btnActualizar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
+        btnActualizar.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnActualizarActionPerformed(evt);
@@ -199,20 +305,20 @@ public class FrmHistorial extends javax.swing.JFrame {
             .addGap(0, 429, Short.MAX_VALUE)
         );
 
+        jcbRfc.setText("RFC");
         jcbRfc.setBackground(new java.awt.Color(233, 219, 253));
         jcbRfc.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         jcbRfc.setForeground(new java.awt.Color(124, 63, 163));
-        jcbRfc.setText("RFC");
         jcbRfc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcbRfcActionPerformed(evt);
             }
         });
 
+        jcbNombres.setText("Nombres");
         jcbNombres.setBackground(new java.awt.Color(233, 219, 253));
         jcbNombres.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         jcbNombres.setForeground(new java.awt.Color(124, 63, 163));
-        jcbNombres.setText("Nombres");
         jcbNombres.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcbNombresActionPerformed(evt);
@@ -221,10 +327,10 @@ public class FrmHistorial extends javax.swing.JFrame {
 
         txtNombres.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
 
+        jcbFechaNacimiento.setText("Fecha de nacimiento");
         jcbFechaNacimiento.setBackground(new java.awt.Color(233, 219, 253));
         jcbFechaNacimiento.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         jcbFechaNacimiento.setForeground(new java.awt.Color(124, 63, 163));
-        jcbFechaNacimiento.setText("Fecha de nacimiento");
         jcbFechaNacimiento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcbFechaNacimientoActionPerformed(evt);
@@ -233,9 +339,9 @@ public class FrmHistorial extends javax.swing.JFrame {
 
         dtpFechaNacimiento.setBackground(new java.awt.Color(233, 219, 253));
 
+        lblBuscar1.setText("Buscar por:");
         lblBuscar1.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblBuscar1.setForeground(new java.awt.Color(124, 63, 163));
-        lblBuscar1.setText("Buscar por:");
 
         cbxPersonas.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         cbxPersonas.setForeground(new java.awt.Color(124, 63, 163));
@@ -245,11 +351,10 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         });
 
+        lblListaPersonas.setText("Lista de personas que coinciden");
         lblListaPersonas.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblListaPersonas.setForeground(new java.awt.Color(124, 63, 163));
-        lblListaPersonas.setText("Lista de personas que coinciden");
 
-        tblHistorial.setBackground(new java.awt.Color(233, 219, 253));
         tblHistorial.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -261,36 +366,37 @@ public class FrmHistorial extends javax.swing.JFrame {
                 "Nombre", "Tipo trámite", "Fecha", "Costo"
             }
         ));
+        tblHistorial.setBackground(new java.awt.Color(233, 219, 253));
         jScrollPane1.setViewportView(tblHistorial);
 
+        lblBuscar3.setText("Hasta:");
         lblBuscar3.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblBuscar3.setForeground(new java.awt.Color(124, 63, 163));
-        lblBuscar3.setText("Hasta:");
 
+        lblBuscar4.setText("Filtro de fecha");
         lblBuscar4.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblBuscar4.setForeground(new java.awt.Color(124, 63, 163));
-        lblBuscar4.setText("Filtro de fecha");
 
+        lblBuscar5.setText("De:");
         lblBuscar5.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblBuscar5.setForeground(new java.awt.Color(124, 63, 163));
-        lblBuscar5.setText("De:");
 
+        lblBuscar6.setText("Filtro paginado");
         lblBuscar6.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblBuscar6.setForeground(new java.awt.Color(124, 63, 163));
-        lblBuscar6.setText("Filtro paginado");
 
+        cbxPaginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "5", "10" }));
         cbxPaginado.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         cbxPaginado.setForeground(new java.awt.Color(124, 63, 163));
-        cbxPaginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "5", "10" }));
         cbxPaginado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxPaginadoActionPerformed(evt);
             }
         });
 
-        btnGenerarReporte.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnGenerarReporte.setText("Generar reporte");
         btnGenerarReporte.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
+        btnGenerarReporte.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         btnGenerarReporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGenerarReporteActionPerformed(evt);
@@ -307,6 +413,10 @@ public class FrmHistorial extends javax.swing.JFrame {
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelBarra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGap(22, 22, 22)
@@ -322,48 +432,47 @@ public class FrmHistorial extends javax.swing.JFrame {
                                 .addComponent(txtNombres)
                                 .addComponent(jcbFechaNacimiento)
                                 .addComponent(dtpFechaNacimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(lblBuscar1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblHistorialSolicitudes, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cbxPersonas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblListaPersonas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(lblBuscar1)))
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(56, 56, 56)
+                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblBuscar3, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblBuscar5, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dtpHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dtpDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbxPaginado, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(11, 11, 11))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                        .addComponent(lblBuscar4)
-                        .addGap(20, 20, 20))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                        .addComponent(lblBuscar6)
-                        .addGap(11, 11, 11)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoMenuLayout.createSequentialGroup()
+                                .addComponent(lblBuscar6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                    .addGap(15, 15, 15)
+                                    .addComponent(lblHistorialSolicitudes, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblBuscar4)
+                            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                    .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lblBuscar3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(lblBuscar5, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(dtpDe, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                                        .addComponent(dtpHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                    .addComponent(lblListaPersonas)
+                    .addComponent(cbxPersonas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanelFondoMenuLayout.setVerticalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addComponent(jPanelBarra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -383,41 +492,41 @@ public class FrmHistorial extends javax.swing.JFrame {
                         .addComponent(jcbFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dtpFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(btnActualizar)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblListaPersonas)
-                            .addComponent(lblBuscar4))
+                        .addComponent(lblListaPersonas)
                         .addGap(7, 7, 7)
-                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbxPersonas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblBuscar5))
+                        .addComponent(cbxPersonas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(lblHistorialSolicitudes)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addComponent(lblHistorialSolicitudes)
+                                .addComponent(lblBuscar4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dtpDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                        .addGap(28, 28, 28)
-                                        .addComponent(lblBuscar3)
-                                        .addGap(12, 12, 12)
-                                        .addComponent(dtpHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblBuscar6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnActualizar)
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblBuscar5)
+                                    .addComponent(dtpDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(dtpHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblBuscar3)))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(lblBuscar6)
+                                    .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
                                 .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(156, 156, 156))))
+                        .addGap(136, 136, 136))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -428,40 +537,31 @@ public class FrmHistorial extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 795, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 993, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 388, Short.MAX_VALUE)
+            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 458, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    /**
-     * Método para validar el TextField de búsqueda el cuál valida dependiendo
-     * de la opción seleccionada.
-     *
-     * @return Valor booleano para comprobar la validación.
-     */
-    public boolean validarBusqueda() throws PersistenciaException {
-        if (filtro.equals("nombre")) {
-            return validador.validaNombre(obtenerNombres());
-        } else if (filtro.equals("rfc")) {
-            return validador.validaRFC(obtenerRFC());
-        } else {
-            return validador.validaFechaNacimiento(obtenerFechaNacimiento());
-        }
-    }
+
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+         cbxPersonas.removeAllItems();
+        try {
+            cargarComboBoxPersonas();
+        } catch (PersistenciaException ex) {
+            Logger.getLogger(FrmHistorial.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void cbxTipoTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTipoTramiteActionPerformed
@@ -469,7 +569,8 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxTipoTramiteActionPerformed
 
     private void cbxPersonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPersonasActionPerformed
-        // TODO add your handling code here:
+
+        personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
     }//GEN-LAST:event_cbxPersonasActionPerformed
 
     private void cbxPaginadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaginadoActionPerformed
@@ -477,11 +578,7 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxPaginadoActionPerformed
 
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
-        // TODO add your handling code here:
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        System.out.println(obtenerFechaNacimiento().format(formatter));
-        personaDTO();
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
     private void jcbRfcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbRfcActionPerformed
@@ -495,7 +592,7 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     private void jcbNombresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbNombresActionPerformed
         if (jcbNombres.isSelected()) {
-            filtro = "nombres";
+            filtro = "nombre";
             txtNombres.setEnabled(true);
         } else {
             txtNombres.setEnabled(false);
@@ -504,6 +601,7 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     private void jcbFechaNacimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbFechaNacimientoActionPerformed
         if (jcbFechaNacimiento.isSelected()) {
+            filtro = "fechaNacimiento";
             dtpFechaNacimiento.setEnabled(true);
         } else {
             dtpFechaNacimiento.setEnabled(false);
@@ -516,7 +614,7 @@ public class FrmHistorial extends javax.swing.JFrame {
     private javax.swing.JButton btnGenerarReporte;
     private javax.swing.JButton btnVolver;
     private javax.swing.JComboBox<String> cbxPaginado;
-    private javax.swing.JComboBox<String> cbxPersonas;
+    private javax.swing.JComboBox<Persona> cbxPersonas;
     private javax.swing.JComboBox<String> cbxTipoTramite;
     private com.github.lgooddatepicker.components.DatePicker dtpDe;
     private com.github.lgooddatepicker.components.DatePicker dtpFechaNacimiento;

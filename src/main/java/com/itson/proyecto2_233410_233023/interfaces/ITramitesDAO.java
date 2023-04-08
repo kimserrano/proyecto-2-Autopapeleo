@@ -5,6 +5,7 @@
 package com.itson.proyecto2_233410_233023.interfaces;
 
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
+import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Placa;
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
@@ -32,10 +33,12 @@ public interface ITramitesDAO {
     void actualizarPlaca(Placa placaActual, TramitePlaca tramite);
 
     Placa buscarPlacaActiva(TramitePlaca tramite) throws Exception;
-    
-    List<TramiteLicencia> consultarTramitesLicencia(); 
-    
+
+    List<TramiteLicencia> consultarTramitesLicencia();
+
     List<TramitePlaca> consultarTramitesPlaca();
-    
+
     Long consultarDiasTransurridosSP(Calendar fechaInicio, Calendar fechaFin);
+
+    List<Tramite> consultarColumnaTipoTramite();
 }

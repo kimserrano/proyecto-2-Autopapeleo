@@ -6,6 +6,7 @@ package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.dominio.Estado;
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
+import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Placa;
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
@@ -144,4 +145,10 @@ public class TramitesDAO implements ITramitesDAO {
         return diasTranscurridos;
     }
 
+    @Override
+    public List<Tramite> consultarColumnaTipoTramite() {
+        List<Tramite> tiposTramites = conexionBD.getEM().createQuery("SELECT TYPE(e) FROM Tramite e", Tramite.class)
+                .getResultList(); // Obtener los valores de la columna "tipo"
+        return tiposTramites;
+    }
 }

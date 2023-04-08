@@ -10,6 +10,7 @@ import com.itson.proyecto2_233410_233023.dominio.Licencia;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
+import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
@@ -29,16 +30,18 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     IVehiculosDAO vehiculosDAO;
     Persona personaSeleccionada;
     ITramitesDAO tramitesDAO;
+    IHistorialDAO historialDAO;
     Licencia licencia;
     Tramite verificacion;
 
     /**
      * Creates new form FrmTramitarLicencias
      */
-    public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
+    public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
         initComponents();
         cbxVigencia.setModel(modeloComboBox);
         this.personasDAO = personasDAO;
+        this.historialDAO= historialDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
@@ -230,7 +233,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -345,7 +348,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         actualizacion();
         registrarTramite();
         this.dispose();
-        new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO).setVisible(true);
+        new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO).setVisible(true);
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
 
 

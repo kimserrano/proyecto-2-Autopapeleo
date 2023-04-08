@@ -5,7 +5,11 @@ package com.itson.proyecto2_233410_233023.dominio;
 
 import com.itson.proyecto2_233410_233023.implementaciones.EncriptacionAES;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -364,6 +368,9 @@ public class Persona implements Serializable {
      */
     @Override
     public String toString() {
-        return "Persona{" + "id=" + id + ", rfc=" + rfc + ", nombres=" + nombre + ", apellidoPaterno=" + apellidoPaterno + ", apellidoMaterno=" + apellidoMaterno + ", discapacitado=" + discapacitado + ", telefono=" + telefono + ", fechaNacimiento=" + fechaNacimiento + ", vehiculos=" + vehiculos + ", tramites=" + tramites + '}';
+        SimpleDateFormat fechaNacimientoFormato = new SimpleDateFormat("yyyy-MM-dd");
+        String fechaFormateada = fechaNacimientoFormato.format(fechaNacimiento.getTime());
+        return nombre + " " + apellidoPaterno + " " + apellidoMaterno + " RFC: " + rfc + " Fecha Nacimiento: " + fechaFormateada;
     }
+
 }

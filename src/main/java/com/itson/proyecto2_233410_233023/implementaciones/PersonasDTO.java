@@ -15,15 +15,16 @@ import java.util.List;
 public class PersonasDTO {
     private String rfc;
     private String nombre;
-    private Calendar fechaNacimiento;
+    private String fechaNacimiento;
     private List<Tramite> tramites;
 
-    public PersonasDTO(String rfc, String nombre, Calendar fechaNacimient) {
+    public PersonasDTO(String rfc, String nombre, String fechaNacimiento) {
         this.rfc = rfc;
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
     }
-
+    
+    
     public String getRfc() {
         return rfc;
     }
@@ -40,11 +41,11 @@ public class PersonasDTO {
         this.nombre = nombre;
     }
 
-    public Calendar getFechaNacimiento() {
+    public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(Calendar fechaNacimiento) {
+    public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

@@ -7,6 +7,7 @@ import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
 import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
+import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
@@ -27,12 +28,14 @@ public class FrmMenu extends javax.swing.JFrame {
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
+    IHistorialDAO historialDAO;
 
     /**
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
      */
-    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO) {
+    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
+        this.historialDAO = historialDAO;
         this.personasDAO = personasDAO;
         this.tramitesDAO = tramitesDAO;
         this.vehiculosDAO = vehiculosDAO;
@@ -234,14 +237,14 @@ public class FrmMenu extends javax.swing.JFrame {
     }
 
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, tramitesDAO);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmsp.setVisible(true);
 
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
 
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
-        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, tramitesDAO);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed
@@ -253,7 +256,7 @@ public class FrmMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInsercionActionPerformed
 
     private void btnHistorial1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorial1ActionPerformed
-        FrmHistorial frmh = new FrmHistorial(personasDAO, tramitesDAO);
+        FrmHistorial frmh = new FrmHistorial(personasDAO, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmh.setVisible(true);
     }//GEN-LAST:event_btnHistorial1ActionPerformed
