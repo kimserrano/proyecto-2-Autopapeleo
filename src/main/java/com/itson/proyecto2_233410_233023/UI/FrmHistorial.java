@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -74,6 +75,10 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
 
+    private void mostrarMensaje(String msj) {
+        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private String obtenerRFC() {
         return txtRfc.getText();
     }
@@ -111,47 +116,18 @@ public class FrmHistorial extends javax.swing.JFrame {
      *
      * @return Valor booleano para comprobar la validación.
      */
-    public boolean validarBusqueda() throws PersistenciaException {
-        if (!obtenerParametrosBusqueda().isEmpty() || obtenerParametrosBusqueda() != null) {
-            if (filtro.equals("nombre")) {
-                return validador.validaNombre(obtenerParametrosBusqueda());
-            } else if (filtro.equals("rfc")) {
-                return validador.validaRFC(obtenerParametrosBusqueda());
-            } else {
-                return validador.validaFechaNacimiento(obtenerParametrosBusqueda());
-            }
-        }
-        return false;
-    }
-
     public void cargarComboBoxPersonas() throws PersistenciaException {
 
-        if (filtro != null && !obtenerParametrosBusqueda().isEmpty()) {
-
-            if (validarBusqueda()) {
-                List<Persona> personas = buscarPersonaConFiltroEspecifico();
-                for (Persona persona : personas) {
-                    modeloComboBox.addElement(persona);
-//                    System.out.println("carga combo");
-                }
-            } else {
-                System.out.println("q paso master???");
-                //mostrarMensaje("Formato inválido de " + filtro + ", por favor ingrese parámetros correctos");
-            }
-
+        List<Persona> personas = casillasActivas();
+        if (personas.isEmpty() || personas == null) {
+            DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+            model.setRowCount(0);
+            mostrarMensaje("Registro no encontrado");
+        }
+        for (Persona persona : personas) {
+            modeloComboBox.addElement(persona);
         }
         cbxPersonas.setModel(modeloComboBox);
-    }
-
-    private String obtenerParametrosBusqueda() {
-        if (filtro.equals("nombre")) {
-            return obtenerNombres();
-        } else if (filtro.equals("rfc")) {
-            return obtenerRFC();
-        } else if (filtro.equals("fechaNacimiento")) {
-            return obtenerFechaNacimiento();
-        }
-        return null;
     }
 
     private PersonasDTO personaDTO() {
@@ -161,11 +137,6 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     private List<Persona> buscarPersonaConTodosLosFiltros(PersonasDTO personaDTO) {
         List<Persona> personas = historialDAO.buscar(personaDTO());
-        return personas;
-    }
-
-    private List<Persona> buscarPersonaConFiltroEspecifico() {
-        List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, obtenerParametrosBusqueda(), paginado);
         return personas;
     }
 
@@ -182,25 +153,75 @@ public class FrmHistorial extends javax.swing.JFrame {
     }
 
     private void cargarTablaTramites() {
+        if (personaSeleccionada != null) {
+            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
+            DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
+            modeloTablaPersonas.setRowCount(0);
 
-        List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
-        modeloTablaPersonas.setRowCount(0);
-
-        for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-            Tramite tramite = tramitesPersonaSeleccionada.get(i);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
-            String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
-            Object[] filaNueva = {tramite.getId(), definirTipoTramite(i, tramite),
-                fechaExpedicion, tramite.getCosto()};
-            modeloTablaPersonas.addRow(filaNueva);
+            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
+                Tramite tramite = tramitesPersonaSeleccionada.get(i);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
+                String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
+                Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(i, tramite),
+                    fechaExpedicion, "$ " + tramite.getCosto()};
+                modeloTablaPersonas.addRow(filaNueva);
+            }
         }
+    }
 
-//        for (Tramite tramite : tramitesPersonaSeleccionada) {
-//            Object[] filaNueva = {tramite.getId(), definirTipoTramite(2),
-//                tramite.getFechaExpedicion(), tramite.getCosto()};
-//            modeloTablaPersonas.addRow(filaNueva);
-//        }
+    public List<Persona> casillasActivas() throws PersistenciaException {
+        List<Persona> personas = null;
+        // Verificar cuáles JCheckBox están seleccionados
+        boolean filtro1Seleccionado = jcbRfc.isSelected();
+        boolean filtro2Seleccionado = jcbNombres.isSelected();
+        boolean filtro3Seleccionado = jcbFechaNacimiento.isSelected();
+
+        String filtro1Dato = obtenerRFC();
+        String filtro2Dato = obtenerNombres();
+        String filtro3Dato = obtenerFechaNacimiento();
+
+        // Aplicar el filtro correspondiente
+        if (filtro1Seleccionado && filtro2Seleccionado && filtro3Seleccionado) {
+            // Aplicar los tres filtros
+            validador.validaNombre(filtro2Dato);
+            validador.validaRFC(filtro1Dato);
+            validador.validaFechaNacimiento(filtro3Dato);
+            personas = personasDAO.consultasTresPersonasTresFiltro("rfc", "nombres", "fechaNacimiento", filtro1Dato, filtro2Dato, filtro3Dato, paginado);
+        } else if (filtro1Seleccionado && filtro2Seleccionado) {
+            // Aplicar los filtros 1 y 2
+            validador.validaNombre(filtro2Dato);
+            validador.validaRFC(filtro1Dato);
+            personas = personasDAO.consultarPersonasDosFiltro("rfc", "nombre", filtro1Dato, filtro2Dato, paginado);
+
+        } else if (filtro1Seleccionado && filtro3Seleccionado) {
+            System.out.println("entras");
+            // Aplicar los filtros 1 y 3
+            validador.validaRFC(filtro1Dato);
+            validador.validaFechaNacimiento(filtro3Dato);
+            personas = personasDAO.consultarPersonasDosFiltro("rfc", "fechaNacimiento", filtro1Dato, filtro3Dato, paginado);
+            System.out.println(personas);
+
+        } else if (filtro2Seleccionado && filtro3Seleccionado) {
+            // Aplicar los filtros 2 y 3
+            validador.validaFechaNacimiento(filtro3Dato);
+            validador.validaNombre(filtro2Dato);
+            personas = personasDAO.consultarPersonasDosFiltro("nombres", "fechaNacimiento", filtro2Dato, filtro3Dato, paginado);
+        } else if (filtro1Seleccionado) {
+            // Aplicar el filtro 1
+            validador.validaRFC(filtro1Dato);
+            personas = personasDAO.consultarPersonasFiltro("rfc", filtro1Dato, paginado);
+        } else if (filtro2Seleccionado) {
+            // Aplicar el filtro 2
+            validador.validaNombre(filtro2Dato);
+            personas = personas = personasDAO.consultarPersonasFiltro("nombres", filtro2Dato, paginado);
+        } else if (filtro3Seleccionado) {
+            // Aplicar el filtro 3
+            validador.validaFechaNacimiento(filtro3Dato);
+            personas = personasDAO.consultarPersonasFiltro("fechaNacimiento", filtro3Dato, paginado);
+        } else {
+            mostrarMensaje("Filtro de consultas incorrecto");
+        }
+        return personas;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -607,16 +628,14 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     private void jcbRfcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbRfcActionPerformed
         if (jcbRfc.isSelected()) {
-            filtro = "rfc";
-            this.txtRfc.setEnabled(true);
+            txtRfc.setEnabled(true);
         } else {
-            this.txtRfc.setEnabled(false);
+            txtRfc.setEnabled(false);
         }
     }//GEN-LAST:event_jcbRfcActionPerformed
 
     private void jcbNombresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbNombresActionPerformed
         if (jcbNombres.isSelected()) {
-            filtro = "nombre";
             txtNombres.setEnabled(true);
         } else {
             txtNombres.setEnabled(false);
@@ -625,7 +644,6 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     private void jcbFechaNacimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbFechaNacimientoActionPerformed
         if (jcbFechaNacimiento.isSelected()) {
-            filtro = "fechaNacimiento";
             dtpFechaNacimiento.setEnabled(true);
         } else {
             dtpFechaNacimiento.setEnabled(false);

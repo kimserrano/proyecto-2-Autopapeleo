@@ -31,6 +31,11 @@ public interface IPersonasDAO {
      * @return Lista de personas.
      */
     List<Persona> consultarPersonasFiltro(String filtro, String dato,ConfiguracionPaginado config);
+    
+    List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2, ConfiguracionPaginado config);
+    
+     List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3, ConfiguracionPaginado config);
+    
     /**
      * Método para obtener una persona a partir de la ID enviada.
      * @param id ID de la persona.

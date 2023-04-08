@@ -134,15 +134,56 @@ public class PersonasDAO implements IPersonasDAO {
      * @return Persona obtenida.
      */
     public Persona obtenerPersona(Long id) {
-        try{
-        String consulta = "SELECT p FROM Persona p WHERE p.id = :id";
-        Query query = conexionBD.getEM().createQuery(consulta);
-        query.setParameter("id", id);
-        Persona persona = (Persona) query.getSingleResult();
-        return persona;
-        }catch(Exception ex){
-        return null;        
+        try {
+            String consulta = "SELECT p FROM Persona p WHERE p.id = :id";
+            Query query = conexionBD.getEM().createQuery(consulta);
+            query.setParameter("id", id);
+            Persona persona = (Persona) query.getSingleResult();
+            return persona;
+        } catch (Exception ex) {
+            return null;
         }
+    }
+
+    @Override
+    public List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2, ConfiguracionPaginado config) {
+        CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+        CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
+        Root<Persona> root = cq.from(Persona.class);
+
+        Predicate filtroParam1 = criteriaBuilder.like(root.get(filtro1), ("%" + dato1 + "%"));
+        Predicate filtroParam2 = criteriaBuilder.like(root.get(filtro2), ("%" + dato2 + "%"));
+        Predicate predicateFinal = criteriaBuilder.and(filtroParam1, filtroParam2);
+
+        cq.select(root).where(predicateFinal);
+
+        TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(cq);
+        typedQuery.setFirstResult(config.getElementosASaltar());
+        typedQuery.setMaxResults(config.getElementosPorPagina());
+
+        List<Persona> resultados = typedQuery.getResultList();
+        return resultados;
+    }
+
+    @Override
+    public List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3, ConfiguracionPaginado config) {
+         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+        CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
+        Root<Persona> root = cq.from(Persona.class);
+
+        Predicate filtroParam1 = criteriaBuilder.like(root.get(filtro1), ("%" + dato1 + "%"));
+        Predicate filtroParam2 = criteriaBuilder.like(root.get(filtro2), ("%" + dato2 + "%"));
+        Predicate filtroParam3 = criteriaBuilder.like(root.get(filtro3), ("%" + dato3 + "%"));
+        Predicate predicateFinal = criteriaBuilder.and(filtroParam1, filtroParam2, filtroParam3);
+
+        cq.select(root).where(predicateFinal);
+
+        TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(cq);
+        typedQuery.setFirstResult(config.getElementosASaltar());
+        typedQuery.setMaxResults(config.getElementosPorPagina());
+
+        List<Persona> resultados = typedQuery.getResultList();
+        return resultados;
     }
 
 }
