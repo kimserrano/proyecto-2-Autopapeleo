@@ -31,12 +31,16 @@ public class Validador {
      * @param id ID a validar.
      * @return Valor booleano.
      */
-    public boolean validaID(String id) {
+    public boolean validaID(String id) throws PersistenciaException {
 
         String patron = "^[0-9]+$";
         Pattern p = Pattern.compile(patron);
         Matcher matcher = p.matcher(id);
-        return matcher.matches();
+        if (matcher.matches()) {
+            return true;
+        } else {
+            throw new PersistenciaException("ID inválida.");
+        }
     }
 
     /**
@@ -45,12 +49,16 @@ public class Validador {
      * @param letras símbolos a validar.
      * @return Valor booleano.
      */
-    public boolean validaNombre(String letras) {
+    public boolean validaNombre(String letras) throws PersistenciaException {
 
         String patron = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+([ '-][a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$";
         Pattern p = Pattern.compile(patron);
         Matcher matcher = p.matcher(letras);
-        return matcher.matches();
+        if (matcher.matches()) {
+            return true;
+        } else {
+            throw new PersistenciaException("Nombre inválido.");
+        }
     }
 
     /**
@@ -59,11 +67,15 @@ public class Validador {
      * @param rfc RFC a validar.
      * @return Valor booleano.
      */
-    public boolean validaRFC(String rfc) {
+    public boolean validaRFC(String rfc) throws PersistenciaException {
         String patron = "^[A-ZÑ&]{3,4}\\d{6}[A-V1-9][0-9A-Z]?$|^.{0,12}$";
         Pattern p = Pattern.compile(patron);
         Matcher matcher = p.matcher(rfc);
-        return matcher.matches();
+        if (matcher.matches()) {
+            return true;
+        } else {
+            throw new PersistenciaException("RFC inválido.");
+        }
     }
 
     public boolean validaNumeroSerie(String num) throws PersistenciaException {

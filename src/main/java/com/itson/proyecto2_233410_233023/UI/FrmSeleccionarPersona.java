@@ -5,6 +5,7 @@ package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.implementaciones.ConfiguracionPaginado;
+import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
 import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
@@ -14,6 +15,8 @@ import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -58,7 +61,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      *
      * @return Valor booleano para comprobar la validación.
      */
-    public boolean validarBusqueda() {
+    public boolean validarBusqueda() throws PersistenciaException {
         if (filtro.equals("id")) {
             return validador.validaID(obtenerBusqueda());
         } else if (filtro.equals("nombre")) {
@@ -76,19 +79,21 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     public void cargarTablaPersonas() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         if (filtro != null && !txtBusqueda.getText().isEmpty()) {
-            if (validarBusqueda()) {
-                List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, this.txtBusqueda.getText(), paginado);
-                DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
-                modeloTablaPersonas.setRowCount(0);
-                for (Persona persona : personas) {
-                    Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
-                        + persona.getApellidoPaterno(), persona.getRfc(),
-                        formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
-                        persona.getDiscapacitado(), persona.getDiscapacitado(), persona.getTelefono()};
-                    modeloTablaPersonas.addRow(filaNueva);
+            try {
+                if (validarBusqueda()) {
+                    List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, this.txtBusqueda.getText(), paginado);
+                    DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
+                    modeloTablaPersonas.setRowCount(0);
+                    for (Persona persona : personas) {
+                        Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
+                                + persona.getApellidoPaterno(), persona.getRfc(),
+                                formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
+                                persona.getDiscapacitado(), persona.getDiscapacitado(), persona.getTelefono()};
+                        modeloTablaPersonas.addRow(filaNueva);
+                    }
                 }
-            } else {
-                mostrarMensaje("Formato inválido de " + filtro + ", por favor ingrese parámetros correctos");
+            } catch (PersistenciaException ex) {
+                mostrarMensaje(ex.getMessage());
             }
         } else {
             List<Persona> personas = personasDAO.consultarPersonas(paginado);
@@ -128,27 +133,33 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         return "";
 
     }
-    public boolean validarPersona(){
+    public boolean validarPersona() throws PersistenciaException{
         String id = obtenerID();
-        if(validador.validaID(id)){
-            Persona personaObtenida = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
-            if(personaObtenida!=null){
-               this.personaSeleccionada=personaObtenida;
-               return true;
+            if(validador.validaID(id)){
+                Persona personaObtenida = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
+                if(personaObtenida!=null){
+                    this.personaSeleccionada=personaObtenida;
+                    return true;
+                }
             }
-        }
+        
        return false;
     }
     /**
      * Método para obtener la persona a partir de la ID recuperada.
      */
     public boolean seleccionarPersona() {
-        if (validarPersona()) {
-            mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
-            return true;
-        } else {
-            mostrarMensaje("Ingrese una ID correcta para seleccionar a la persona");
-            return false;
+        try {
+            if (validarPersona()) {
+                mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
+                return true;
+            } else {
+                mostrarMensaje("La ID que has proporcionado no existe.");
+                return false;
+            }
+        } catch (PersistenciaException ex) {
+           mostrarMensaje(ex.getMessage());
+           return false;
         }
     }
 
