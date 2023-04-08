@@ -5,14 +5,14 @@
 package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
-import java.util.Calendar;
 import java.util.List;
 
 /**
  *
- * @author Gabriel Mancinas
+ * @author Gabriel x Kim
  */
 public class PersonasDTO {
+
     private String rfc;
     private String nombre;
     private String fechaNacimiento;
@@ -23,8 +23,7 @@ public class PersonasDTO {
         this.nombre = nombre;
         this.fechaNacimiento = fechaNacimiento;
     }
-    
-    
+
     public String getRfc() {
         return rfc;
     }
@@ -61,5 +60,5 @@ public class PersonasDTO {
     public String toString() {
         return "PersonasDTO{" + "rfc=" + rfc + ", nombre=" + nombre + ", fechaNacimiento=" + fechaNacimiento + ", tramites=" + tramites + '}';
     }
-    
+
 }

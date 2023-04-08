@@ -5,18 +5,16 @@
 package com.itson.proyecto2_233410_233023.interfaces;
 
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
-import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Placa;
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
 import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
  *
- * @author kim
+ * @author Gabriel x Kim
  */
 public interface ITramitesDAO {
 
@@ -41,4 +39,6 @@ public interface ITramitesDAO {
     Long consultarDiasTransurridosSP(Calendar fechaInicio, Calendar fechaFin);
 
     List<Tramite> consultarColumnaTipoTramite();
+
+    List<Tramite> periodoFechaTramite(String fechaInicio, String fechaFin);
 }

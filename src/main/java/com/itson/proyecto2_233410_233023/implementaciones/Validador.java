@@ -3,18 +3,13 @@
  */
 package com.itson.proyecto2_233410_233023.implementaciones;
 
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Este clase representa los validadores del proyecto.
  *
- * @author Gab x Kim
+ * @author Gabriel x Kim
  */
 public class Validador {
 

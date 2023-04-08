@@ -1,6 +1,6 @@
 /**
-ConexionBD.java creada el 31/03/2023.
-*/
+ * ConexionBD.java creada el 31/03/2023.
+ */
 package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
@@ -12,15 +12,17 @@ import javax.persistence.Persistence;
  *
  * @author Gabriel x Kim
  */
-public class ConexionBD implements IConexionBD{
+public class ConexionBD implements IConexionBD {
+
     private EntityManager entityManager;
     private String nombrePersistencia;
-    
+
     public ConexionBD(String nombrePersistencia) {
-        this.nombrePersistencia=nombrePersistencia;
-         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(nombrePersistencia);
-         entityManager = entityManagerFactory.createEntityManager();
+        this.nombrePersistencia = nombrePersistencia;
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(nombrePersistencia);
+        entityManager = entityManagerFactory.createEntityManager();
     }
+
     public EntityManager getEM() {
         return entityManager;
     }

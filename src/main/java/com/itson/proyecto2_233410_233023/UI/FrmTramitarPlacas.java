@@ -3,31 +3,19 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
-import com.itson.proyecto2_233410_233023.dominio.Estado;
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.dominio.Placa;
-import com.itson.proyecto2_233410_233023.dominio.Tramite;
-import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
-import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
-import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
+import com.itson.proyecto2_233410_233023.dominio.*;
 import com.itson.proyecto2_233410_233023.implementaciones.Validador;
-import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
+import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.awt.event.ItemEvent;
-import java.awt.geom.RoundRectangle2D;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import java.awt.event.KeyEvent;
 import javax.swing.JTextField;
 
 /**
  *
- * @author kim
+ * @author Gabriel x Kim
  */
 public class FrmTramitarPlacas extends javax.swing.JFrame {
 
@@ -42,9 +30,9 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO,Persona persona, String numSerie, IHistorialDAO historialDAO) {
+    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO, Persona persona, String numSerie, IHistorialDAO historialDAO) {
         initComponents();
-        this.historialDAO=historialDAO;
+        this.historialDAO = historialDAO;
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
@@ -61,7 +49,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
 
     public void mostrarOpciones() {
         if (cbxVehiculo.getSelectedItem().toString().equals("Nuevo")) {
-            
+
             btnRegistrar.setVisible(true);
             btnBuscar.setVisible(false);
             txtNumeroSerie.setEditable(false);
@@ -69,14 +57,14 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             lblPlacasAnteriores.setVisible(false);
             txtPlacasAnteriores.setVisible(false);
             txtCosto.setText("1500.00");
-        } else if(cbxVehiculo.getSelectedItem().toString().equals("Registrado sin historial")){
+        } else if (cbxVehiculo.getSelectedItem().toString().equals("Registrado sin historial")) {
             txtNumeroSerie.setEditable(true);
             btnRegistrar.setVisible(false);
             btnBuscarRegistrado.setVisible(true);
             lblPlacasAnteriores.setVisible(false);
             txtPlacasAnteriores.setVisible(false);
             txtCosto.setText("1500.00");
-        }else{
+        } else {
             txtNumeroSerie.setEditable(false);
             btnBuscarRegistrado.setVisible(false);
             btnRegistrar.setVisible(false);
@@ -86,7 +74,8 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             txtCosto.setText("1000.00");
         }
     }
-    public Placa obtenerDatos(){
+
+    public Placa obtenerDatos() {
         Calendar fechaActual = Calendar.getInstance();
         int anio = fechaActual.get(Calendar.YEAR);
         int mes = fechaActual.get(Calendar.MONTH);
@@ -95,84 +84,86 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         String numeroAlfanumerico = txtNuevaPlaca.getText();
         Float costo = Float.parseFloat(txtCosto.getText());
         //Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmisio
-        Placa placa = new Placa(numeroAlfanumerico,costo,Estado.ACTIVA,fechaExpedicion);
+        Placa placa = new Placa(numeroAlfanumerico, costo, Estado.ACTIVA, fechaExpedicion);
         return placa;
     }
-    
-    public Placa validarDatos(Placa placa){
+
+    public Placa validarDatos(Placa placa) {
         Vehiculo vehiculo;
         String numSerie = txtNumeroSerie.getText();
-        try{
-        validador.validaPlacas(placa.getNumeroAlfanumerico());
-        validador.validaNumeroSerie(numSerie);
-        if(txtNumeroSerie.isEditable()){
-            mostrarMensaje("Asegurese de buscar el auto.");
-            return null;
-        }
-        vehiculo = vehiculosDAO.obtenerVehiculo(numSerie);
-        placa.setVehiculo(vehiculo);
-        return placa;
-        }catch(Exception ex){
+        try {
+            validador.validaPlacas(placa.getNumeroAlfanumerico());
+            validador.validaNumeroSerie(numSerie);
+            if (txtNumeroSerie.isEditable()) {
+                mostrarMensaje("Asegurese de buscar el auto.");
+                return null;
+            }
+            vehiculo = vehiculosDAO.obtenerVehiculo(numSerie);
+            placa.setVehiculo(vehiculo);
+            return placa;
+        } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
             return null;
         }
     }
 
-    
-    public void buscarVehiculoUsado(){
+    public void buscarVehiculoUsado() {
         String placas = txtPlacasAnteriores.getText();
         Vehiculo vehiculo;
         try {
             validador.validaPlacas(placas);
             vehiculo = vehiculosDAO.obtenerVehiculoUsado(placas);
-            if(vehiculo!=null){
-            txtNumeroSerie.setText(vehiculo.getNumeroSerie());
-            mostrarMensaje("Vehiculo encontrado.");
-            }else{
+            if (vehiculo != null) {
+                txtNumeroSerie.setText(vehiculo.getNumeroSerie());
+                mostrarMensaje("Vehiculo encontrado.");
+            } else {
                 mostrarMensaje("Vehiculo no encontrado");
             }
         } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
         }
     }
-    public void buscarVehiculoSinHistorial(){
-       String numSerie = txtNumeroSerie.getText();
-       Vehiculo vehiculo;
+
+    public void buscarVehiculoSinHistorial() {
+        String numSerie = txtNumeroSerie.getText();
+        Vehiculo vehiculo;
         try {
-            if(validador.validaNumeroSerie(numSerie)){
+            if (validador.validaNumeroSerie(numSerie)) {
                 vehiculo = vehiculosDAO.obtenerVehiculoSinHistorial(numSerie);
-                if(vehiculo!=null){
+                if (vehiculo != null) {
                     mostrarMensaje("Vehiculo encontrado.");
                     txtNumeroSerie.setEditable(false);
-                }else{
+                } else {
                     mostrarMensaje("Vehiculo no encontrado.");
                 }
             }
         } catch (Exception ex) {
-           mostrarMensaje(ex.getMessage());
-        } 
+            mostrarMensaje(ex.getMessage());
+        }
     }
-    public boolean realizarTramite(){
+
+    public boolean realizarTramite() {
         Placa placa = obtenerDatos();
-        if(validarDatos(placa)!=null){
-            try{
-               TramitePlaca tramite = new TramitePlaca(placa,placa.getCosto(),placa.getFechaEmision(),personaSeleccionada);
-               tramitesDAO.tramitarPlaca(tramite);
-               mostrarMensaje("Trámite realizado con éxito.");
-               return true;
-            }catch(Exception ex){
+        if (validarDatos(placa) != null) {
+            try {
+                TramitePlaca tramite = new TramitePlaca(placa, placa.getCosto(), placa.getFechaEmision(), personaSeleccionada);
+                tramitesDAO.tramitarPlaca(tramite);
+                mostrarMensaje("Trámite realizado con éxito.");
+                return true;
+            } catch (Exception ex) {
                 mostrarMensaje(ex.getMessage());
             }
         }
         return false;
     }
-    public void regresarMenu(){
+
+    public void regresarMenu() {
         FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }
-    
-    public void formatoPlacaSerie(KeyEvent evt,JTextField txt){
+
+    public void formatoPlacaSerie(KeyEvent evt, JTextField txt) {
         String texto = txt.getText();
         char c = evt.getKeyChar();
         if (!(Character.isLetterOrDigit(c) || c == '-') || texto.length() >= 7) {
@@ -187,7 +178,8 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             evt.consume();
         }
     }
-   /**
+
+    /**
      * Método para mostrar un mensaje en un JOptionPane.
      *
      * @param msj Mensaje a mostrar.
@@ -195,6 +187,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -516,11 +509,11 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-       regresarMenu();
+        regresarMenu();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
-        if(realizarTramite()){
+        if (realizarTramite()) {
             regresarMenu();
         }
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
@@ -536,29 +529,29 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void txtPlacasAnterioresKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacasAnterioresKeyTyped
-        formatoPlacaSerie(evt,txtPlacasAnteriores);
+        formatoPlacaSerie(evt, txtPlacasAnteriores);
     }//GEN-LAST:event_txtPlacasAnterioresKeyTyped
 
     private void txtNuevaPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNuevaPlacaKeyTyped
-        formatoPlacaSerie(evt,txtNuevaPlaca);
+        formatoPlacaSerie(evt, txtNuevaPlaca);
     }//GEN-LAST:event_txtNuevaPlacaKeyTyped
 
     private void cbxVehiculoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxVehiculoItemStateChanged
-       if (evt.getStateChange() == ItemEvent.SELECTED) {
-            this.vehiculo = (String)this.cbxVehiculo.getSelectedItem();
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            this.vehiculo = (String) this.cbxVehiculo.getSelectedItem();
         }
     }//GEN-LAST:event_cbxVehiculoItemStateChanged
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-       buscarVehiculoUsado();
+        buscarVehiculoUsado();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnBuscarRegistradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarRegistradoActionPerformed
-       buscarVehiculoSinHistorial();
+        buscarVehiculoSinHistorial();
     }//GEN-LAST:event_btnBuscarRegistradoActionPerformed
 
     private void txtNumeroSerieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroSerieKeyTyped
-      formatoPlacaSerie(evt,txtNumeroSerie);
+        formatoPlacaSerie(evt, txtNumeroSerie);
     }//GEN-LAST:event_txtNumeroSerieKeyTyped
 
 

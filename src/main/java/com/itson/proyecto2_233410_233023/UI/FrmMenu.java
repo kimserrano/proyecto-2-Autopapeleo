@@ -3,17 +3,7 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.implementaciones.ConexionBD;
-import com.itson.proyecto2_233410_233023.implementaciones.PersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
-import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
-import java.awt.geom.RoundRectangle2D;
-import java.util.List;
-import javax.persistence.EntityTransaction;
+import com.itson.proyecto2_233410_233023.interfaces.*;
 import javax.swing.JOptionPane;
 
 /**

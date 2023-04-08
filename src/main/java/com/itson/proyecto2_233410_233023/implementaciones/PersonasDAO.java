@@ -14,7 +14,6 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -167,7 +166,7 @@ public class PersonasDAO implements IPersonasDAO {
 
     @Override
     public List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3, ConfiguracionPaginado config) {
-         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
         Root<Persona> root = cq.from(Persona.class);
 

@@ -4,13 +4,8 @@
 package com.itson.proyecto2_233410_233023.UI;
 
 import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.implementaciones.ConfiguracionPaginado;
-import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
-import com.itson.proyecto2_233410_233023.implementaciones.Validador;
-import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
+import com.itson.proyecto2_233410_233023.implementaciones.*;
+import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -44,10 +39,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
      */
-    public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO,Boolean tramite, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
-        this.historialDAO= historialDAO;
+    public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Boolean tramite, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
+        this.historialDAO = historialDAO;
         this.personasDAO = personasDAO;
-        this.vehiculosDAO=vehiculosDAO;
+        this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
         this.paginado = new ConfiguracionPaginado(this.numeroPagina, this.elementosPorPagina);
         this.tramite = tramite;
@@ -86,9 +81,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
                     modeloTablaPersonas.setRowCount(0);
                     for (Persona persona : personas) {
                         Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
-                                + persona.getApellidoPaterno(), persona.getRfc(),
-                                formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
-                                persona.getDiscapacitado(), persona.getDiscapacitado(), persona.getTelefono()};
+                            + persona.getApellidoPaterno(), persona.getRfc(),
+                            formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
+                            persona.getDiscapacitado(), persona.getDiscapacitado(), persona.getTelefono()};
                         modeloTablaPersonas.addRow(filaNueva);
                     }
                 }
@@ -133,18 +128,20 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         return "";
 
     }
-    public boolean validarPersona() throws PersistenciaException{
+
+    public boolean validarPersona() throws PersistenciaException {
         String id = obtenerID();
-            if(validador.validaID(id)){
-                Persona personaObtenida = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
-                if(personaObtenida!=null){
-                    this.personaSeleccionada=personaObtenida;
-                    return true;
-                }
+        if (validador.validaID(id)) {
+            Persona personaObtenida = personasDAO.obtenerPersona(Long.parseLong(obtenerID()));
+            if (personaObtenida != null) {
+                this.personaSeleccionada = personaObtenida;
+                return true;
             }
-        
-       return false;
+        }
+
+        return false;
     }
+
     /**
      * Método para obtener la persona a partir de la ID recuperada.
      */
@@ -158,8 +155,8 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
                 return false;
             }
         } catch (PersistenciaException ex) {
-           mostrarMensaje(ex.getMessage());
-           return false;
+            mostrarMensaje(ex.getMessage());
+            return false;
         }
     }
 
@@ -178,9 +175,9 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private void mostrarFrm() {
         JFrame frm;
         if (this.tramite) {
-            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO,personaSeleccionada, tramitesDAO, historialDAO);
+            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO, historialDAO);
         } else {
-            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO,tramitesDAO,personaSeleccionada,"", historialDAO);
+            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
         }
         this.setVisible(false);
         frm.setVisible(true);
@@ -505,7 +502,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        FrmMenu frmm = new FrmMenu(personasDAO,vehiculosDAO, tramitesDAO, historialDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -526,8 +523,8 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnSeleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeleccionarActionPerformed
-        if(seleccionarPersona()){
-           mostrarFrm(); 
+        if (seleccionarPersona()) {
+            mostrarFrm();
         }
     }//GEN-LAST:event_btnSeleccionarActionPerformed
     /**
@@ -561,7 +558,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      */
     private void rbnNombreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbnNombreItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
-            
+
             this.filtro = "nombre";
         }
     }//GEN-LAST:event_rbnNombreItemStateChanged
@@ -594,7 +591,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-    cargarTablaPersonas();
+        cargarTablaPersonas();
     }//GEN-LAST:event_btnConsultarActionPerformed
 
     private void rbnNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbnNombreActionPerformed

@@ -3,24 +3,16 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
-import com.itson.proyecto2_233410_233023.dominio.Automovil;
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.dominio.Vehiculo;
-import com.itson.proyecto2_233410_233023.implementaciones.PersistenciaException;
-import com.itson.proyecto2_233410_233023.implementaciones.Validador;
-import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
+import com.itson.proyecto2_233410_233023.dominio.*;
+import com.itson.proyecto2_233410_233023.implementaciones.*;
+import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.awt.event.ItemEvent;
-import java.awt.geom.RoundRectangle2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author kim
+ * @author Gabriel x Kim
  */
 public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 

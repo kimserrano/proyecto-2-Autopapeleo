@@ -25,7 +25,7 @@ import javax.persistence.Table;
  * @author Gabriel x Kim
  */
 @Entity
-@DiscriminatorColumn(name="tipo")
+@DiscriminatorColumn(name = "tipo")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "Vehiculos")
 public class Vehiculo implements Serializable {
@@ -291,7 +291,7 @@ public class Vehiculo implements Serializable {
      * @param object objeto que deseas comparar
      * @return true si el objeto es igual y false de caso contrario
      */
-   @Override
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -308,7 +308,6 @@ public class Vehiculo implements Serializable {
         }
         return Objects.equals(this.id, other.id);
     }
-    
 
     /**
      * Escribe los atributos del vehiculo de manera ordenada
@@ -319,7 +318,5 @@ public class Vehiculo implements Serializable {
     public String toString() {
         return "Vehiculo{" + "id=" + id + ", numeroSerie=" + numeroSerie + ", modelo=" + modelo + ", marca=" + marca + ", linea=" + linea + ", color=" + color + ", persona=" + persona + ", placas=" + placas + '}';
     }
-
-    
 
 }

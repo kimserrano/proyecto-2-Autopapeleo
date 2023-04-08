@@ -16,7 +16,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -25,7 +24,7 @@ import javax.persistence.Table;
  * @author Gabriel x Kim
  */
 @Table(name = "Tramites")
-@DiscriminatorColumn(name="tipoTramite", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "tipoTramite", discriminatorType = DiscriminatorType.STRING)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Entity
 public class Tramite implements Serializable {
@@ -87,7 +86,6 @@ public class Tramite implements Serializable {
         this.fechaExpedicion = fechaExpedicion;
         this.persona = persona;
     }
-
 
     public Persona getPersona() {
         return persona;

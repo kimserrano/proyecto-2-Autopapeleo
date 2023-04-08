@@ -5,7 +5,6 @@ package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,8 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -42,7 +39,7 @@ public class Placa implements Serializable {
      * Representa la combinacion de numero y letras que identifican a la placa
      * de una automovil
      */
-    @Column(name = "numero_alfanumerico", nullable = false, length = 10,unique = true)
+    @Column(name = "numero_alfanumerico", nullable = false, length = 10, unique = true)
     private String numeroAlfanumerico;
 
     /**
@@ -107,6 +104,7 @@ public class Placa implements Serializable {
         this.fechaRecepcion = fechaRecepcion;
         this.vehiculo = vehiculo;
     }
+
     /**
      * Contructor para crear una placa enviando parametros
      *
@@ -119,12 +117,12 @@ public class Placa implements Serializable {
      * vehiculo
      * @param vehiculo Representa el vehiculo al cual se le tramitan las placas.
      */
-    public Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision,Vehiculo vehiculo) {
+    public Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision, Vehiculo vehiculo) {
         this.numeroAlfanumerico = numeroAlfanumerico;
         this.costo = costo;
         this.estado = estado;
         this.fechaEmision = fechaEmision;
-        this.vehiculo=vehiculo;
+        this.vehiculo = vehiculo;
     }
 
     public Placa(String numeroAlfanumerico, Float costo, Estado estado, Calendar fechaEmision) {
@@ -133,7 +131,6 @@ public class Placa implements Serializable {
         this.estado = estado;
         this.fechaEmision = fechaEmision;
     }
-    
 
     /**
      * Obtiene el id unico que identifica a una placa en especifico de un

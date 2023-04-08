@@ -7,7 +7,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.Base64;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -19,7 +18,7 @@ import javax.persistence.Converter;
  * @author Gabriel x Kim
  */
 @Converter
-public class EncriptacionAES implements AttributeConverter<String, String>  {
+public class EncriptacionAES implements AttributeConverter<String, String> {
 
     /**
      * Llave secreta para encriptar y desencriptar
@@ -31,9 +30,10 @@ public class EncriptacionAES implements AttributeConverter<String, String>  {
      * para cifrar los datos y asegurar que cada bloque cifrado sea diferente
      */
     private static final String INIT_VECTOR = "encryptionIntVec";
+
     @Override
     public String convertToDatabaseColumn(String palabraOriginal) {
-                try {
+        try {
             // crea un objeto IvParameterSpec utilizando el vector de inicialización
             IvParameterSpec iv = new IvParameterSpec(INIT_VECTOR.getBytes(StandardCharsets.UTF_8));
             // crea un objeto SecretKeySpec utilizando la llave secreta

@@ -3,17 +3,8 @@
  */
 package com.itson.proyecto2_233410_233023.UI;
 
-import com.itson.proyecto2_233410_233023.dominio.Anios;
-import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
-import com.itson.proyecto2_233410_233023.dominio.Estado;
-import com.itson.proyecto2_233410_233023.dominio.Licencia;
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.dominio.Tramite;
-import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
-import com.itson.proyecto2_233410_233023.interfaces.IHistorialDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
-import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
-import com.itson.proyecto2_233410_233023.interfaces.IVehiculosDAO;
+import com.itson.proyecto2_233410_233023.dominio.*;
+import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.DefaultComboBoxModel;
@@ -21,7 +12,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author kim
+ * @author Gabriel x Kim
  */
 public class FrmTramitarLicencias extends javax.swing.JFrame {
 
@@ -41,7 +32,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         initComponents();
         cbxVigencia.setModel(modeloComboBox);
         this.personasDAO = personasDAO;
-        this.historialDAO= historialDAO;
+        this.historialDAO = historialDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
@@ -276,7 +267,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     public void actualizacion() {
-        if (licencia != null && revisarRegistro()!=null ) {
+        if (licencia != null && revisarRegistro() != null) {
             tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia(), revisarRegistro());
         }
     }

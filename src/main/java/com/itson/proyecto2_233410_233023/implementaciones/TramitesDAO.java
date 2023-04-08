@@ -4,18 +4,11 @@
  */
 package com.itson.proyecto2_233410_233023.implementaciones;
 
-import com.itson.proyecto2_233410_233023.dominio.Estado;
-import com.itson.proyecto2_233410_233023.dominio.Licencia;
-import com.itson.proyecto2_233410_233023.dominio.Persona;
-import com.itson.proyecto2_233410_233023.dominio.Placa;
-import com.itson.proyecto2_233410_233023.dominio.Tramite;
-import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
-import com.itson.proyecto2_233410_233023.dominio.TramitePlaca;
+import com.itson.proyecto2_233410_233023.dominio.*;
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
 import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.ParameterMode;
@@ -148,13 +141,21 @@ public class TramitesDAO implements ITramitesDAO {
     @Override
     public List<Tramite> consultarColumnaTipoTramite() {
         List<Tramite> tramites = conexionBD.getEM().createQuery("SELECT a FROM Tramite a", Tramite.class).getResultList();
-//        for (Tramite tramite : tramites) {
-//            if (tramite instanceof TramiteLicencia) {
-//                return "TramiteLicencia";
-//            } else if (tramite instanceof TramitePlaca) {
-//                return "TramitePlaca";
-//            }
-//        }
         return tramites;
+    }
+
+    @Override
+    public List<Tramite> periodoFechaTramite(String fechaInicio, String fechaFin) {
+        CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+        CriteriaQuery<Tramite> cq = criteriaBuilder.createQuery(Tramite.class);
+        Root<Tramite> root = cq.from(Tramite.class);
+
+        Predicate periodo = criteriaBuilder.between(root.get("fechaExpedicion"), fechaInicio, fechaFin);
+        cq.select(root).where(periodo);
+
+        TypedQuery<Tramite> typedQuery = conexionBD.getEM().createQuery(cq);
+
+        List<Tramite> resultados = typedQuery.getResultList();
+        return resultados;
     }
 }
