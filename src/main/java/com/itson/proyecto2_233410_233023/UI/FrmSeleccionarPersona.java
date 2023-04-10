@@ -151,11 +151,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
                 return true;
             }
         }
-
         return false;
     }
 
-    public void personaMayor18() throws PersistenciaException {
+    public void validarPersonaMayor18() throws PersistenciaException {
         Calendar fechaNacimiento = personaSeleccionada.getFechaNacimiento();
         Calendar fechaActual = Calendar.getInstance();
         LocalDate fechaNacimientoLD = LocalDate.of(fechaNacimiento.get(Calendar.YEAR), fechaNacimiento.get(Calendar.MONTH) + 1, fechaNacimiento.get(Calendar.DAY_OF_MONTH));
@@ -168,10 +167,14 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         }
 
     }
-
-    public void personaSinLicencia() throws Exception {
+    public void validarPersonaSinLicencia() throws Exception {
         if (tramitesDAO.buscarLicenciaActiva(personaSeleccionada) == null) {
             throw new PersistenciaException("Esta persona no tiene licencia activa");
+        }
+    }
+    public void validarPersonaSinTelefono() throws Exception {
+        if (personaSeleccionada.getTelefono() == null) {
+            throw new PersistenciaException("Esta persona no tiene teléfono");
         }
     }
 
@@ -206,26 +209,21 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      */
     private void mostrarFrm() {
         JFrame frm;
+        try{
         if (this.tramite) {
-            try {
-                personaMayor18();
-            } catch (PersistenciaException ex) {
-                mostrarMensaje(ex.getMessage());
-                return;
-            }
+                validarPersonaSinTelefono();
+                validarPersonaMayor18();
             frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO, historialDAO);
         } else {
-            try {
-                personaSinLicencia();
-            } catch (Exception ex) {
-                mostrarMensaje(ex.getMessage());
-                return;
-            }
+                validarPersonaSinLicencia();
             frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
         }
         mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
         this.setVisible(false);
         frm.setVisible(true);
+        }catch(Exception ex){
+            mostrarMensaje(ex.getMessage());
+        }
     }
 
     /**

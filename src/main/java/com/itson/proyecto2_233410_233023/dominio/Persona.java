@@ -47,7 +47,7 @@ public class Persona implements Serializable {
     /**
      * Atributo para conocer los nombres que tiene la persona
      */
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = false,length = 50)
     @Convert(converter = EncriptacionAES.class)
     private String nombre;
 
@@ -75,7 +75,7 @@ public class Persona implements Serializable {
     /**
      * Atributo que syuda a conocer el telefono de una persona para su contacto
      */
-    @Column(name = "telefono", nullable = true, length = 50)
+    @Column(name = "telefono",nullable=true,length = 20)
     private String telefono;
 
     /**
