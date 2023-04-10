@@ -5,6 +5,7 @@
 package com.itson.proyecto2_233410_233023.interfaces;
 
 import com.itson.proyecto2_233410_233023.dominio.Licencia;
+import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.dominio.Placa;
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
 import com.itson.proyecto2_233410_233023.dominio.TramiteLicencia;
@@ -24,8 +25,10 @@ public interface ITramitesDAO {
 
     Boolean registrarPlaca(Placa placa) throws Exception;
 
-    void actualizarLicencia(Licencia licenciaActual, TramiteLicencia tramiteLicencia);
-
+    void actualizarLicencia(Licencia licenciaActual, TramiteLicencia tramiteLicencia) throws Exception;
+   
+    Licencia buscarLicenciaActiva(Persona persona) throws Exception;
+    
     Boolean tramitarPlaca(TramitePlaca tramite) throws Exception;
 
     void actualizarPlaca(Placa placaActual, TramitePlaca tramite);

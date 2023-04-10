@@ -7,6 +7,8 @@ import com.itson.proyecto2_233410_233023.dominio.*;
 import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -268,7 +270,11 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     public void actualizacion() {
         if (licencia != null && revisarRegistro() != null) {
-            tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia(), revisarRegistro());
+            try {
+                tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia(), revisarRegistro());
+            } catch (Exception ex) {
+                mostrarMensaje(ex.getMessage());
+            }
         }
     }
 

@@ -46,7 +46,7 @@ public class PersonasDAO implements IPersonasDAO {
         GregorianCalendar fn = new GregorianCalendar(2003, 3, 3); // año, mes y día. mes empiza del 0
 
         //String rfc, String nombres, String apellidoPaterno, String apellidoMaterno, Discapacitado discapacitado, Calendar fechaNacimiento
-        Persona p1 = new Persona("PEGJ931015", "Juan", "Pérez", "García", Discapacitado.NO, new GregorianCalendar(2003, 3, 3));
+        Persona p1 = new Persona("PEGJ931015", "Juan", "Pérez", "García", Discapacitado.NO, new GregorianCalendar(2006, 3, 3));
         Persona p2 = new Persona("LOHA880215", "Ana", "López", "Hernández", Discapacitado.NO, new GregorianCalendar(2002, 4, 13));
         Persona p3 = new Persona("RATC800526", "Carlos", "Ramírez", "Torres", Discapacitado.NO, new GregorianCalendar(2001, 5, 7));
         Persona p4 = new Persona("MAOS960712", "Sofía", "Martínez", "Ortiz", Discapacitado.NO, new GregorianCalendar(2003, 1, 9));

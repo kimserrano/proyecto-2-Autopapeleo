@@ -5,9 +5,11 @@ package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -23,7 +25,7 @@ public class TramiteLicencia extends Tramite implements Serializable {
     /**
      * Representa la licencia a la que pertenece el tramite
      */
-    //@OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "id_licencia", nullable = true)
     private Licencia licencia;
 

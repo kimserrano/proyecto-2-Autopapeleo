@@ -33,35 +33,59 @@ public class TramitesDAO implements ITramitesDAO {
 
     @Override
     public Boolean registrarLicencia(Licencia licencia) throws Exception {
+        try{
         conexionBD.getEM().getTransaction().begin();
         conexionBD.getEM().persist(licencia);
         conexionBD.getEM().getTransaction().commit();
         return true;
+        }catch(Exception ex){
+            throw new PersistenciaException("No se pudo registrar la licencia.");
+        }finally{
+            conexionBD.getEM().clear();
+        }
     }
 
     @Override
     public Boolean tramitarLicencia(TramiteLicencia tramite) throws Exception {
+        try{
         conexionBD.getEM().getTransaction().begin();
         conexionBD.getEM().persist(tramite);
         conexionBD.getEM().getTransaction().commit();
         return true;
+        }catch(Exception ex){
+            throw new PersistenciaException("No se pudo tramitar la licencia");
+        }finally{
+            conexionBD.getEM().clear();
+        }
     }
 
     @Override
-    public void actualizarLicencia(Licencia licenciaActual, TramiteLicencia tramiteLicencia) {
+    public void actualizarLicencia(Licencia licenciaActual, TramiteLicencia tramiteLicencia) throws Exception {
+       try{
         if (licenciaActual != null && tramiteLicencia != null) {
             licenciaActual.setEstado(Estado.INACTIVA);
             licenciaActual.setFechaExpedicion(tramiteLicencia.getFechaExpedicion());
             conexionBD.getEM().merge(licenciaActual);
         }
+       }catch(Exception ex){
+            throw new PersistenciaException("No se pudo actualizar la licencia ");
+        }finally{
+            conexionBD.getEM().clear();
+        }
     }
 
     @Override
     public Boolean registrarPlaca(Placa placa) throws Exception {
+        try{
         conexionBD.getEM().getTransaction().begin();
         conexionBD.getEM().persist(placa);
         conexionBD.getEM().getTransaction().commit();
         return true;
+        }catch(Exception ex){
+            throw new PersistenciaException("No se pudo registrar la placa");
+        }finally{
+            conexionBD.getEM().clear();
+        }
     }
 
     @Override
@@ -90,7 +114,23 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().merge(placaActual);
         }
     }
-
+    public Licencia buscarLicenciaActiva(Persona persona) throws Exception {
+        try {
+            Licencia licenciaActual = conexionBD.getEM().createQuery("SELECT l FROM Persona p JOIN p.tramites t JOIN TramiteLicencia tl ON t.id = tl.id JOIN tl.licencia l WHERE p = :persona AND l.estado = :estado ORDER BY l.fechaExpedicion DESC", Licencia.class)
+                    .setParameter("persona", persona)
+                    .setParameter("estado", Estado.ACTIVA)
+                    .setMaxResults(1)
+                    .getSingleResult();
+            return licenciaActual;
+        } catch (NoResultException ex) {
+            return null;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new PersistenciaException("No se pudo realizar la búsqueda de la licencia activa.");
+        } finally {
+            conexionBD.getEM().clear();
+        }
+    }
     @Override
     public Placa buscarPlacaActiva(TramitePlaca tramite) throws Exception {
         try {
@@ -102,7 +142,9 @@ public class TramitesDAO implements ITramitesDAO {
         } catch (NoResultException ex) {
             return null;
         } catch (Exception ex) {
-            throw new PersistenciaException("No se pudo realizar el trámite");
+            throw new PersistenciaException("No se pudo realizar la búsqueda de la placa activa.");
+        }finally{
+            conexionBD.getEM().clear();
         }
     }
 
@@ -123,18 +165,13 @@ public class TramitesDAO implements ITramitesDAO {
     @Override
     public Long consultarDiasTransurridosSP(Calendar fechaInicio, Calendar fechaFin) {
         StoredProcedureQuery storedProcedure = conexionBD.getEM().createStoredProcedureQuery("calcular_dias_transcurridos");
-
         storedProcedure.registerStoredProcedureParameter("fecha_inicio", Calendar.class, ParameterMode.IN);
         storedProcedure.registerStoredProcedureParameter("fecha_fin", Calendar.class, ParameterMode.IN);
         storedProcedure.registerStoredProcedureParameter("dias_transcurridos", Integer.class, ParameterMode.OUT);
-
         storedProcedure.setParameter("fecha_inicio", fechaInicio);
         storedProcedure.setParameter("fecha_fin", fechaFin);
-
         storedProcedure.execute();
-
         Long diasTranscurridos = (Long) storedProcedure.getOutputParameterValue("dias_transcurridos");
-
         return diasTranscurridos;
     }
 
@@ -149,12 +186,9 @@ public class TramitesDAO implements ITramitesDAO {
         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Tramite> cq = criteriaBuilder.createQuery(Tramite.class);
         Root<Tramite> root = cq.from(Tramite.class);
-
         Predicate periodo = criteriaBuilder.between(root.get("fechaExpedicion"), fechaInicio, fechaFin);
         cq.select(root).where(periodo);
-
         TypedQuery<Tramite> typedQuery = conexionBD.getEM().createQuery(cq);
-
         List<Tramite> resultados = typedQuery.getResultList();
         return resultados;
     }

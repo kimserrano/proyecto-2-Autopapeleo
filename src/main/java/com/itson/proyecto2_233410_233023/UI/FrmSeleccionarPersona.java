@@ -8,6 +8,9 @@ import com.itson.proyecto2_233410_233023.implementaciones.*;
 import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.awt.event.ItemEvent;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -141,14 +144,30 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
         return false;
     }
-
+    public void personaMayor18() throws PersistenciaException{
+        Calendar fechaNacimiento = personaSeleccionada.getFechaNacimiento();
+        Calendar fechaActual = Calendar.getInstance();
+        LocalDate fechaNacimientoLD = LocalDate.of(fechaNacimiento.get(Calendar.YEAR),fechaNacimiento.get(Calendar.MONTH) + 1,fechaNacimiento.get(Calendar.DAY_OF_MONTH));
+        LocalDate fechaActualLD = LocalDate.of(fechaActual.get(Calendar.YEAR),fechaActual.get(Calendar.MONTH) + 1,fechaActual.get(Calendar.DAY_OF_MONTH));
+        Period diferencia = Period.between(fechaNacimientoLD, fechaActualLD);
+        int anios = diferencia.getYears();
+        System.out.println(anios);
+        if(anios<18){
+            throw new PersistenciaException("Persona menor de 18 años");
+    }
+       
+    }
+    public void personaSinLicencia() throws Exception{
+    if(tramitesDAO.buscarLicenciaActiva(personaSeleccionada)==null){
+        throw new PersistenciaException("Esta persona no tiene licencia activa");
+    }
+    }
     /**
      * Método para obtener la persona a partir de la ID recuperada.
      */
     public boolean seleccionarPersona() {
         try {
             if (validarPersona()) {
-                mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
                 return true;
             } else {
                 mostrarMensaje("La ID que has proporcionado no existe.");
@@ -175,10 +194,23 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private void mostrarFrm() {
         JFrame frm;
         if (this.tramite) {
+            try {
+                personaMayor18();
+            } catch (PersistenciaException ex) {
+                mostrarMensaje(ex.getMessage());
+                return;
+            }
             frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO, historialDAO);
         } else {
+            try {
+                personaSinLicencia();
+            } catch (Exception ex) {
+               mostrarMensaje(ex.getMessage());
+               return;
+            }
             frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
         }
+        mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
         this.setVisible(false);
         frm.setVisible(true);
     }
