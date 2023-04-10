@@ -13,19 +13,23 @@ import javax.swing.JOptionPane;
 public class FrmMenu extends javax.swing.JFrame {
 
     /**
-     * Este atributo representa la DAO de Personas.
+     * Atributo que representa la DAO de Personas.
      */
     IPersonasDAO personasDAO;
+    /**
+     * Atributo que representa la DAO de vehiculos.
+     */
     IVehiculosDAO vehiculosDAO;
+    /**
+     * Atributo que representa la DAO de tramites.
+     */
     ITramitesDAO tramitesDAO;
-    IHistorialDAO historialDAO;
 
     /**
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
      */
-    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
-        this.historialDAO = historialDAO;
+    public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO) {
         this.personasDAO = personasDAO;
         this.tramitesDAO = tramitesDAO;
         this.vehiculosDAO = vehiculosDAO;
@@ -33,7 +37,7 @@ public class FrmMenu extends javax.swing.JFrame {
 
     }
 
-    @SuppressWarnings("unchecked")
+ 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -225,32 +229,47 @@ public class FrmMenu extends javax.swing.JFrame {
     private void mensajeConfirmacion(String mensaje, String titulo) {
         new JOptionPane().showMessageDialog(this, mensaje, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
-
+    /**
+     * Evento Action del botón tramitar licencia el cual inicia el frame de TramitarLicencia.
+     * @param evt Evento del botón.
+     */
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
-        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, tramitesDAO, historialDAO);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, true, tramitesDAO);
         this.setVisible(false);
         frmsp.setVisible(true);
 
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
-
+ /**
+     * Evento Action del botón tramitar placa el cual inicia el frame de TramitarPlaca.
+     * @param evt Evento del botón.
+     */
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
-        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, tramitesDAO, historialDAO);
+        FrmSeleccionarPersona frmsp = new FrmSeleccionarPersona(personasDAO, vehiculosDAO, false, tramitesDAO);
         this.setVisible(false);
         frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed
-
+ /**
+     * Evento Action del botón inserción el cual realiza la inserción masiva de personas.
+     * @param evt Evento del botón.
+     */
     private void btnInsercionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsercionActionPerformed
         if (personasDAO.insercionMasivaPersonas()) {
             mensajeConfirmacion("Registro de personas realizado correctamente", "Confirmación");
         }
     }//GEN-LAST:event_btnInsercionActionPerformed
-
+ /**
+     * Evento Action del botón historial el cual inicia el frame de Historial.
+     * @param evt Evento del botón.
+     */
     private void btnHistorial1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorial1ActionPerformed
-        FrmHistorial frmh = new FrmHistorial(personasDAO, tramitesDAO, historialDAO);
+        FrmHistorial frmh = new FrmHistorial(personasDAO, tramitesDAO);
         this.setVisible(false);
         frmh.setVisible(true);
     }//GEN-LAST:event_btnHistorial1ActionPerformed
-
+ /**
+     * Evento Action del botón salir el cual cierra el programa.
+     * @param evt Evento del botón.
+     */
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         // TODO add your handling code here:
         this.dispose();

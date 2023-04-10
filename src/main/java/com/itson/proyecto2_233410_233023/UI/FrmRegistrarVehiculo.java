@@ -15,29 +15,51 @@ import javax.swing.JOptionPane;
  * @author Gabriel x Kim
  */
 public class FrmRegistrarVehiculo extends javax.swing.JFrame {
-
+/**
+     * Atributo que representa la DAO de personas.
+     */
     IPersonasDAO personasDAO;
+    /**
+     * Atributo que representa la DAO de vehículos.
+     */
     IVehiculosDAO vehiculosDAO;
+    /**
+     * Atributo que representa la DAO de trámites.
+     */
     ITramitesDAO tramitesDAO;
-    IHistorialDAO historialDAO;
+    /**
+     * Atributo que representa a la persona seleccionada.
+     */
     Persona personaSeleccionada;
+    /**
+     * Atributo que represente al validador.
+     */
     Validador validador = new Validador();
+    /**
+     * Atributo que representa el tipo del automovil.
+     */
     String tipo = "Automovil";
+    /**
+     * Atributo que representa el número de serie.
+     */
     String numSerie = "";
 
     /**
-     * Creates new form FrmRegistrarVehiculo
+     * Constructor por defecto que inicializa sus atributos al valor de los parámetros enviados.
      */
-    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
+    public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
         initComponents();
-        this.historialDAO = historialDAO;
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
 
     }
-
+    /**
+     * Método para validar un vehiculo.
+     * @param vehiculo Vehiculo a validar.
+     * @return Valor booleano.
+     */
     public Boolean validarDatos(Vehiculo vehiculo) {
         try {
             validador.validaNumeroSerie(vehiculo.getNumeroSerie());
@@ -51,7 +73,10 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
             return false;
         }
     }
-
+    /**
+     * Método para obtener los datos de los textField del frame.
+     * @return Vehiculo con los datos obtenidos.
+     */
     public Vehiculo obtenerDatos() {
         Vehiculo vehiculo = null;
         String numeroSerie = txtNumeroSerie.getText();
@@ -65,8 +90,12 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         return vehiculo;
 
     }
-
-    public boolean validarVehiculo(Vehiculo vehiculo) {
+    /**
+     * Método para validar un número de serie y saber si hay algún vehiculo con el mismo número de serie.
+     * @param vehiculo Vehiculo a validar.
+     * @return Valor booleano.
+     */
+    public boolean validarNumSerieDuplicado(Vehiculo vehiculo) {
         try {
             Vehiculo vehiculoObtenido = vehiculosDAO.obtenerVehiculo(vehiculo.getNumeroSerie());
             if (vehiculoObtenido != null) {
@@ -82,11 +111,14 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         }
         return false;
     }
-
+    /**
+     * Método para registrar un vehículo si es validad correctamente.
+     * @return Valor booleano.
+     */
     public boolean registrarVehiculo() {
         Vehiculo vehiculo = obtenerDatos();
         try {
-            if (validarDatos(vehiculo) && validarVehiculo(vehiculo)) {
+            if (validarDatos(vehiculo) && validarNumSerieDuplicado(vehiculo)) {
                 vehiculosDAO.registrarVehiculo(vehiculo);
                 numSerie = vehiculo.getNumeroSerie();
                 mostrarMensaje("Vehiculo registrado");
@@ -394,56 +426,80 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Método action del botón volver para regresar al menú.
+     * @param evt Evento del botón.
+     */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        // TODO add your handling code here:
-        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
+
+        FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "");
         this.setVisible(false);
         frmtp.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
-
+/**
+     * Método action del botón registrar para registrar un auto y volver al frame de tramitar placas.
+     * @param evt Evento del botón.
+     */
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         if (registrarVehiculo()) {
-            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, numSerie, historialDAO);
+            FrmTramitarPlacas frmtp = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, numSerie);
             frmtp.setVisible(true);
             this.dispose();
         }
     }//GEN-LAST:event_btnRegistrarActionPerformed
-
+/**
+     * Evento Item del comboboxTipo, cambia el valor de la variable tipo dependiendo del item seleccionado.
+     * @param evt Evento del textField.
+     */
     private void cbxTipoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxTipoItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             tipo = (String) this.cbxTipo.getSelectedItem();
         }
     }//GEN-LAST:event_cbxTipoItemStateChanged
-
+   /**
+    * Evento KeyTyped del txtMarca para verificar que se escriban letras o digitos con un máximo de 20 carácteres.
+    * @param evt Evento del textField.
+    */
     private void txtMarcaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMarcaKeyTyped
         char c = evt.getKeyChar();
         if (!Character.isLetterOrDigit(c) && !Character.isSpaceChar(c) || txtMarca.getText().length() >= 20) {
             evt.consume();
         }
     }//GEN-LAST:event_txtMarcaKeyTyped
-
+    /**
+    * Evento KeyTyped del txtLinea para verificar que se escriban letras o digitos con un máximo de 20 carácteres.
+    * @param evt Evento del textField.
+    */
     private void txtLineaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtLineaKeyTyped
         char c = evt.getKeyChar();
         if (!Character.isLetterOrDigit(c) && !Character.isSpaceChar(c) || txtLinea.getText().length() >= 20) {
             evt.consume();
         }
     }//GEN-LAST:event_txtLineaKeyTyped
-
+    /**
+    * Evento KeyTyped del txtColor para verificar que se escriban letras o digitos con un máximo de 20 carácteres.
+    * @param evt Evento del textField.
+    */
     private void txtColorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtColorKeyTyped
         char c = evt.getKeyChar();
         if (!Character.isLetter(c) && !Character.isSpaceChar(c) || txtColor.getText().length() >= 20) {
             evt.consume();
         }
     }//GEN-LAST:event_txtColorKeyTyped
-
+    /**
+    * Evento KeyTyped del txtModelo para verificar que se escriban letras o digitos con un máximo de 20 carácteres.
+    * @param evt Evento del textField.
+    */
     private void txtModeloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloKeyTyped
         char c = evt.getKeyChar();
         if (!Character.isDigit(c) || txtModelo.getText().length() >= 4) {
             evt.consume();
         }
     }//GEN-LAST:event_txtModeloKeyTyped
-
+    /**
+    * Evento KeyTyped del txtNumeroSerie para verificar que se escriban letras o digitos con un máximo de 6 carácteres y un formato específico.
+    * @param evt Evento del textField.
+    */
     private void txtNumeroSerieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroSerieKeyTyped
         String numeroSerie = txtNumeroSerie.getText();
         char c = evt.getKeyChar();

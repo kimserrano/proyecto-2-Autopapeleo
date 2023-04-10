@@ -18,21 +18,36 @@ import javax.swing.JTextField;
  * @author Gabriel x Kim
  */
 public class FrmTramitarPlacas extends javax.swing.JFrame {
-
+    /**
+     * Atributo que representa la DAO de personas.
+     */
     IPersonasDAO personasDAO;
+    /**
+     * Atributo que representa la DAO de vehículos.
+     */
     IVehiculosDAO vehiculosDAO;
+    /**
+     * Atributo que representa la DAO de trámites.
+     */
     ITramitesDAO tramitesDAO;
-    IHistorialDAO historialDAO;
+    /**
+     * Atributo que representa a la persona seleccionada.
+     */
     Persona personaSeleccionada;
+    /**
+     * Atributo que representa el tipo de vehículo que realizará el tramite.
+     */
     String vehiculo = "Nuevo";
+    /**
+     * Atributo que represente al validador.
+     */
     Validador validador = new Validador();
 
     /**
-     * Creates new form FrmTramitarPlacas
+     * Constructor por defecto que inicializa sus atributos al valor de los parámetros enviados.
      */
-    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO, Persona persona, String numSerie, IHistorialDAO historialDAO) {
+    public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO, Persona persona, String numSerie) {
         initComponents();
-        this.historialDAO = historialDAO;
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
@@ -46,7 +61,9 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         txtPlacasAnteriores.setVisible(false);
         lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
     }
-
+    /**
+     * Método para desplegar las opciones en función al combobox de vehículo.
+     */
     public void mostrarOpciones() {
         if (cbxVehiculo.getSelectedItem().toString().equals("Nuevo")) {
 
@@ -74,7 +91,10 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             txtCosto.setText("1000.00");
         }
     }
-
+    /**
+     * Método para obtener los datos en el frame.
+     * @return Placa creada con los objetos obtenidos.
+     */
     public Placa obtenerDatos() {
         Calendar fechaActual = Calendar.getInstance();
         int anio = fechaActual.get(Calendar.YEAR);
@@ -87,7 +107,11 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         Placa placa = new Placa(numeroAlfanumerico, costo, Estado.ACTIVA, fechaExpedicion);
         return placa;
     }
-
+    /**
+     * Método para validar los datos de una placa.
+     * @param placa Placa a validar.
+     * @return Placa si se han validado los datos.
+     */
     public Placa validarDatos(Placa placa) {
         Vehiculo vehiculo;
         String numSerie = txtNumeroSerie.getText();
@@ -106,7 +130,9 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             return null;
         }
     }
-
+    /**
+     * Método para buscar un vehículo usado, desplegará el mensaje en función de si lo encontró o no.
+     */
     public void buscarVehiculoUsado() {
         String placas = txtPlacasAnteriores.getText();
         Vehiculo vehiculo;
@@ -123,7 +149,9 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             mostrarMensaje(ex.getMessage());
         }
     }
-
+    /**
+     * Método para buscar un vehículo registrado peros sin historial, desplegará el mensaje en función de si lo encontró o no.
+     */
     public void buscarVehiculoSinHistorial() {
         String numSerie = txtNumeroSerie.getText();
         Vehiculo vehiculo;
@@ -141,7 +169,10 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             mostrarMensaje(ex.getMessage());
         }
     }
-
+    /**
+     * Método para realizar el trámite, primero se obtiene la placa a partir de los datos, si se válida, se realiza el trámite.
+     * @return 
+     */
     public boolean realizarTramite() {
         Placa placa = obtenerDatos();
         if (validarDatos(placa) != null) {
@@ -156,13 +187,19 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         }
         return false;
     }
-
+    /**
+     * Método para regresar al menú.
+     */
     public void regresarMenu() {
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }
-
+    /**
+     * Método para aplicar un formato específico el textField de placa y número de serie.
+     * @param evt Key event del textField.
+     * @param txt Texto del textField.
+     */
     public void formatoPlacaSerie(KeyEvent evt, JTextField txt) {
         String texto = txt.getText();
         char c = evt.getKeyChar();
@@ -188,12 +225,6 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -507,49 +538,79 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Evento action del botón volver, regresa al menú.
+     * @param evt 
+     */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         regresarMenu();
     }//GEN-LAST:event_btnVolverActionPerformed
-
+   /**
+    * Evento action del botón realizar trámite, realiza el trámite y regresa al menú en caso de realizarlo.
+    * @param evt Evento del botón.
+    */
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
         if (realizarTramite()) {
             regresarMenu();
         }
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
-
+    /**
+     * Método action del combobox de vehículo, en caso de seleccionar otra opción llama al método mostrarOpciones para realizar cambios en el frame.
+     * @param evt Evento del combobox.
+     */
     private void cbxVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVehiculoActionPerformed
         mostrarOpciones();
     }//GEN-LAST:event_cbxVehiculoActionPerformed
-
+    /**
+     * Evento Action del botón registrar, abre el frame RegistrarVehiculo.
+     * @param evt Evento del botón.
+     */
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO, historialDAO);
+        FrmRegistrarVehiculo frmrv = new FrmRegistrarVehiculo(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO);
         this.setVisible(false);
         frmrv.setVisible(true);
     }//GEN-LAST:event_btnRegistrarActionPerformed
-
+    /**
+     * Evento Key de txtPlacasAnteriores, llama al método formatoPlacaSerie para utilizar ese formato.
+     * @param evt Evento del textField.
+     */
     private void txtPlacasAnterioresKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPlacasAnterioresKeyTyped
         formatoPlacaSerie(evt, txtPlacasAnteriores);
     }//GEN-LAST:event_txtPlacasAnterioresKeyTyped
-
+/**
+     * Evento KeyTyped de txtNuevaPlaca, llama al método formatoPlacaSerie para utilizar ese formato.
+     * @param evt Evento del textField.
+     */
     private void txtNuevaPlacaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNuevaPlacaKeyTyped
         formatoPlacaSerie(evt, txtNuevaPlaca);
     }//GEN-LAST:event_txtNuevaPlacaKeyTyped
-
+/**
+     * Evento Item del comboboxVehículo, cambia el valor de la variable vehículo dependiendo del item seleccionado.
+     * @param evt Evento del textField.
+     */
     private void cbxVehiculoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxVehiculoItemStateChanged
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             this.vehiculo = (String) this.cbxVehiculo.getSelectedItem();
         }
     }//GEN-LAST:event_cbxVehiculoItemStateChanged
-
+    /**
+     * Evento Action del botón buscar el cual llama al método buscarVehiculoUsado.
+     * @param evt Evento del botón.
+     */
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         buscarVehiculoUsado();
     }//GEN-LAST:event_btnBuscarActionPerformed
-
+/**
+     * Evento Action del botón buscar registrado el cual llama al método buscarVehiculoSinHistorial().
+     * @param evt Evento del botón.
+     */
     private void btnBuscarRegistradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarRegistradoActionPerformed
         buscarVehiculoSinHistorial();
     }//GEN-LAST:event_btnBuscarRegistradoActionPerformed
-
+ /**
+     * Evento Key de txtNumeroSerie, llama al método formatoPlacaSerie para utilizar ese formato.
+     * @param evt Evento del textField.
+     */
     private void txtNumeroSerieKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumeroSerieKeyTyped
         formatoPlacaSerie(evt, txtNumeroSerie);
     }//GEN-LAST:event_txtNumeroSerieKeyTyped

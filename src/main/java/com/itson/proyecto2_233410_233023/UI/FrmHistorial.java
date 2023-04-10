@@ -27,7 +27,6 @@ public class FrmHistorial extends javax.swing.JFrame {
     IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
-    IHistorialDAO historialDAO;
     private Persona personaSeleccionada = null;
     private String filtro = null;
     private Validador validador = new Validador();
@@ -36,9 +35,8 @@ public class FrmHistorial extends javax.swing.JFrame {
     /**
      * Creates new form FrmTramitarPlacas
      */
-    public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
+    public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO) {
         initComponents();
-        this.historialDAO = historialDAO;
         this.tramitesDAO = tramitesDAO;
         this.personasDAO = personasDAO;
         txtRfc.setEnabled(false);
@@ -173,10 +171,6 @@ public class FrmHistorial extends javax.swing.JFrame {
         return personaDTO;
     }
 
-    private List<Persona> buscarPersonaConTodosLosFiltros(PersonasDTO personaDTO) {
-        List<Persona> personas = historialDAO.buscar(personaDTO());
-        return personas;
-    }
 
     private String definirTipoTramite(int i, Tramite tramite) {
         String tipo = null;
@@ -733,7 +727,7 @@ public class FrmHistorial extends javax.swing.JFrame {
     }
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
@@ -744,7 +738,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         try {
             cargarComboBoxPersonas();
         } catch (PersistenciaException ex) {
-            Logger.getLogger(FrmHistorial.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarMensaje(ex.getMessage());
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -802,7 +796,7 @@ public class FrmHistorial extends javax.swing.JFrame {
                 cargarTablaPeriodoTramitesPorTipo("TramitePlaca");
             }
         } catch (PersistenciaException ex) {
-            Logger.getLogger(FrmHistorial.class.getName()).log(Level.SEVERE, null, ex);
+            mostrarMensaje(ex.getMessage());
         }
     }//GEN-LAST:event_btnFiltartActionPerformed
 

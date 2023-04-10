@@ -28,7 +28,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private final IPersonasDAO personasDAO;
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
-    IHistorialDAO historialDAO;
 
     private ConfiguracionPaginado paginado;
     private Validador validador = new Validador();
@@ -43,8 +42,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
      */
-    public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Boolean tramite, ITramitesDAO tramitesDAO, IHistorialDAO historialDAO) {
-        this.historialDAO = historialDAO;
+    public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Boolean tramite, ITramitesDAO tramitesDAO) {
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
@@ -213,10 +211,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         if (this.tramite) {
                 validarPersonaSinTelefono();
                 validarPersonaMayor18();
-            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO, historialDAO);
+            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO);
         } else {
                 validarPersonaSinLicencia();
-            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
+            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "");
         }
         mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
         this.setVisible(false);
@@ -545,7 +543,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * @param evt Evento al dar click en el botón.
      */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO);
+        FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
         this.setVisible(false);
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed

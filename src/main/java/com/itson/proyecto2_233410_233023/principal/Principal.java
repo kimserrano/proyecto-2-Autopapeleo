@@ -36,7 +36,6 @@ public class Principal {
         IPersonasDAO personasDAO = new PersonasDAO(conexionBD);
         IVehiculosDAO vehiculosDAO = new VehiculosDAO(conexionBD);
         ITramitesDAO tramitesDAO = new TramitesDAO(conexionBD);
-        IHistorialDAO historialDAO = new HistorialDAO(conexionBD);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
 //        for (Persona personas : personasDAO.consultarPersonasFiltro("id","5")) {
@@ -45,7 +44,7 @@ public class Principal {
 //        System.out.println(personas);
 //            System.out.println(fechaNacimientoFormateada);
 //        }
-        new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO, historialDAO).setVisible(true);
+        new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO).setVisible(true);
         // EntityTransaction transaccion = conexionBD.getEM().getTransaction();
 
 //        transaccion.begin();

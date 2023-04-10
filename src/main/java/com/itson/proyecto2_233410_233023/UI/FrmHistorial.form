@@ -651,9 +651,6 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnFiltart">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Microsoft JhengHei" size="14" style="1"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Filtrar"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -661,6 +658,9 @@
                   <Color PropertyName="color" blue="a3" green="3f" red="7c" type="rgb"/>
                 </LineBorder>
               </Border>
+            </Property>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Microsoft JhengHei" size="14" style="1"/>
             </Property>
           </Properties>
           <Events>
