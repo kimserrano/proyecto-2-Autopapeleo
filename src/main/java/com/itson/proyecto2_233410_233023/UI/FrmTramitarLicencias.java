@@ -7,27 +7,48 @@ import com.itson.proyecto2_233410_233023.dominio.*;
 import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
 /**
+ * Frame que se utiliza para tramitar una licencia
  *
  * @author Gabriel x Kim
  */
 public class FrmTramitarLicencias extends javax.swing.JFrame {
 
+    /**
+     * Se utiliza para que el combo box permita únicamente valores de tipo
+     * Anuos.
+     */
     DefaultComboBoxModel<Anios> modeloComboBox = new DefaultComboBoxModel<>(Anios.values());
+    /**
+     * Atributo que ayuda a utilizar aquellos métodos para la búsqueda de
+     * personas.
+     */
     IPersonasDAO personasDAO;
+    /**
+     * Atributo que ayuda a utilizar aquellos métodos para la búsqueda de
+     * vehiculos.
+     */
     IVehiculosDAO vehiculosDAO;
+    /**
+     * Atributo que representa a la persona que se le quiere realizar el
+     * trámite.
+     */
     Persona personaSeleccionada;
+    /**
+     * Atributo que ayuda a utilizar aquellos métodos para la búsqueda de
+     * trámites.
+     */
     ITramitesDAO tramitesDAO;
+    /**
+     * La licencia que se le va a generara a la persona seleccionada.
+     */
     Licencia licencia;
-    Tramite verificacion;
 
     /**
-     * Creates new form FrmTramitarLicencias
+     * Para crear un form de FrmTramitarLicencias.
      */
     public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
         initComponents();
@@ -40,6 +61,12 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         calculoVigencia();
     }
 
+    /**
+     * Obtiene los datos para crear la licencia, obtiene la fecja actual, los
+     * años de vigencia que seleccionó asi como el monto establecido.
+     *
+     * @return regresa la licencia creada.
+     */
     public Licencia obtenerDatosLicencia() {
         Calendar fechaActual = Calendar.getInstance();
         int anio = fechaActual.get(Calendar.YEAR);
@@ -222,6 +249,11 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Botón para regresar al menú del programa.
+     *
+     * @param evt el click que se le da al botón.
+     */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
         FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
@@ -229,10 +261,21 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    /**
+     * Método para mostrar un mensaje en un JOptionPane.
+     *
+     * @param msj Mensaje a mostrar.
+     */
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Si la persona seleccionada ya tiene un registro de alguna licencia
+     * activa.
+     *
+     * @return regresa ese trámite.
+     */
     public TramiteLicencia revisarRegistro() {
         for (int i = 0; i < tramitesDAO.consultarTramitesLicencia().size(); i++) {
             if (tramitesDAO.consultarTramitesLicencia().get(i).getPersona().equals(personaSeleccionada)
@@ -244,6 +287,11 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que se encarga de avisar si cuando días le quedan a su 
+     * licencia actual en caso de tener una, con el fin de que el usuario conozca que 
+     * aún no es necesario solicitar una nueva licencia.
+     */
     public void calculoVigencia() {
         if (revisarRegistro() != null) {
             Calendar fechaInicio = revisarRegistro().getFechaExpedicion();
@@ -266,6 +314,9 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que se encarga de actualizar la licencia que ya tenía por una actual.
+     */
     public void actualizacion() {
         if (licencia != null && revisarRegistro() != null) {
             try {
@@ -276,6 +327,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que se encarga de regitar la licencia generada en la base de datos.
+     * @return regresa la licencia en caso de poder registrarse y null en caso contrario.
+     */
     public Licencia registrarLicencia() {
         licencia = obtenerDatosLicencia();
         try {
@@ -289,6 +344,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que asigna los costos dependiendo de los años que sean seleccionados
+     * para el trámite.
+     */
     public void costos() {
         if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
             txtMonto.setText("600.00");
@@ -299,6 +358,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que asigna los costros dependiendo de los años que sean selccionados 
+     * para el trámite y si la persona presenta alguna discapacidad.
+     */
     public void costosDiscapacidos() {
         if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
             txtMonto.setText("200.00");
@@ -309,14 +372,24 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método encargado de obtener los datos para el registrar el trámite de la 
+     * licencia solicitada.
+     * @return el tramite generado con los datos correspondientes.
+     */
     public TramiteLicencia obtenerDatosTramite() {
-        //Licencia licencia, Float costo, Calendar fechaExpedicion, Persona persona
         TramiteLicencia tramiteLicencia = new TramiteLicencia(licencia,
                 licencia.getMonto(), licencia.getFechaExpedicion(),
                 personaSeleccionada);
         return tramiteLicencia;
     }
 
+    /**
+     * Método que se utiliza para registrar el trámite de la licencia generada
+     * en la base de datos.
+     * @return el trámite de la liencia en caso de poder registarse y null en 
+     * caso contrario.
+     */
     public TramiteLicencia registrarTramite() {
         TramiteLicencia tramiteLicencia = obtenerDatosTramite();
         try {
@@ -329,6 +402,12 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Cuando el combo box de vigencia se selecciona y la persona es discapacitada 
+     * los costos se ponen con el método costosDiscapacitados y si no es asi, se llama 
+     * al método costos.
+     * @param evt el click que se le da al combo box.
+     */
     private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
         if (personaSeleccionada.getDiscapacitado().equals(Discapacitado.SI)) {
             costosDiscapacidos();
@@ -337,6 +416,11 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cbxVigenciaActionPerformed
 
+    /**
+     * Botón que se encarga de registar lo que existe en el frame y que cuando acaba 
+     * te regresa al menú.
+     * @param evt 
+     */
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
         // TODO add your handling code here:
         registrarLicencia();

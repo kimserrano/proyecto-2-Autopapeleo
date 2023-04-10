@@ -50,7 +50,7 @@ public class Validador {
      * @return Valor booleano.
      */
     public boolean validaNombre(String letras) throws PersistenciaException {
-        if (letras!=null) {
+        if (letras != null) {
             String patron = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+([ '-][a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$";
             Pattern p = Pattern.compile(patron);
             Matcher matcher = p.matcher(letras);
@@ -65,7 +65,6 @@ public class Validador {
         return false;
     }
 
-    
     /**
      * Método que valida un RFC
      *
@@ -88,6 +87,14 @@ public class Validador {
         return false;
     }
 
+    /**
+     * Método que valida un Numero de Serie de un vehiculo.
+     *
+     * @param num numero de serie a validar.
+     * @return true si el formato es correcto.
+     * @throws PersistenciaException en caso de que el formato no sea el
+     * indicado.
+     */
     public boolean validaNumeroSerie(String num) throws PersistenciaException {
         String patron = "^[A-Z]{3}-\\d{3}$";
         Pattern p = Pattern.compile(patron);
@@ -99,6 +106,15 @@ public class Validador {
         }
     }
 
+    /**
+     * Método que valida un texto.
+     *
+     * @param texto texto a validar.
+     * @param tipo
+     * @return true si el formato es correcto.
+     * @throws PersistenciaException en caso de que el formato no sea el
+     * indicado.
+     */
     public boolean validaTexto(String texto, String tipo) throws PersistenciaException {
         String patron = "^[A-Za-z0-9 ]{1,20}$";
         Pattern p = Pattern.compile(patron);
@@ -111,6 +127,14 @@ public class Validador {
 
     }
 
+    /**
+     * Método que valida el modelo de un vehiculo.
+     *
+     * @param modelo a validar.
+     * @return true si el formato es correcto.
+     * @throws PersistenciaException en caso de que el formato no sea el
+     * indicado.
+     */
     public boolean validaModelo(String modelo) throws PersistenciaException {
         String patron = "^(?!0{4})\\d{4}$";
         Pattern p = Pattern.compile(patron);
@@ -122,6 +146,14 @@ public class Validador {
         }
     }
 
+    /**
+     * Método que valida las placas de un automóvil.
+     *
+     * @param placas placas que desean validarse.
+     * @return true si el formato es correcto.
+     * @throws PersistenciaException en caso de que el formato no sea el
+     * indicado.
+     */
     public boolean validaPlacas(String placas) throws PersistenciaException {
         String patron = "^[A-Z]{3}-\\d{3}$";
         Pattern p = Pattern.compile(patron);
@@ -133,6 +165,14 @@ public class Validador {
         }
     }
 
+    /**
+     * Método que valida una fecha.
+     *
+     * @param fechaNacimiento fecha que desea validarse.
+     * @return true si el formato es correcto.
+     * @throws PersistenciaException en caso de que el formato no sea el
+     * indicado.
+     */
     public boolean validaFechaNacimiento(String fechaNacimiento) throws PersistenciaException {
         if (fechaNacimiento != null) {
             String patron = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";

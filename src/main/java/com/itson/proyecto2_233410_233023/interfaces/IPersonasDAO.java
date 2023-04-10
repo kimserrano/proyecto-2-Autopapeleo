@@ -40,12 +40,44 @@ public interface IPersonasDAO {
      */
     List<Persona> consultarPersonasFiltro(String filtro, String dato, ConfiguracionPaginado config);
 
+    /**
+     * Método para consultar una lista de personas con un clausala where.
+     *
+     * @param filtroSeleccionado que se desea comparar.
+     * @param dato dato con el que se desea comparar.
+     * @return Lista de personas que coincidan.
+     */
     List<Persona> consultarPersonasUnFiltro(String filtroSeleccionado, String dato);
 
+    /**
+     * Método para consultar una lista de personas con dos clausalas where.
+     *
+     * @param filtro1 que se desea comparar.
+     * @param filtro2 que se desea comparar.
+     * @param dato1 dato con el que se desea comparar con el filtro1.
+     * @param dato2 dato con el que se desea comparar con el filtro2.
+     * @return Lista de personas que coincidan.
+     */
     List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2);
 
+    /**
+     * Método para consultar una lista de personas con tres clausalas where.
+     *
+     * @param filtro1 que se desea comparar.
+     * @param filtro2 que se desea comparar.
+     * @param filtro3 que se desea comparar.
+     * @param dato1 dato con el que se desea comparar con el filtro1.
+     * @param dato2 dato con el que se desea comparar con el filtro2.
+     * @param dato3 dato con el que se desea comparar con el filtro3.
+     * @return Lista de personas que coincidan.
+     */
     List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3);
 
+    /**
+     * Método que consulta a todas las personas registradas en la base de datos
+     *
+     * @return Lista de personas.
+     */
     List<Persona> consultarPersonas();
 
     /**

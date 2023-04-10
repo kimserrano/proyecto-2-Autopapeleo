@@ -10,6 +10,7 @@ import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -19,26 +20,58 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
+ * Frame que permite visualizar los trámites que ha realizado una persona,
+ * utilizando distintos filtros de búsqueda.
  *
  * @author Gabriel x Kim
  */
 public class FrmHistorial extends javax.swing.JFrame {
 
+    /**
+     * Atributo que ayuda a utilizar aquellos métodos para la búsqueda de
+     * personas.
+     */
     IPersonasDAO personasDAO;
+    /**
+     * Atributo que ayuda a autilizar aquellos métodos para los vehículos que
+     * tiene una persona.
+     */
     IVehiculosDAO vehiculosDAO;
+    /**
+     * Atributo que ayuda a utilizar aquellos métodos para consultar los
+     * trámites realizados por una persona.
+     */
     ITramitesDAO tramitesDAO;
-    private Persona personaSeleccionada = null;
-    private String filtro = null;
+    /**
+     * Atributo que representa a la persona de la cual se quiere conocer el
+     * historial.
+     */
+    private Persona personaSeleccionada;;
+    
+    /**
+     * Atributo que sirve para validar los valores ingresados por el usario,
+     * para verificar que su formato sea correcto.
+     */
     private Validador validador = new Validador();
+    /**
+     * Objeto para llenar la combo box con las personas correspondientes.
+     */
     DefaultComboBoxModel<Persona> modeloComboBox = new DefaultComboBoxModel<Persona>();
 
     /**
-     * Creates new form FrmTramitarPlacas
+     * Contructor para crear un FrmHistorial.
+     *
+     * @param personasDAO Atributo que ayuda a utilizar aquellos métodos para la
+     * búsqueda de personas.
+     * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
+     * consultar los trámites realizados por una persona.
      */
     public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO) {
+        
         initComponents();
         this.tramitesDAO = tramitesDAO;
         this.personasDAO = personasDAO;
+        //se desactivan los campos de texto
         txtRfc.setEnabled(false);
         txtNombres.setEnabled(false);
         dtpFechaNacimiento.setEnabled(false);
@@ -52,17 +85,20 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
 
+    /**
+     * Método para mostrar un mensaje en pantalla, recibe una cadena de texto la
+     * cual es la que se desea mostrar en el mensaje informativo.
+     */
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void verificarCasillas(String casilla) {
-        if (casilla == null) {
-            mostrarMensaje("Búsqueda invalida");
-        }
-
-    }
-
+    /**
+     * Método que obtiene el rfc que el usuario escribió en el campo de texto.
+     *
+     * @return la cadena con el rfc en caso de no estar vacía de lo contrario
+     * regresa null.
+     */
     private String obtenerRFC() {
         if (!txtRfc.getText().equals("")) {
             return txtRfc.getText();
@@ -72,14 +108,28 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Método que obtiene el nombre que el usuario escribió en el campo de texto
+     *
+     * @return la cadena con el nombre en caso de no estar vacía de lo contrario
+     * regresa null.
+     */
     private String obtenerNombres() {
-         if (!txtNombres.getText().equals("")) {
-        return txtNombres.getText();
-         }else {
+        if (!txtNombres.getText().equals("")) {
+            return txtNombres.getText();
+        } else {
             return null;
         }
     }
 
+    /**
+     * Método que obtiene la fecha de inicio que el usuario seleccionó en el
+     * campo de texto y la transforma en un string, representa el inicio de un
+     * periodo de los trámites que se desean ver.
+     *
+     * @return la cadena con la fecha de inicio del periodo en caso de no estar
+     * vacía de lo contrario regresa null.
+     */
     private String obtenerFechaInicio() {
         String fechaFormateada = null;
         String fechaTexto = dtpDe.getText(); // obtenemos la fecha como una cadena de texto
@@ -89,7 +139,7 @@ public class FrmHistorial extends javax.swing.JFrame {
             int cantidadCaracteres = caracteresAntesEspacio.length();
 
             if (cantidadCaracteres == 1) {
-                fechaTexto = "0" + fechaTexto;
+                fechaTexto = "0" + fechaTexto; // esto se hace porque si la fecha solamente tiene un digito se le debe agregar el 0 al inicio
             }
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
@@ -101,9 +151,17 @@ public class FrmHistorial extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que obtiene la fecha final que el usuario seleccionó en el campo
+     * de texto y la transforma en un string, representa el final de un periodo
+     * de los trámites que se desean ver.
+     *
+     * @return la cadena con la fecha final del periodo en caso de no estar
+     * vacía de lo contrario regresa null.
+     */
     private String obtenerFechaFin() {
         String fechaFormateada = null;
-        String fechaTexto = dtpHasta.getText(); // obtenemos la fecha como una cadena de texto
+        String fechaTexto = dtpHasta.getText();
         int indiceEspacio = fechaTexto.indexOf(" ");
         if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
             String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
@@ -122,10 +180,17 @@ public class FrmHistorial extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que obtiene fecha de nacimiento que el usuario seleccionó en el
+     * campo de texto y la transforma en un string.
+     *
+     * @return la cadena con la fecha de nacimiento en caso de no estar vacía de
+     * lo contrario regresa null.
+     */
     private String obtenerFechaNacimiento() {
 
         String fechaFormateada = null;
-        String fechaTexto = dtpFechaNacimiento.getText(); // obtenemos la fecha como una cadena de texto
+        String fechaTexto = dtpFechaNacimiento.getText();
         int indiceEspacio = fechaTexto.indexOf(" ");
         if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
             String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
@@ -146,19 +211,16 @@ public class FrmHistorial extends javax.swing.JFrame {
     }
 
     /**
-     * Método para validar el TextField de búsqueda el cuál valida dependiendo
-     * de la opción seleccionada.
+     * Método que se encarga de llenar la combo box de personas con aquellas.
      *
-     * @return Valor booleano para comprobar la validación.
+     * @throws PersistenciaException si se presento un error al llenado.
      */
     private void cargarComboBoxPersonas() throws PersistenciaException {
-
-        List<Persona> personas = casillasActivas();
-        if (personas == null || personas.isEmpty()) {
+        List<Persona> personas = casillasActivas();       // recibe la lista de personas a agregar a la combo box
+        if (personas == null || personas.isEmpty()) {     // si la lista esta vacia no pone nada en la tabla
             DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
             model.setRowCount(0);
-            //mostrarMensaje("Registro no encontrado");
-        } else {
+        } else {                                          // si la lista no esta vacia llena el combo box con las personas de la lista
             for (Persona persona : personas) {
                 modeloComboBox.addElement(persona);
             }
@@ -166,13 +228,14 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }
 
-    private PersonasDTO personaDTO() {
-        PersonasDTO personaDTO = new PersonasDTO(obtenerRFC(), obtenerNombres(), obtenerFechaNacimiento());
-        return personaDTO;
-    }
-
-
-    private String definirTipoTramite(int i, Tramite tramite) {
+    /**
+     * Método que se utiliza para clasificar que tipo de trámite es, de licencia
+     * o de placas.
+     *
+     * @param tramite el trámite que se desea clasificar.
+     * @return el tipo de trámite al que corresponde el parametro.
+     */
+    private String definirTipoTramite(Tramite tramite) {
         String tipo = null;
         List<Tramite> tramites = tramitesDAO.consultarColumnaTipoTramite();
 
@@ -184,6 +247,24 @@ public class FrmHistorial extends javax.swing.JFrame {
         return tipo;
     }
 
+    /**
+     * Métdo encargado de transformar una fecha Calendar a un String.
+     *
+     * @param fecha en objeto Calendar.
+     * @return fecha en objeto String.
+     */
+    private String fechaCalendarAString(Calendar fecha) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
+        String fechaString = sdf.format(fecha.getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
+        return fechaString;
+    }
+
+    /**
+     * Método que se encarga de llenar la tabla de trámites que una persona ha
+     * realizado dependiendo de los que se desea conocer.
+     *
+     * @param tipoTramite el tipo de tramite que se desea mostrar en la tabla.
+     */
     private void cargarTablaTipoTramites(String tipoTramite) {
         if (personaSeleccionada != null) {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
@@ -192,9 +273,10 @@ public class FrmHistorial extends javax.swing.JFrame {
 
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
                 Tramite tramite = tramitesPersonaSeleccionada.get(i);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
-                String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
-                if (definirTipoTramite(i, tramite).equals(tipoTramite)) {
+                //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
+                //sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
+                String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                if (definirTipoTramite(tramite).equals(tipoTramite)) {
                     Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), tipoTramite,
                         fechaExpedicion, "$ " + tramite.getCosto()};
                     modeloTablaPersonas.addRow(filaNueva);
@@ -204,6 +286,10 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que carga la tabla de trámites con ambos tipos de trámites que la
+     * persona realizó.
+     */
     private void cargarTablaTramites() {
         if (personaSeleccionada != null) {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
@@ -212,15 +298,21 @@ public class FrmHistorial extends javax.swing.JFrame {
 
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
                 Tramite tramite = tramitesPersonaSeleccionada.get(i);
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
-                String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
-                Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(i, tramite),
+                String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(tramite),
                     fechaExpedicion, "$ " + tramite.getCosto()};
                 modeloTablaPersonas.addRow(filaNueva);
             }
         }
     }
 
+    /**
+     * Método que carga los trámites que ha realizado una persona dentro de un
+     * periodo de tiempo y dependiendo del tipo de trámite que se desea ver.
+     *
+     * @param tipoTramite trámite que se desea presentar en la tabla.
+     * @throws PersistenciaException si existe un error al cargar la tabla.
+     */
     private void cargarTablaPeriodoTramitesPorTipo(String tipoTramite) throws PersistenciaException {
         if (personaSeleccionada != null) {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
@@ -234,10 +326,9 @@ public class FrmHistorial extends javax.swing.JFrame {
                     List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(obtenerFechaInicio(), obtenerFechaFin());
                     Tramite tramite = tramitesPersonaSeleccionada.get(i);
                     if (tramitesPeriodo.contains(tramite)) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
-                        String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
-                        if (definirTipoTramite(i, tramite).equals(tipoTramite)) {
-                            Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(i, tramite),
+                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                        if (definirTipoTramite(tramite).equals(tipoTramite)) {
+                            Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(tramite),
                                 fechaExpedicion, "$ " + tramite.getCosto()};
                             modeloTablaPersonas.addRow(filaNueva);
 
@@ -248,6 +339,12 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * * Método que carga los trámites que ha realizado una persona dentro de
+     * un periodo de tiempo sin importar el tipo de trámite.
+     *
+     * @throws PersistenciaException si hubo un error al cargar la tabla
+     */
     private void cargarTablaPeriodoTramites() throws PersistenciaException {
         if (personaSeleccionada != null) {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
@@ -261,8 +358,7 @@ public class FrmHistorial extends javax.swing.JFrame {
                     List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(obtenerFechaInicio(), obtenerFechaFin());
                     Tramite tramite = tramitesPersonaSeleccionada.get(i);
                     if (tramitesPeriodo.contains(tramite)) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
-                        String fechaExpedicion = sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
+                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
                         Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), tramite,
                             fechaExpedicion, "$ " + tramite.getCosto()};
                         modeloTablaPersonas.addRow(filaNueva);
@@ -272,6 +368,16 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que sirve para conocer que casillas de filtros están activas para
+     * asi poder aplicar las búsquedas correspondidas, además de que valida que
+     * lo ingresado en los txt tenga buen formato.
+     *
+     * @return la lista de personas cuyos datos coincidan con los datos de los
+     * filtros seleccionados.
+     * @throws PersistenciaException si hubo un error en obtener los datos de
+     * las casillas.
+     */
     private List<Persona> casillasActivas() throws PersistenciaException {
         List<Persona> personas = null;
         // Verificar cuáles JCheckBox están seleccionados
@@ -279,6 +385,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         boolean filtro2Seleccionado = jcbNombres.isSelected();
         boolean filtro3Seleccionado = jcbFechaNacimiento.isSelected();
 
+        //obtiene los datos de los txt para cada filtro
         String filtro1Dato = obtenerRFC();
         String filtro2Dato = obtenerNombres();
         String filtro3Dato = obtenerFechaNacimiento();
@@ -306,7 +413,7 @@ public class FrmHistorial extends javax.swing.JFrame {
             // Aplicar los filtros 2 y 3
             validador.validaFechaNacimiento(filtro3Dato);
             validador.validaNombre(filtro2Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("fechaNacimiento","nombre", filtro3Dato, filtro2Dato);
+            personas = personasDAO.consultarPersonasDosFiltro("fechaNacimiento", "nombre", filtro3Dato, filtro2Dato);
         } else if (filtro1Seleccionado) {
             // Aplicar el filtro 1
             validador.validaRFC(filtro1Dato);
@@ -711,20 +818,35 @@ public class FrmHistorial extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-   private String filtroComboBoxTipo() {
+
+    /**
+     * Método que sirve para defnir el tipo de trámites que se desea ver en la
+     * tabla, funciona a través de un combo box que te permite elegir entre los
+     * trámites de licencias, placas o de ambos.
+     *
+     * @return regresa el tipo de tramite que fe seleccionado.
+     */
+    private String filtroComboBoxTipo() {
         String selectedValue = (String) cbxTipoTramite.getSelectedItem();
+        personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
         if (selectedValue.contains("Ambos")) {
-            cargarTablaTramites();
+            cargarTablaTramites();  // carga todos los tramites
             return "Ambos";
         } else if (selectedValue.contains("Licencias")) {
-            cargarTablaTipoTramites("TramiteLicencia");
+            cargarTablaTipoTramites("TramiteLicencia"); // carga solamente los tramites de licencias 
             return "Licencias";
-        } else if (selectedValue.contains("Placas")) {
+        } else if (selectedValue.contains("Placas")) { //carga solamente los tramites de placas
             cargarTablaTipoTramites("TramitePlaca");
             return "TramitePlaca";
         }
         return null;
     }
+
+    /**
+     * Botón que se utiliza para volver al menú.
+     *
+     * @param evt el click que se le da al botón.
+     */
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         // TODO add your handling code here:
         FrmMenu frmm = new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO);
@@ -732,11 +854,18 @@ public class FrmHistorial extends javax.swing.JFrame {
         frmm.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    /**
+     * Botón para actualizar los datos del combo box dependiendo de los filtros
+     * seleccionaos.
+     *
+     * @param evt el click que se le da al botón.
+     */
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         cbxPersonas.removeAllItems();
         tblHistorial.removeAll();
         try {
             cargarComboBoxPersonas();
+            filtroComboBoxTipo();
         } catch (PersistenciaException ex) {
             mostrarMensaje(ex.getMessage());
         }
@@ -746,8 +875,14 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     }//GEN-LAST:event_cbxTipoTramiteActionPerformed
 
+    /**
+     * Combo box que sirve para seleccionar a la persona de la cual se desea
+     * conocer el historial.
+     *
+     * @param evt el click que se le da al combo box.
+     */
     private void cbxPersonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPersonasActionPerformed
-        personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
+      //  personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
         filtroComboBoxTipo();
     }//GEN-LAST:event_cbxPersonasActionPerformed
 
@@ -759,6 +894,11 @@ public class FrmHistorial extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
+    /**
+     * Casilla para poder escribir en el campo de texto del rfc.
+     *
+     * @param evt el click que se le da a la casilla.
+     */
     private void jcbRfcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbRfcActionPerformed
         if (jcbRfc.isSelected()) {
             txtRfc.setEnabled(true);
@@ -767,6 +907,11 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jcbRfcActionPerformed
 
+    /**
+     * Casilla para poder escribir en el campo de texto de nombres.
+     *
+     * @param evt el click que se le da a la casilla.
+     */
     private void jcbNombresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbNombresActionPerformed
         if (jcbNombres.isSelected()) {
             txtNombres.setEnabled(true);
@@ -775,6 +920,11 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jcbNombresActionPerformed
 
+    /**
+     * Casilla para poder seleccionar una fecha de nacimiento.
+     *
+     * @param evt el click que se le da a la casilla.
+     */
     private void jcbFechaNacimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbFechaNacimientoActionPerformed
         if (jcbFechaNacimiento.isSelected()) {
             dtpFechaNacimiento.setEnabled(true);
@@ -783,6 +933,12 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jcbFechaNacimientoActionPerformed
 
+    /**
+     * Botón que se encarga de filtrar los trámites por cierto periodo y tipo
+     * cargandolos en la tabla.
+     *
+     * @param evt el click que se le da al botón.
+     */
     private void btnFiltartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltartActionPerformed
         try {
             // TODO add your handling code here:
@@ -797,6 +953,9 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         } catch (PersistenciaException ex) {
             mostrarMensaje(ex.getMessage());
+        }
+        if (dtpDe.getText().isBlank()|| dtpHasta.getText().isBlank()) {
+            mostrarMensaje("No hay un periodo seleccionado");
         }
     }//GEN-LAST:event_btnFiltartActionPerformed
 

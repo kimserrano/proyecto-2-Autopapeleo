@@ -31,6 +31,12 @@ public class EncriptacionAES implements AttributeConverter<String, String> {
      */
     private static final String INIT_VECTOR = "encryptionIntVec";
 
+    /**
+     * Método que se encarga de encriptar una columna de la base de datos
+     *
+     * @param palabraOriginal la palabra sin encriptar.
+     * @return la palabra encriptada o null en caos de no poder.
+     */
     @Override
     public String convertToDatabaseColumn(String palabraOriginal) {
         try {
@@ -52,10 +58,15 @@ public class EncriptacionAES implements AttributeConverter<String, String> {
         return null;
     }
 
+    /**
+     * Método que se encarga de desencriptar una palabra de la base de datos.
+     *
+     * @param palabraEncriptada palabra que se desea desencriptar.
+     * @return la palabra desencriptada o null en caso de no poder.
+     */
     @Override
     public String convertToEntityAttribute(String palabraEncriptada) {
         try {
-
             IvParameterSpec iv = new IvParameterSpec(INIT_VECTOR.getBytes(StandardCharsets.UTF_8));
             SecretKeySpec key = new SecretKeySpec(LLAVE_SECRETA.getBytes(StandardCharsets.UTF_8), "AES");
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");

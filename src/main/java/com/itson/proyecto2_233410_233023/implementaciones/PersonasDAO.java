@@ -21,11 +21,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 /**
+ * Clase para implementar toda la lógica de consultas de personas.
  *
  * @author Gabriel x Kim
  */
 public class PersonasDAO implements IPersonasDAO {
 
+    /**
+     * Atributo que representa una conexión con la base de datos para realizar
+     * consultas, insertar o actualizar.
+     */
     private final IConexionBD conexionBD;
 
     /**
@@ -114,7 +119,7 @@ public class PersonasDAO implements IPersonasDAO {
         CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
         Root<Persona> entidad = criteriaQuery.from(Persona.class);
         if (filtroSeleccionado.equals("nombre") && dato != null) {
-            personas = listaPersonasNombres(dato);
+            personas = listaPersonasNombres(dato);  // para nombre se hace una consulta especifica debido a que esa columna esta encriptada en la base de datos
 //            Predicate predicate = criteriaBuilder.equal(entidad.get("nombre"), dato);
 //            //Predicate predicate = criteriaBuilder.like(criteriaBuilder.lower(entidad.get("nombre")), "%" + dato.toLowerCase() + "%");
 //            criteriaQuery.where(predicate);
@@ -149,6 +154,12 @@ public class PersonasDAO implements IPersonasDAO {
         }
     }
 
+    /**
+     * Método que toma una fecha de tipo Calendar y la convierte en un String
+     *
+     * @param fecha fecha Calendar que se desea convertir a String
+     * @return la fecha en formato String
+     */
     private String fechaString(Calendar fecha) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Formato de fecha deseado
         String fechaString = dateFormat.format(fecha.getTime());
@@ -156,6 +167,10 @@ public class PersonasDAO implements IPersonasDAO {
     }
 
     @Override
+    /**
+     * Método que hace una consulta a la base de datos en la tabla de personas y
+     * aplica dos filtros, es decir una consulta con dos where.
+     */
     public List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2) {
         if (dato1 != null && dato2 != null) {
             List<Persona> personas = new ArrayList<Persona>();
@@ -186,6 +201,10 @@ public class PersonasDAO implements IPersonasDAO {
     }
 
     @Override
+    /**
+     * Método que hace una consulta a la base de datos en la tabla de personas y
+     * aplica tres filtros, es decir una consulta con tres where.
+     */
     public List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3,
             String dato1, String dato2, String dato3) {
         if (dato1 != null && dato2 != null && dato3 != null) {
@@ -217,12 +236,19 @@ public class PersonasDAO implements IPersonasDAO {
     }
 
     @Override
+    /**
+     * Consulta todas las personas de la tabla personas en la base de datos
+     */
     public List<Persona> consultarPersonas() {
         List<Persona> personas = conexionBD.getEM().createQuery("SELECT a FROM Persona a", Persona.class).getResultList();
         return personas;
     }
 
     @Override
+    /**
+     * Método que hace una consulta a la base de datos en la tabla de personas y
+     * aplica un filtros, es decir una consulta con un where.
+     */
     public List<Persona> consultarPersonasUnFiltro(String filtroSeleccionado, String dato
     ) {
         List<Persona> personas = new ArrayList<Persona>();
@@ -241,6 +267,14 @@ public class PersonasDAO implements IPersonasDAO {
         return personas;
     }
 
+    /**
+     * Método que tiene una lista de todas las personas registradas en la base
+     * de datos, pero filtra a las que presentan unicamente el nombre dado.
+     *
+     * @param dato nombre que tienen que tener las personas en la lista.
+     * @return lista de personas cuyos nombres coinciden con el dato enviado
+     * como parametro.
+     */
     private List<Persona> listaPersonasNombres(String dato) {
         List<Persona> personas = new ArrayList<Persona>();
         List<Persona> busqueda = new ArrayList<Persona>();

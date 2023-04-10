@@ -13,8 +13,6 @@ import java.time.Period;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -25,17 +23,51 @@ import javax.swing.table.DefaultTableModel;
  */
 public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
+    /**
+     * Atributo que ayuda a utilizar métodos para consultar personas.
+     */
     private final IPersonasDAO personasDAO;
+    /**
+     * Atributo que ayuda a utilizar métodos para consultar vehiculos.
+     */
     IVehiculosDAO vehiculosDAO;
+    /**
+     * Atributo que ayuda a utilizar métodos para consultar trámites.
+     */
     ITramitesDAO tramitesDAO;
-
+    /**
+     * Atributo que sirve para dar un paginado a las consultas que serán realizadas.
+     */
     private ConfiguracionPaginado paginado;
+    /**
+     * Atributo que ayuda a valida que los campos de textos ingresados por el usuario 
+     * cumplan con los formatos establecidos.
+     */
     private Validador validador = new Validador();
+    /**
+     * Representa la página que se esta mostrando del paginado.
+     */
     private int numeroPagina = 0;
+    /**
+     * Representa los elementos que se estan mostrando en la página actual del
+     * paginado.
+     */
     private int elementosPorPagina = 3;
+    /**
+     * Reprsenta el filtro de búqueda que se esta realizando.
+     */
     private String filtro = null;
+    /**
+     * Representa la persona con la cual se desea trabajar.
+     */
     private Persona personaSeleccionada = null;
+    /**
+     * Representa el tramite que la persona desea realizar.
+     */
     private Boolean tramite;
+    /**
+     * Representa el paginado de una lista, en este caso se utiliza para nombres.
+     */
     PaginacionLista paginacionLista;
 
     /**
@@ -140,6 +172,11 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Valida que la persona exista en la base de datos.
+     * @return verdadero si la persona fue encontrada y falso en caso contrario.
+     * @throws PersistenciaException si existió un error al momento de obtener a la persona.
+     */
     public boolean validarPersona() throws PersistenciaException {
         String id = obtenerID();
         if (validador.validaID(id)) {
@@ -152,6 +189,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         return false;
     }
 
+    /**
+     *  Método encargado de validar que la persona seleccionada sea mayor de edad 
+     * @throws PersistenciaException si la persona es menor de 18 años.
+     */
     public void validarPersonaMayor18() throws PersistenciaException {
         Calendar fechaNacimiento = personaSeleccionada.getFechaNacimiento();
         Calendar fechaActual = Calendar.getInstance();
@@ -165,11 +206,21 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
         }
 
     }
+
+    /**
+     * Método que se encarga de validar que una persona tenga licencia activa.
+     * @throws Exception si la persona no tiene licencia activa.
+     */
     public void validarPersonaSinLicencia() throws Exception {
         if (tramitesDAO.buscarLicenciaActiva(personaSeleccionada) == null) {
             throw new PersistenciaException("Esta persona no tiene licencia activa");
         }
     }
+
+    /**
+     * Método que valida si una persona tiene registrado su teléfono.
+     * @throws Exception si la persona no tiene teléfono.
+     */
     public void validarPersonaSinTelefono() throws Exception {
         if (personaSeleccionada.getTelefono() == null) {
             throw new PersistenciaException("Esta persona no tiene teléfono");
@@ -207,19 +258,19 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      */
     private void mostrarFrm() {
         JFrame frm;
-        try{
-        if (this.tramite) {
+        try {
+            if (this.tramite) {
                 validarPersonaSinTelefono();
                 validarPersonaMayor18();
-            frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO);
-        } else {
+                frm = new FrmTramitarLicencias(personasDAO, vehiculosDAO, personaSeleccionada, tramitesDAO);
+            } else {
                 validarPersonaSinLicencia();
-            frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "");
-        }
-        mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
-        this.setVisible(false);
-        frm.setVisible(true);
-        }catch(Exception ex){
+                frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "");
+            }
+            mostrarMensaje(personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno() + " " + "ha sido seleccionado.");
+            this.setVisible(false);
+            frm.setVisible(true);
+        } catch (Exception ex) {
             mostrarMensaje(ex.getMessage());
         }
     }
