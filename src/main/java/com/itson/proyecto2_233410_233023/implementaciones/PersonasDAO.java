@@ -7,7 +7,10 @@ import com.itson.proyecto2_233410_233023.dominio.Discapacitado;
 import com.itson.proyecto2_233410_233023.dominio.Persona;
 import com.itson.proyecto2_233410_233023.interfaces.IConexionBD;
 import com.itson.proyecto2_233410_233023.interfaces.IPersonasDAO;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import javax.persistence.Query;
@@ -106,21 +109,29 @@ public class PersonasDAO implements IPersonasDAO {
      * @return Lista de personas.
      */
     public List<Persona> consultarPersonasFiltro(String filtroSeleccionado, String dato, ConfiguracionPaginado config) {
+        List<Persona> personas = new ArrayList<Persona>();
+        List<Persona> busqueda = new ArrayList<Persona>();
         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
         Root<Persona> entidad = criteriaQuery.from(Persona.class);
         if (filtroSeleccionado.equals("nombre")) {
-            Predicate predicate = criteriaBuilder.equal(entidad.get("nombre"), dato);
-            //Predicate predicate = criteriaBuilder.like(criteriaBuilder.lower(entidad.get("nombre")), "%" + dato.toLowerCase() + "%");
-            criteriaQuery.where(predicate);
+            busqueda = consultarPersonas();
+            for (int i = 0; i < busqueda.size(); i++) {
+                if (busqueda.get(i).getNombre().toLowerCase().contains(dato.toLowerCase())) {
+                    personas.add(busqueda.get(i));
+                }
+            }
+//            Predicate predicate = criteriaBuilder.equal(entidad.get("nombre"), dato);
+//            //Predicate predicate = criteriaBuilder.like(criteriaBuilder.lower(entidad.get("nombre")), "%" + dato.toLowerCase() + "%");
+//            criteriaQuery.where(predicate);
         } else {
             Predicate filtro = criteriaBuilder.like(entidad.get(filtroSeleccionado), ("%" + dato + "%"));
             criteriaQuery.where(filtro);
+            TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
+            typedQuery.setFirstResult(config.getElementosASaltar());
+            typedQuery.setMaxResults(config.getElementosPorPagina());
+            personas = typedQuery.getResultList();
         }
-        TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
-        typedQuery.setFirstResult(config.getElementosASaltar());
-        typedQuery.setMaxResults(config.getElementosPorPagina());
-        List<Persona> personas = typedQuery.getResultList();
 
         return personas;
     }
@@ -144,45 +155,97 @@ public class PersonasDAO implements IPersonasDAO {
         }
     }
 
+    private String fechaString(Calendar fecha) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Formato de fecha deseado
+        String fechaString = dateFormat.format(fecha.getTime());
+        return fechaString;
+    }
+
     @Override
     public List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2, ConfiguracionPaginado config) {
+        List<Persona> personas = new ArrayList<Persona>();
+        List<Persona> busqueda = new ArrayList<Persona>();
         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
         Root<Persona> root = cq.from(Persona.class);
+        if (filtro1.equals("nombre") || filtro2.equals("nombre")) {
+            busqueda = consultarPersonas();
+            for (int i = 0; i < busqueda.size(); i++) {
+                if (busqueda.get(i).getNombre().toLowerCase().contains(dato1.toLowerCase()) || busqueda.get(i).getNombre().toLowerCase().contains(dato2.toLowerCase())) {
+                    if (filtro1.equals("rfc") || filtro2.equals("rfc")) {
+                        if (busqueda.get(i).getRfc().toLowerCase().contains(dato1.toLowerCase()) || busqueda.get(i).getRfc().toLowerCase().contains(dato2.toLowerCase())) {
+                            personas.add(busqueda.get(i));
+                        }
 
-        Predicate filtroParam1 = criteriaBuilder.like(root.get(filtro1), ("%" + dato1 + "%"));
-        Predicate filtroParam2 = criteriaBuilder.like(root.get(filtro2), ("%" + dato2 + "%"));
-        Predicate predicateFinal = criteriaBuilder.and(filtroParam1, filtroParam2);
-
-        cq.select(root).where(predicateFinal);
-
-        TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(cq);
-        typedQuery.setFirstResult(config.getElementosASaltar());
-        typedQuery.setMaxResults(config.getElementosPorPagina());
-
-        List<Persona> resultados = typedQuery.getResultList();
-        return resultados;
+                    } else {
+                        String fechaNacimiento = fechaString(busqueda.get(i).getFechaNacimiento());
+                        if (fechaNacimiento.toLowerCase().contains(dato1.toLowerCase()) || fechaNacimiento.toLowerCase().contains(dato2.toLowerCase())) {
+                            personas.add(busqueda.get(i));
+                        }
+                    }
+                }
+            }
+        } else {
+            Predicate filtroParam1 = criteriaBuilder.like(root.get(filtro1), ("%" + dato1 + "%"));
+            Predicate filtroParam2 = criteriaBuilder.like(root.get(filtro2), ("%" + dato2 + "%"));
+            Predicate predicateFinal = criteriaBuilder.and(filtroParam1, filtroParam2);
+            cq.select(root).where(predicateFinal);
+            TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(cq);
+            typedQuery.setFirstResult(config.getElementosASaltar());
+            typedQuery.setMaxResults(config.getElementosPorPagina());
+            personas = typedQuery.getResultList();
+        }
+        return personas;
     }
 
     @Override
     public List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3, ConfiguracionPaginado config) {
+        List<Persona> personas = new ArrayList<Persona>();
+        List<Persona> busqueda = new ArrayList<Persona>();
         CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
         CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
         Root<Persona> root = cq.from(Persona.class);
+        if (filtro1.equals("nombre") || filtro2.equals("nombre") || filtro3.equals("nombre")) {
+            busqueda = consultarPersonas();
+            for (int i = 0; i < busqueda.size(); i++) {
+                if (busqueda.get(i).getNombre().toLowerCase().contains(dato1.toLowerCase())
+                        || busqueda.get(i).getNombre().toLowerCase().contains(dato2.toLowerCase())
+                        || busqueda.get(i).getNombre().toLowerCase().contains(dato3.toLowerCase())) {
+                    if (filtro1.equals("rfc") || filtro2.equals("rfc") || filtro3.equals("rfc")) {
+                        if (busqueda.get(i).getRfc().toLowerCase().contains(dato1.toLowerCase())
+                                || busqueda.get(i).getRfc().toLowerCase().contains(dato2.toLowerCase())
+                                || busqueda.get(i).getRfc().toLowerCase().contains(dato3.toLowerCase())) {
+                            personas.add(busqueda.get(i));
+                        }
 
-        Predicate filtroParam1 = criteriaBuilder.like(root.get(filtro1), ("%" + dato1 + "%"));
-        Predicate filtroParam2 = criteriaBuilder.like(root.get(filtro2), ("%" + dato2 + "%"));
-        Predicate filtroParam3 = criteriaBuilder.like(root.get(filtro3), ("%" + dato3 + "%"));
-        Predicate predicateFinal = criteriaBuilder.and(filtroParam1, filtroParam2, filtroParam3);
+                    } else {
+                        String fechaNacimiento = fechaString(busqueda.get(i).getFechaNacimiento());
+                        if (fechaNacimiento.toLowerCase().contains(dato1.toLowerCase())
+                                || fechaNacimiento.toLowerCase().contains(dato2.toLowerCase())
+                                || fechaNacimiento.toLowerCase().contains(dato3.toLowerCase())) {
+                            personas.add(busqueda.get(i));
+                        }
+                    }
+                }
+            }
+        } else {
+            Predicate filtroParam1 = criteriaBuilder.like(root.get(filtro1), ("%" + dato1 + "%"));
+            Predicate filtroParam2 = criteriaBuilder.like(root.get(filtro2), ("%" + dato2 + "%"));
+            Predicate filtroParam3 = criteriaBuilder.like(root.get(filtro3), ("%" + dato3 + "%"));
+            Predicate predicateFinal = criteriaBuilder.and(filtroParam1, filtroParam2, filtroParam3);
 
-        cq.select(root).where(predicateFinal);
-
-        TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(cq);
-        typedQuery.setFirstResult(config.getElementosASaltar());
-        typedQuery.setMaxResults(config.getElementosPorPagina());
-
-        List<Persona> resultados = typedQuery.getResultList();
-        return resultados;
+            cq.select(root).where(predicateFinal);
+            TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(cq);
+            typedQuery.setFirstResult(config.getElementosASaltar());
+            typedQuery.setMaxResults(config.getElementosPorPagina());
+            personas = typedQuery.getResultList();
+        }
+        return personas;
     }
 
+    @Override
+    public List<Persona> consultarPersonas() {
+        List<Persona> personas = conexionBD.getEM().createQuery("SELECT a FROM Persona a", Persona.class).getResultList();
+        return personas;
+    }
 }

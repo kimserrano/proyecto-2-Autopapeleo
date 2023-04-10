@@ -37,6 +37,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     private String filtro = null;
     private Persona personaSeleccionada = null;
     private Boolean tramite;
+    PaginacionLista paginacionLista;
 
     /**
      * Método constructor que inicializa sus atributos al valor de los
@@ -75,26 +76,35 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * registros de Persona.
      */
     public void cargarTablaPersonas() {
+        List<Persona> personas;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         if (filtro != null && !txtBusqueda.getText().isEmpty()) {
             try {
                 if (validarBusqueda()) {
-                    List<Persona> personas = personasDAO.consultarPersonasFiltro(this.filtro, this.txtBusqueda.getText(), paginado);
+                    personas = personasDAO.consultarPersonasFiltro(this.filtro, this.txtBusqueda.getText(), paginado);
+                    paginacionLista = new PaginacionLista(personas, paginado.getElementosPorPagina(), paginado.getNumeroPagina());
+                    if (filtro.equals("nombre")) {
+                        personas = paginacionLista.obtenerPaginaActual();
+                    }
                     DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
                     modeloTablaPersonas.setRowCount(0);
-                    for (Persona persona : personas) {
-                        Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
-                            + persona.getApellidoPaterno(), persona.getRfc(),
-                            formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
-                            persona.getDiscapacitado(), persona.getDiscapacitado(), persona.getTelefono()};
-                        modeloTablaPersonas.addRow(filaNueva);
+                    if (personas != null) {
+                        for (Persona persona : personas) {
+                            Object[] filaNueva = {persona.getId(), persona.getNombre() + " "
+                                + persona.getApellidoPaterno(), persona.getRfc(),
+                                formatter.format(((GregorianCalendar) persona.getFechaNacimiento()).getTime()),
+                                persona.getDiscapacitado(), persona.getTelefono()};
+                            modeloTablaPersonas.addRow(filaNueva);
+                        }
+                    } else {
+                        mostrarMensaje("No se encontraron más personas");
                     }
                 }
             } catch (PersistenciaException ex) {
                 mostrarMensaje(ex.getMessage());
             }
         } else {
-            List<Persona> personas = personasDAO.consultarPersonas(paginado);
+            personas = personasDAO.consultarPersonas(paginado);
             DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblPersonas.getModel();
             modeloTablaPersonas.setRowCount(0);
             for (Persona persona : personas) {
@@ -144,24 +154,27 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
         return false;
     }
-    public void personaMayor18() throws PersistenciaException{
+
+    public void personaMayor18() throws PersistenciaException {
         Calendar fechaNacimiento = personaSeleccionada.getFechaNacimiento();
         Calendar fechaActual = Calendar.getInstance();
-        LocalDate fechaNacimientoLD = LocalDate.of(fechaNacimiento.get(Calendar.YEAR),fechaNacimiento.get(Calendar.MONTH) + 1,fechaNacimiento.get(Calendar.DAY_OF_MONTH));
-        LocalDate fechaActualLD = LocalDate.of(fechaActual.get(Calendar.YEAR),fechaActual.get(Calendar.MONTH) + 1,fechaActual.get(Calendar.DAY_OF_MONTH));
+        LocalDate fechaNacimientoLD = LocalDate.of(fechaNacimiento.get(Calendar.YEAR), fechaNacimiento.get(Calendar.MONTH) + 1, fechaNacimiento.get(Calendar.DAY_OF_MONTH));
+        LocalDate fechaActualLD = LocalDate.of(fechaActual.get(Calendar.YEAR), fechaActual.get(Calendar.MONTH) + 1, fechaActual.get(Calendar.DAY_OF_MONTH));
         Period diferencia = Period.between(fechaNacimientoLD, fechaActualLD);
         int anios = diferencia.getYears();
         System.out.println(anios);
-        if(anios<18){
+        if (anios < 18) {
             throw new PersistenciaException("Persona menor de 18 años");
+        }
+
     }
-       
+
+    public void personaSinLicencia() throws Exception {
+        if (tramitesDAO.buscarLicenciaActiva(personaSeleccionada) == null) {
+            throw new PersistenciaException("Esta persona no tiene licencia activa");
+        }
     }
-    public void personaSinLicencia() throws Exception{
-    if(tramitesDAO.buscarLicenciaActiva(personaSeleccionada)==null){
-        throw new PersistenciaException("Esta persona no tiene licencia activa");
-    }
-    }
+
     /**
      * Método para obtener la persona a partir de la ID recuperada.
      */
@@ -205,8 +218,8 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
             try {
                 personaSinLicencia();
             } catch (Exception ex) {
-               mostrarMensaje(ex.getMessage());
-               return;
+                mostrarMensaje(ex.getMessage());
+                return;
             }
             frm = new FrmTramitarPlacas(personasDAO, vehiculosDAO, tramitesDAO, personaSeleccionada, "", historialDAO);
         }

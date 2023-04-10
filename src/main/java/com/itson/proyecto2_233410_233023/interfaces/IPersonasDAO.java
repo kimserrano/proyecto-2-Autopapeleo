@@ -43,6 +43,8 @@ public interface IPersonasDAO {
     List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2, ConfiguracionPaginado config);
 
     List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3, ConfiguracionPaginado config);
+    
+    List<Persona> consultarPersonas();
 
     /**
      * Método para obtener una persona a partir de la ID enviada.
@@ -51,4 +53,5 @@ public interface IPersonasDAO {
      * @return Persona obtenida.
      */
     Persona obtenerPersona(Long id);
+    
 }

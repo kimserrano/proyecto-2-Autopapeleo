@@ -73,6 +73,5 @@ public class Principal {
 //        Date fecha = formato.parse(fechaTexto);
 //        Date fechaFin = formato.parse(fechaTextoFin);
 //        System.out.println(tramitesDAO.consultarDiasTransurridosSP(fecha, fechaFin));
-
     }
 }

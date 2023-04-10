@@ -282,7 +282,7 @@ public class FrmHistorial extends javax.swing.JFrame {
             validador.validaNombre(filtro2Dato);
             validador.validaRFC(filtro1Dato);
             validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultasTresPersonasTresFiltro("rfc", "nombres", "fechaNacimiento", filtro1Dato, filtro2Dato, filtro3Dato, paginado);
+            personas = personasDAO.consultasTresPersonasTresFiltro("rfc", "nombre", "fechaNacimiento", filtro1Dato, filtro2Dato, filtro3Dato, paginado);
         } else if (filtro1Seleccionado && filtro2Seleccionado) {
             // Aplicar los filtros 1 y 2
             validador.validaNombre(filtro2Dato);
@@ -290,18 +290,16 @@ public class FrmHistorial extends javax.swing.JFrame {
             personas = personasDAO.consultarPersonasDosFiltro("rfc", "nombre", filtro1Dato, filtro2Dato, paginado);
 
         } else if (filtro1Seleccionado && filtro3Seleccionado) {
-            System.out.println("entras");
             // Aplicar los filtros 1 y 3
             validador.validaRFC(filtro1Dato);
             validador.validaFechaNacimiento(filtro3Dato);
             personas = personasDAO.consultarPersonasDosFiltro("rfc", "fechaNacimiento", filtro1Dato, filtro3Dato, paginado);
-            System.out.println(personas);
 
         } else if (filtro2Seleccionado && filtro3Seleccionado) {
             // Aplicar los filtros 2 y 3
             validador.validaFechaNacimiento(filtro3Dato);
             validador.validaNombre(filtro2Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("nombres", "fechaNacimiento", filtro2Dato, filtro3Dato, paginado);
+            personas = personasDAO.consultarPersonasDosFiltro("nombre", "fechaNacimiento", filtro2Dato, filtro3Dato, paginado);
         } else if (filtro1Seleccionado) {
             // Aplicar el filtro 1
             validador.validaRFC(filtro1Dato);
@@ -309,7 +307,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         } else if (filtro2Seleccionado) {
             // Aplicar el filtro 2
             validador.validaNombre(filtro2Dato);
-            personas = personas = personasDAO.consultarPersonasFiltro("nombres", filtro2Dato, paginado);
+            personas = personas = personasDAO.consultarPersonasFiltro("nombre", filtro2Dato, paginado);
         } else if (filtro3Seleccionado) {
             // Aplicar el filtro 3
             validador.validaFechaNacimiento(filtro3Dato);
