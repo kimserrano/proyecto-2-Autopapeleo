@@ -5,6 +5,7 @@ package com.itson.proyecto2_233410_233023.implementaciones;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  * Este clase representa los validadores del proyecto.
@@ -18,6 +19,10 @@ public class Validador {
      */
     public Validador() {
 
+    }
+
+    private void mostrarMensaje(String msj) {
+        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -45,17 +50,22 @@ public class Validador {
      * @return Valor booleano.
      */
     public boolean validaNombre(String letras) throws PersistenciaException {
-
-        String patron = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+([ '-][a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$";
-        Pattern p = Pattern.compile(patron);
-        Matcher matcher = p.matcher(letras);
-        if (matcher.matches()) {
-            return true;
+        if (letras!=null) {
+            String patron = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+([ '-][a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$";
+            Pattern p = Pattern.compile(patron);
+            Matcher matcher = p.matcher(letras);
+            if (matcher.matches()) {
+                return true;
+            } else {
+                throw new PersistenciaException("Nombre inválido.");
+            }
         } else {
-            throw new PersistenciaException("Nombre inválido.");
+            mostrarMensaje("Ingrese nombre");
         }
+        return false;
     }
 
+    
     /**
      * Método que valida un RFC
      *
@@ -63,14 +73,19 @@ public class Validador {
      * @return Valor booleano.
      */
     public boolean validaRFC(String rfc) throws PersistenciaException {
-        String patron = "^[A-ZÑ&]{3,4}\\d{6}[A-V1-9][0-9A-Z]?$|^.{0,12}$";
-        Pattern p = Pattern.compile(patron);
-        Matcher matcher = p.matcher(rfc);
-        if (matcher.matches()) {
-            return true;
+        if (rfc != null) {
+            String patron = "^[A-ZÑ&]{3,4}\\d{6}[A-V1-9][0-9A-Z]?$|^.{0,12}$";
+            Pattern p = Pattern.compile(patron);
+            Matcher matcher = p.matcher(rfc);
+            if (matcher.matches()) {
+                return true;
+            } else {
+                throw new PersistenciaException("RFC inválido.");
+            }
         } else {
-            throw new PersistenciaException("RFC inválido.");
+            mostrarMensaje("Ingrese rfc");
         }
+        return false;
     }
 
     public boolean validaNumeroSerie(String num) throws PersistenciaException {
@@ -119,15 +134,19 @@ public class Validador {
     }
 
     public boolean validaFechaNacimiento(String fechaNacimiento) throws PersistenciaException {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        String dateString = fechaNacimiento.format(formatter);
-        String patron = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
-        Pattern p = Pattern.compile(patron);
-        Matcher matcher = p.matcher(fechaNacimiento);
-        if (matcher.matches()) {
-            return true;
+        if (fechaNacimiento != null) {
+            String patron = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
+            Pattern p = Pattern.compile(patron);
+            Matcher matcher = p.matcher(fechaNacimiento);
+            if (matcher.matches()) {
+                return true;
+            } else {
+                throw new PersistenciaException("Fórmato de fecha inválido.");
+            }
         } else {
-            throw new PersistenciaException("Fórmato de fecha inválido.");
+            mostrarMensaje("Ingrese fecha");
         }
+        return false;
+
     }
 }

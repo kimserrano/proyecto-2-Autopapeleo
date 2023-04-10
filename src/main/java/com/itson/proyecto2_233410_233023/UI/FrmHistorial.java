@@ -28,9 +28,6 @@ public class FrmHistorial extends javax.swing.JFrame {
     IVehiculosDAO vehiculosDAO;
     ITramitesDAO tramitesDAO;
     IHistorialDAO historialDAO;
-    private ConfiguracionPaginado paginado;
-    private int numeroPagina = 0;
-    private int elementosPorPagina = 3;
     private Persona personaSeleccionada = null;
     private String filtro = null;
     private Validador validador = new Validador();
@@ -44,7 +41,6 @@ public class FrmHistorial extends javax.swing.JFrame {
         this.historialDAO = historialDAO;
         this.tramitesDAO = tramitesDAO;
         this.personasDAO = personasDAO;
-        this.paginado = new ConfiguracionPaginado(this.numeroPagina, this.elementosPorPagina);
         txtRfc.setEnabled(false);
         txtNombres.setEnabled(false);
         dtpFechaNacimiento.setEnabled(false);
@@ -62,12 +58,28 @@ public class FrmHistorial extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void verificarCasillas(String casilla) {
+        if (casilla == null) {
+            mostrarMensaje("Búsqueda invalida");
+        }
+
+    }
+
     private String obtenerRFC() {
-        return txtRfc.getText();
+        if (!txtRfc.getText().equals("")) {
+            return txtRfc.getText();
+        } else {
+            return null;
+        }
+
     }
 
     private String obtenerNombres() {
+         if (!txtNombres.getText().equals("")) {
         return txtNombres.getText();
+         }else {
+            return null;
+        }
     }
 
     private String obtenerFechaInicio() {
@@ -144,15 +156,16 @@ public class FrmHistorial extends javax.swing.JFrame {
     private void cargarComboBoxPersonas() throws PersistenciaException {
 
         List<Persona> personas = casillasActivas();
-        if (personas.isEmpty() || personas == null) {
+        if (personas == null || personas.isEmpty()) {
             DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
             model.setRowCount(0);
-            mostrarMensaje("Registro no encontrado");
+            //mostrarMensaje("Registro no encontrado");
+        } else {
+            for (Persona persona : personas) {
+                modeloComboBox.addElement(persona);
+            }
+            cbxPersonas.setModel(modeloComboBox);
         }
-        for (Persona persona : personas) {
-            modeloComboBox.addElement(persona);
-        }
-        cbxPersonas.setModel(modeloComboBox);
     }
 
     private PersonasDTO personaDTO() {
@@ -282,38 +295,38 @@ public class FrmHistorial extends javax.swing.JFrame {
             validador.validaNombre(filtro2Dato);
             validador.validaRFC(filtro1Dato);
             validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultasTresPersonasTresFiltro("rfc", "nombre", "fechaNacimiento", filtro1Dato, filtro2Dato, filtro3Dato, paginado);
+            personas = personasDAO.consultasTresPersonasTresFiltro("rfc", "nombre", "fechaNacimiento", filtro1Dato, filtro2Dato, filtro3Dato);
         } else if (filtro1Seleccionado && filtro2Seleccionado) {
             // Aplicar los filtros 1 y 2
             validador.validaNombre(filtro2Dato);
             validador.validaRFC(filtro1Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("rfc", "nombre", filtro1Dato, filtro2Dato, paginado);
+            personas = personasDAO.consultarPersonasDosFiltro("rfc", "nombre", filtro1Dato, filtro2Dato);
 
         } else if (filtro1Seleccionado && filtro3Seleccionado) {
             // Aplicar los filtros 1 y 3
             validador.validaRFC(filtro1Dato);
             validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("rfc", "fechaNacimiento", filtro1Dato, filtro3Dato, paginado);
+            personas = personasDAO.consultarPersonasDosFiltro("rfc", "fechaNacimiento", filtro1Dato, filtro3Dato);
 
         } else if (filtro2Seleccionado && filtro3Seleccionado) {
             // Aplicar los filtros 2 y 3
             validador.validaFechaNacimiento(filtro3Dato);
             validador.validaNombre(filtro2Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("nombre", "fechaNacimiento", filtro2Dato, filtro3Dato, paginado);
+            personas = personasDAO.consultarPersonasDosFiltro("fechaNacimiento","nombre", filtro3Dato, filtro2Dato);
         } else if (filtro1Seleccionado) {
             // Aplicar el filtro 1
             validador.validaRFC(filtro1Dato);
-            personas = personasDAO.consultarPersonasFiltro("rfc", filtro1Dato, paginado);
+            personas = personasDAO.consultarPersonasUnFiltro("rfc", filtro1Dato);
         } else if (filtro2Seleccionado) {
             // Aplicar el filtro 2
             validador.validaNombre(filtro2Dato);
-            personas = personas = personasDAO.consultarPersonasFiltro("nombre", filtro2Dato, paginado);
+            personas = personas = personasDAO.consultarPersonasUnFiltro("nombre", filtro2Dato);
         } else if (filtro3Seleccionado) {
             // Aplicar el filtro 3
             validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultarPersonasFiltro("fechaNacimiento", filtro3Dato, paginado);
+            personas = personasDAO.consultarPersonasUnFiltro("fechaNacimiento", filtro3Dato);
         } else {
-            mostrarMensaje("Filtro de consultas incorrecto");
+            mostrarMensaje("Por favor seleccione los filtros de su preferencia");
         }
         return personas;
     }

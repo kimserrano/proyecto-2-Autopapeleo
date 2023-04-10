@@ -40,10 +40,12 @@ public interface IPersonasDAO {
      */
     List<Persona> consultarPersonasFiltro(String filtro, String dato, ConfiguracionPaginado config);
 
-    List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2, ConfiguracionPaginado config);
+    List<Persona> consultarPersonasUnFiltro(String filtroSeleccionado, String dato);
 
-    List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3, ConfiguracionPaginado config);
-    
+    List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2);
+
+    List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3, String dato1, String dato2, String dato3);
+
     List<Persona> consultarPersonas();
 
     /**
@@ -53,5 +55,5 @@ public interface IPersonasDAO {
      * @return Persona obtenida.
      */
     Persona obtenerPersona(Long id);
-    
+
 }
