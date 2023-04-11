@@ -10,6 +10,7 @@ import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +47,8 @@ public class FrmHistorial extends javax.swing.JFrame {
      * Atributo que representa a la persona de la cual se quiere conocer el
      * historial.
      */
-    private Persona personaSeleccionada;;
+    private Persona personaSeleccionada;
+    ;
     
     /**
      * Atributo que sirve para validar los valores ingresados por el usario,
@@ -102,13 +104,13 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     private String obtenerRFC() {
         String rfc = txtRfc.getText();
-            try {
-                validador.validaRFC(rfc);
-                return rfc;
-            } catch (PersistenciaException ex) {
-              mostrarMensaje(ex.getMessage());
-            }
-        
+        try {
+            validador.validaRFC(rfc);
+            return rfc;
+        } catch (PersistenciaException ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+
         return null;
     }
 
@@ -120,25 +122,40 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     private String obtenerNombres() {
         String nombres = txtNombres.getText();
-            try {
-                validador.validaNombre(nombres);
-                return nombres;
-            } catch (PersistenciaException ex) {
-              mostrarMensaje(ex.getMessage());
-            }
-         
+        try {
+            validador.validaNombre(nombres);
+            return nombres;
+        } catch (PersistenciaException ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+
         return null;
     }
-    private String obtenerFechaInicio(){
+
+    private String obtenerFechaInicio() {
         return dtpFechaDe.getText();
     }
-    private String obtenerFechaFin(){
+
+    private String obtenerFechaFin() {
         return dptFechaHasta.getText();
     }
-    private String obtenerFechaNacimiento(){
+
+    private String obtenerFechaNacimiento() {
         return dtpFechaNacimiento.getText();
     }
-    
+
+    private String obtenerNombresReporte() {
+        String nombres = txtNombresReporte.getText();
+        try {
+            validador.validaNombre(nombres);
+            return nombres;
+        } catch (PersistenciaException ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+
+        return null;
+    }
+
     /**
      * Método que obtiene fecha de nacimiento que el usuario seleccionó en el
      * campo de texto y la transforma en un string.
@@ -268,12 +285,12 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @throws PersistenciaException si existe un error al cargar la tabla.
      */
     private void cargarTablaPeriodoTramitesPorTipo(String tipoTramite) throws PersistenciaException {
+        String fechaInicio = validarYFormatearFecha(obtenerFechaInicio());
+        String fechaFin = validarYFormatearFecha(obtenerFechaFin());
+        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
+        modeloTablaPersonas.setRowCount(0);
         if (personaSeleccionada != null) {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-            DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
-            modeloTablaPersonas.setRowCount(0);
-            String fechaInicio = validarYFormatearFecha(obtenerFechaInicio());
-            String fechaFin = validarYFormatearFecha(obtenerFechaFin());
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
                 if (fechaInicio != null && fechaFin != null) {
                     List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
@@ -289,8 +306,35 @@ public class FrmHistorial extends javax.swing.JFrame {
                     }
                 }
             }
+        } else {
+            List<Persona> personas = casillasActivas();
+            List<Tramite> tramites = new ArrayList<Tramite>();
+            for (int i = 0; i < personas.size(); i++) {
+                tramites.addAll(personas.get(i).getTramites());
+            }
+
+            if (tramites.isEmpty()) {
+                mostrarMensaje("No se encontraron registros");
+            }
+
+            for (int i = 0; i < tramites.size(); i++) {
+                List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
+                Tramite tramite = tramites.get(i);
+                if (tramitesPeriodo.contains(tramite)) {
+                    String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                    if (definirTipoTramite(tramite).equals(tipoTramite)) {
+
+                        Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), definirTipoTramite(tramite),
+                            fechaExpedicion, "$ " + tramite.getCosto()};
+                        modeloTablaPersonas.addRow(filaNueva);
+                    }
+                }
+
+            }
+
         }
     }
+
     /**
      * * Método que carga los trámites que ha realizado una persona dentro de
      * un periodo de tiempo sin importar el tipo de trámite.
@@ -298,12 +342,12 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @throws PersistenciaException si hubo un error al cargar la tabla
      */
     private void cargarTablaPeriodoTramites() throws PersistenciaException {
+        String fechaInicio = validarYFormatearFecha(obtenerFechaInicio());
+        String fechaFin = validarYFormatearFecha(obtenerFechaFin());
+        DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
+        modeloTablaPersonas.setRowCount(0);
         if (personaSeleccionada != null) {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-            DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
-            modeloTablaPersonas.setRowCount(0);
-            String fechaInicio = validarYFormatearFecha(obtenerFechaInicio());
-            String fechaFin = validarYFormatearFecha(obtenerFechaFin());
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
                 if (fechaInicio != null && fechaFin != null) {
                     List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
@@ -315,6 +359,28 @@ public class FrmHistorial extends javax.swing.JFrame {
                         modeloTablaPersonas.addRow(filaNueva);
                     }
                 }
+            }
+        } else {
+            List<Persona> personas = casillasActivas();
+            List<Tramite> tramites = new ArrayList<Tramite>();
+            for (int i = 0; i < personas.size(); i++) {
+                tramites.addAll(personas.get(i).getTramites());
+            }
+
+            if (tramites.isEmpty()) {
+                mostrarMensaje("No se encontraron registros");
+            }
+
+            for (int i = 0; i < tramites.size(); i++) {
+                List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
+                Tramite tramite = tramites.get(i);
+                if (tramitesPeriodo.contains(tramite)) {
+                    String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                    Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), tramite.getClass().getSimpleName(),
+                        fechaExpedicion, "$ " + tramite.getCosto()};
+                    modeloTablaPersonas.addRow(filaNueva);
+                }
+
             }
         }
     }
@@ -334,10 +400,13 @@ public class FrmHistorial extends javax.swing.JFrame {
         String rfcObtenido = null;
         String nombresObtenidos = null;
         String fechaNacimientoObtenida = null;
+        String nombresReporteObtenidos = null;
         // Verificar cuáles JCheckBox están seleccionados
         boolean rfc = jcbRfc.isSelected();
         boolean nombres = jcbNombres.isSelected();
         boolean fechaNacimiento = jcbFechaNacimiento.isSelected();
+        boolean nombresReporte = jcbReporte.isSelected();
+
         if (rfc) {
             rfcObtenido = obtenerRFC();
         }
@@ -347,6 +416,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         if (fechaNacimiento) {
             fechaNacimientoObtenida = validarYFormatearFecha(obtenerFechaNacimiento());
         }
+
         //obtiene los datos de los txt para cada filtro
         PersonasDTO personasDTO = new PersonasDTO(rfcObtenido, nombresObtenidos, fechaNacimientoObtenida);
         // Aplicar el filtro correspondiente
@@ -363,6 +433,11 @@ public class FrmHistorial extends javax.swing.JFrame {
             personas = personasDAO.consultarPersonasDosFiltro(personasDTO, "fechaNacimiento", "nombre");
         } else {
             personas = personasDAO.consultarPersonasUnFiltro(personasDTO);
+            if (nombresReporte) {
+                nombresReporteObtenidos = obtenerNombresReporte();
+                PersonasDTO personasReporteDTO = new PersonasDTO(nombresReporteObtenidos);
+                personas = personasDAO.consultarPersonasUnFiltro(personasReporteDTO);
+            }
         }
         return personas;
     }
@@ -568,9 +643,9 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         });
 
+        lblHistorialSolicitudes1.setText("Activar modo reporte");
         lblHistorialSolicitudes1.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblHistorialSolicitudes1.setForeground(new java.awt.Color(124, 63, 163));
-        lblHistorialSolicitudes1.setText("Activar modo reporte");
 
         jPanelFondoReporte.setBackground(new java.awt.Color(233, 219, 253));
         jPanelFondoReporte.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -811,6 +886,24 @@ public class FrmHistorial extends javax.swing.JFrame {
         return null;
     }
 
+    public void filtrarConsultasPeriodo() throws PersistenciaException {
+
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+        model.setRowCount(0);
+        if (filtroComboBoxTipo().equals("Ambos")) {
+            cargarTablaPeriodoTramites();
+        } else if (filtroComboBoxTipo().equals("Licencias")) {
+            cargarTablaPeriodoTramitesPorTipo("TramiteLicencia");
+        } else {
+            cargarTablaPeriodoTramitesPorTipo("TramitePlaca");
+        }
+
+        if (dtpFechaDe.getText().isEmpty() || dptFechaHasta.getText().isEmpty()) {
+            mostrarMensaje("No hay un periodo seleccionado");
+        }
+    }
+
     /**
      * Botón que se utiliza para volver al menú.
      *
@@ -851,12 +944,16 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @param evt el click que se le da al combo box.
      */
     private void cbxPersonasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPersonasActionPerformed
-      //  personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
+        //  personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
         filtroComboBoxTipo();
     }//GEN-LAST:event_cbxPersonasActionPerformed
 
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
-
+        try {
+            casillasActivas();
+        } catch (PersistenciaException ex) {
+            Logger.getLogger(FrmHistorial.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
     /**
@@ -906,37 +1003,25 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     private void btnFiltartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltartActionPerformed
         try {
-            // TODO add your handling code here:
-            DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
-            model.setRowCount(0);
-            if (filtroComboBoxTipo().equals("Ambos")) {
-                cargarTablaPeriodoTramites();
-            } else if (filtroComboBoxTipo().equals("Licencias")) {
-                cargarTablaPeriodoTramitesPorTipo("TramiteLicencia");
-            } else if ((filtroComboBoxTipo().equals("Placas"))) {
-                cargarTablaPeriodoTramitesPorTipo("TramitePlaca");
-            }
+            filtrarConsultasPeriodo();
         } catch (PersistenciaException ex) {
             mostrarMensaje(ex.getMessage());
-        }
-        if (dtpFechaDe.getText().isEmpty()|| dptFechaHasta.getText().isEmpty()) {
-            mostrarMensaje("No hay un periodo seleccionado");
         }
     }//GEN-LAST:event_btnFiltartActionPerformed
 
     private void jcbReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbReporteActionPerformed
-       if (jcbReporte.isSelected()) {
+        if (jcbReporte.isSelected()) {
             btnAplicarFiltros.setEnabled(false);
             cbxPersonas.setEnabled(false);
             txtNombresReporte.setEnabled(true);
             jPanelFondoReporte.setVisible(true);
             lblHistorialSolicitudes.setText("Reporte de trámites realizados");
         } else {
-             btnAplicarFiltros.setEnabled(true);
-             cbxPersonas.setEnabled(true);
-             txtNombresReporte.setEnabled(false);
-             jPanelFondoReporte.setVisible(false);
-             lblHistorialSolicitudes.setText("Historial de solicitudes");
+            btnAplicarFiltros.setEnabled(true);
+            cbxPersonas.setEnabled(true);
+            txtNombresReporte.setEnabled(false);
+            jPanelFondoReporte.setVisible(false);
+            lblHistorialSolicitudes.setText("Historial de solicitudes");
         }
     }//GEN-LAST:event_jcbReporteActionPerformed
 

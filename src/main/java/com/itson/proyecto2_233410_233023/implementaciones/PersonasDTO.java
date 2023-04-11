@@ -21,6 +21,11 @@ public class PersonasDTO {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    public PersonasDTO(String nombre) {
+        this.nombre = nombre;
+    }
+    
+
     public String getRfc() {
         return rfc;
     }
