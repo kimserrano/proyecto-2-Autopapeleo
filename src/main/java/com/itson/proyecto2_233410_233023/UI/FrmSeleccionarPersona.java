@@ -307,7 +307,6 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Seleccionar persona");
-        setPreferredSize(new java.awt.Dimension(683, 455));
 
         jPanelFondo.setBackground(new java.awt.Color(233, 219, 253));
         jPanelFondo.setForeground(new java.awt.Color(233, 219, 253));
@@ -332,7 +331,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
         lblAutoPapeleo.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblAutoPapeleo.setForeground(new java.awt.Color(255, 255, 255));
-        lblAutoPapeleo.setText("Selecciona Persona");
+        lblAutoPapeleo.setText("Seleccionar Persona");
 
         javax.swing.GroupLayout jPanelBarraLayout = new javax.swing.GroupLayout(jPanelBarra);
         jPanelBarra.setLayout(jPanelBarraLayout);

@@ -166,73 +166,81 @@ public class PersonasDAO implements IPersonasDAO {
         return fechaString;
     }
 
-    @Override
     /**
-     * Método que hace una consulta a la base de datos en la tabla de personas y
-     * aplica dos filtros, es decir una consulta con dos where.
+     * Método para consultar una lista de personas con dos clausalas where.
+     *
+     * @param personasDTO Objeto con los filtros seleccionados.
+     * @param filtro1 que se desea comparar.
+     * @param filtro2 que se desea comparar.
+     * @return Lista de personas.
+     *
      */
-    public List<Persona> consultarPersonasDosFiltro(String filtro1, String filtro2, String dato1, String dato2) {
-        if (dato1 != null && dato2 != null) {
+    @Override
+    public List<Persona> consultarPersonasDosFiltro(PersonasDTO personasDTO, String filtro1, String filtro2) {
+        try {
             List<Persona> personas = new ArrayList<Persona>();
             List<Persona> nombres = new ArrayList<Persona>();
             CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
             CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
             Root<Persona> root = cq.from(Persona.class);
             if (filtro2.equals("nombre")) {
-                nombres = listaPersonasNombres(dato2);
+                nombres = listaPersonasNombres(personasDTO.getNombre());
                 if (filtro1.equals("rfc")) {
                     for (int i = 0; i < nombres.size(); i++) {
-                        if (nombres.get(i).getRfc().toLowerCase().contains(dato1.toLowerCase())) {
+                        if (nombres.get(i).getRfc().toLowerCase().contains(personasDTO.getRfc().toLowerCase())) {
                             personas.add(nombres.get(i));
                         }
                     }
                 } else {
                     for (int i = 0; i < nombres.size(); i++) {
                         String fechaNacimiento = fechaString(nombres.get(i).getFechaNacimiento());
-                        if (fechaNacimiento.toLowerCase().contains(dato1.toLowerCase())) {
+                        if (fechaNacimiento.toLowerCase().contains(personasDTO.getFechaNacimiento().toLowerCase())) {
                             personas.add(nombres.get(i));
                         }
                     }
                 }
             }
             return personas;
+        } catch (Exception ex) {
+            return null;
+        } finally {
+            conexionBD.getEM().clear();
         }
-        return null;
     }
 
-    @Override
     /**
-     * Método que hace una consulta a la base de datos en la tabla de personas y
-     * aplica tres filtros, es decir una consulta con tres where.
+     * Método para consultar una lista de personas con tres clausalas where.
+     *
+     * @param personasDTO Objeto conn los filtros seleccionados.
+     * @return Lista de personas que coincidan.
      */
-    public List<Persona> consultasTresPersonasTresFiltro(String filtro1, String filtro2, String filtro3,
-            String dato1, String dato2, String dato3) {
-        if (dato1 != null && dato2 != null && dato3 != null) {
+    @Override
+    public List<Persona> consultarPersonasTresFiltro(PersonasDTO personasDTO) {
+        try {
             List<Persona> personas = new ArrayList<Persona>();
             List<Persona> nombres = new ArrayList<Persona>();
             List<Persona> auxiliar = new ArrayList<Persona>();
             CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
             CriteriaQuery<Persona> cq = criteriaBuilder.createQuery(Persona.class);
             Root<Persona> root = cq.from(Persona.class);
-            if (filtro2.equals("nombre")) {
-                nombres = listaPersonasNombres(dato2);
-                if (filtro1.equals("rfc")) {
-                    for (int i = 0; i < nombres.size(); i++) {
-                        if (nombres.get(i).getRfc().toLowerCase().contains(dato1.toLowerCase())) {
-                            auxiliar.add(nombres.get(i));
-                        }
-                    }
-                    for (int i = 0; i < auxiliar.size(); i++) {
-                        String fechaNacimiento = fechaString(auxiliar.get(i).getFechaNacimiento());
-                        if (fechaNacimiento.toLowerCase().contains(dato3.toLowerCase())) {
-                            personas.add(auxiliar.get(i));
-                        }
-                    }
+            nombres = listaPersonasNombres(personasDTO.getNombre());
+            for (int i = 0; i < nombres.size(); i++) {
+                if (nombres.get(i).getRfc().toLowerCase().contains(personasDTO.getRfc().toLowerCase())) {
+                    auxiliar.add(nombres.get(i));
+                }
+            }
+            for (int i = 0; i < auxiliar.size(); i++) {
+                String fechaNacimiento = fechaString(auxiliar.get(i).getFechaNacimiento());
+                if (fechaNacimiento.toLowerCase().contains(personasDTO.getFechaNacimiento().toLowerCase())) {
+                    personas.add(auxiliar.get(i));
                 }
             }
             return personas;
+        } catch (Exception ex) {
+            return null;
+        } finally {
+            conexionBD.getEM().clear();
         }
-        return null;
     }
 
     @Override
@@ -244,27 +252,39 @@ public class PersonasDAO implements IPersonasDAO {
         return personas;
     }
 
-    @Override
     /**
-     * Método que hace una consulta a la base de datos en la tabla de personas y
-     * aplica un filtros, es decir una consulta con un where.
+     * Método para consultar una lista de personas con un clausala where.
+     *
+     * @param personasDTO Objeto con los filtros seleccionados.
+     * @return Lista de personas.
+     *
      */
-    public List<Persona> consultarPersonasUnFiltro(String filtroSeleccionado, String dato
-    ) {
-        List<Persona> personas = new ArrayList<Persona>();
-        CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
-        CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
-        Root<Persona> entidad = criteriaQuery.from(Persona.class);
-        if (filtroSeleccionado.equals("nombre") && dato != null) {
-            personas = listaPersonasNombres(dato);
-        } else {
-            Predicate filtro = criteriaBuilder.like(entidad.get(filtroSeleccionado), ("%" + dato + "%"));
-            criteriaQuery.where(filtro);
-            TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
-            personas = typedQuery.getResultList();
+    @Override
+    public List<Persona> consultarPersonasUnFiltro(PersonasDTO personasDTO) {
+        try {
+            List<Persona> personas = new ArrayList<Persona>();
+            CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+            CriteriaQuery<Persona> criteriaQuery = criteriaBuilder.createQuery(Persona.class);
+            Root<Persona> entidad = criteriaQuery.from(Persona.class);
+            if (personasDTO.getNombre() != null) {
+                personas = listaPersonasNombres(personasDTO.getNombre());
+            } else if (personasDTO.getRfc() != null) {
+                Predicate filtro = criteriaBuilder.like(entidad.get("rfc"), ("%" + personasDTO.getRfc() + "%"));
+                criteriaQuery.where(filtro);
+                TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
+                personas = typedQuery.getResultList();
+            } else {
+                Predicate filtro = criteriaBuilder.equal(entidad.get("fechaNacimiento"), (personasDTO.getFechaNacimiento()));
+                criteriaQuery.where(filtro);
+                TypedQuery<Persona> typedQuery = conexionBD.getEM().createQuery(criteriaQuery);
+                personas = typedQuery.getResultList();
+            }
+            return personas;
+        } catch (Exception ex) {
+            return null;
+        } finally {
+            conexionBD.getEM().clear();
         }
-
-        return personas;
     }
 
     /**

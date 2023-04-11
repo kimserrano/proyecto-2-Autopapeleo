@@ -1,5 +1,5 @@
 /**
- * Clase Validador.java creada el 15/02/2023.
+ * Clase Validador.java creada el 01/04/2023.
  */
 package com.itson.proyecto2_233410_233023.implementaciones;
 
@@ -46,23 +46,22 @@ public class Validador {
     /**
      * Método que valida un nombre.
      *
-     * @param letras símbolos a validar.
+     * @param nombre símbolos a validar.
      * @return Valor booleano.
      */
-    public boolean validaNombre(String letras) throws PersistenciaException {
-        if (letras != null) {
+    public boolean validaNombre(String nombre) throws PersistenciaException {
+        if (!nombre.equals("")) {
             String patron = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+([ '-][a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$";
             Pattern p = Pattern.compile(patron);
-            Matcher matcher = p.matcher(letras);
+            Matcher matcher = p.matcher(nombre);
             if (matcher.matches()) {
                 return true;
             } else {
                 throw new PersistenciaException("Nombre inválido.");
             }
         } else {
-            mostrarMensaje("Ingrese nombre");
+             throw new PersistenciaException("Ingresa nombre.");
         }
-        return false;
     }
 
     /**
@@ -72,7 +71,7 @@ public class Validador {
      * @return Valor booleano.
      */
     public boolean validaRFC(String rfc) throws PersistenciaException {
-        if (rfc != null) {
+        if (!rfc.equals("")) {
             String patron = "^[A-ZÑ&]{3,4}\\d{6}[A-V1-9][0-9A-Z]?$|^.{0,12}$";
             Pattern p = Pattern.compile(patron);
             Matcher matcher = p.matcher(rfc);
@@ -82,9 +81,8 @@ public class Validador {
                 throw new PersistenciaException("RFC inválido.");
             }
         } else {
-            mostrarMensaje("Ingrese rfc");
+            throw new PersistenciaException("Ingresa el RFC.");
         }
-        return false;
     }
 
     /**
@@ -174,7 +172,7 @@ public class Validador {
      * indicado.
      */
     public boolean validaFechaNacimiento(String fechaNacimiento) throws PersistenciaException {
-        if (fechaNacimiento != null) {
+        if (!fechaNacimiento.equals("")) {
             String patron = "^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
             Pattern p = Pattern.compile(patron);
             Matcher matcher = p.matcher(fechaNacimiento);
@@ -184,9 +182,22 @@ public class Validador {
                 throw new PersistenciaException("Fórmato de fecha inválido.");
             }
         } else {
-            mostrarMensaje("Ingrese fecha");
+              throw new PersistenciaException("Ingrese una fecha de nacimiento.");
         }
-        return false;
-
+    }
+    /**
+     * Método que valida una fecha.
+     *
+     * @param fechaNacimiento fecha que desea validarse.
+     * @return true si el formato es correcto.
+     * @throws PersistenciaException en caso de que el formato no sea el
+     * indicado.
+     */
+    public boolean validaFechaNacimientoTexto(String fechaNacimiento) throws PersistenciaException {
+        if (!fechaNacimiento.equals("")) {
+            return true;
+        } else {
+              throw new PersistenciaException("Ingrese una fecha de nacimiento.");
+        }
     }
 }

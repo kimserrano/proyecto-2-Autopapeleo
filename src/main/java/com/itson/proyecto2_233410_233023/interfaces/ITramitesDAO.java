@@ -39,15 +39,6 @@ public interface ITramitesDAO {
     Boolean tramitarLicencia(TramiteLicencia tramite) throws Exception;
 
     /**
-     * Método que se encarga de hacer el insert de una placa a la base de datos.
-     *
-     * @param placa la cual se requiere hacer un insert a la base.
-     * @return true si fue posible.
-     * @throws Exception lanza una expeción en caso de no poder.
-     */
-    Boolean registrarPlaca(Placa placa) throws Exception;
-
-    /**
      * Método que actualiza el estado de una licencia. l
      *
      * @param licenciaActual licencia que desea ctualizarse.
@@ -67,27 +58,36 @@ public interface ITramitesDAO {
      * @throws Exception si no se encuentra la licencia activa.
      */
     Licencia buscarLicenciaActiva(Persona persona) throws Exception;
-
+    
     /**
+     * Método que se encarga de hacer el insert de una placa a la base de datos.
      *
-     * @param tramite
-     * @return
-     * @throws Exception
+     * @param placa la cual se requiere hacer un insert a la base.
+     * @return true si fue posible.
+     * @throws Exception lanza una expeción en caso de no poder.
+     */
+    Boolean registrarPlaca(Placa placa) throws Exception;
+    /**
+     * Método para tramitar una placa.
+     * @param tramite Tramite de placa a realizar.
+     * @return Valor booleano.
+     * @throws Exception Excepción a lanzar en caso de fallar el trámite.
      */
     Boolean tramitarPlaca(TramitePlaca tramite) throws Exception;
 
     /**
-     *
-     * @param placaActual
-     * @param tramite
+     * Método que cambia el estado de la placa a inactiva y la fecha de
+     * expedicion por la del trámite.
+     * @param placaActual Placa actual.
+     * @param tramite Tramite actual.
      */
     void actualizarPlaca(Placa placaActual, TramitePlaca tramite);
 
     /**
-     *
-     * @param tramite
-     * @return
-     * @throws Exception
+     * Método para buscar una placa activa.
+     * @param tramite Tramite actual.
+     * @return Placa activa encontrada.
+     * @throws Exception Excepción en caso de no poder realizar la búsqueda.
      */
     Placa buscarPlacaActiva(TramitePlaca tramite) throws Exception;
 
@@ -95,40 +95,42 @@ public interface ITramitesDAO {
      * Método que realiza una consulta de trámites de tipo licencia.
      *
      * @return lista de trámites de tipo lecencia.
+     * @throws Exception si no se puede consultar la lista.
      */
-    List<TramiteLicencia> consultarTramitesLicencia();
+    List<TramiteLicencia> consultarTramitesLicencia() throws Exception;
 
     /**
      * Método que realiza una consulta de trámites de tipo placa.
      *
      * @return lista de trámites de tipo placa.
+     * @throws Exception si no se puede consultar la lista.
      */
-    List<TramitePlaca> consultarTramitesPlaca();
+    List<TramitePlaca> consultarTramitesPlaca() throws Exception;
 
     /**
      * Método que consulta un Stored Procedure en la base de datos de los días
-     * transcurridos
+     * transcurridos.
      *
-     * @param fechaInicio inicio del periodo
-     * @param fechaFin sin del periodo
-     * @return días transcurridos
+     * @param fechaInicio Inicio del periodo.
+     * @param fechaFin Fin del periodo.
+     * @return Días transcurridos.
      */
     Long consultarDiasTransurridosSP(Calendar fechaInicio, Calendar fechaFin);
 
     /**
-     * Consulta los tramites registrados en la base de datos.
+     * Consulta los trámites registrados en la base de datos.
      *
-     * @return lista de tramites.
+     * @return Lista de trámites.
      */
     List<Tramite> consultarColumnaTipoTramite();
 
     /**
-     * Consulta aquellos tramites que estan dentro de el periodo enviado como
-     * paramero.
+     * Consulta aquellos trámites que están dentro de el periodo enviado como
+     * parámetro.
      *
-     * @param fechaInicio inicio del periodo.
-     * @param fechaFin fin del periodo.
-     * @return lista de tramites cuya fecha de expedición este dentro de ese
+     * @param fechaInicio Inicio del periodo.
+     * @param fechaFin Fin del periodo.
+     * @return Lista de tramites cuya fecha de expedición esté dentro de ese
      * periodo.
      */
     List<Tramite> periodoFechaTramite(String fechaInicio, String fechaFin);

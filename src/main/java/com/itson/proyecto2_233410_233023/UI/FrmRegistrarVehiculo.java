@@ -46,13 +46,21 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     /**
      * Constructor por defecto que inicializa sus atributos al valor de los parámetros enviados.
-     */
+     * @param personasDAO Atributo que ayuda a utilizar aquellos métodos para la
+     * búsqueda de personas.
+     * @param vehiculosDAO Atributo que ayuda a utilizar aquellos métodos para
+     * la búsqueda de vehículos.
+     * @param persona Persona seleccionada anteriormente.
+     * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
+     * consultar los trámites realizados por una persona.
+     */ 
     public FrmRegistrarVehiculo(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
         initComponents();
         this.personasDAO = personasDAO;
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
+        lblNombrePersona.setText(personaSeleccionada.getNombre()+" "+personaSeleccionada.getApellidoPaterno());
 
     }
     /**

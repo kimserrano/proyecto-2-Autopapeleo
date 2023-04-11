@@ -1,6 +1,6 @@
-    /*
+/*
 Clase Licencia.java creada el 29/03/2023.
- */
+*/
 package com.itson.proyecto2_233410_233023.dominio;
 
 import java.io.Serializable;
@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
  * @author Gabriel x Kim
  */
 @Entity
-@Table(name = "Lincencias")
+@Table(name = "Licencias")
 public class Licencia implements Serializable {
 
     /**

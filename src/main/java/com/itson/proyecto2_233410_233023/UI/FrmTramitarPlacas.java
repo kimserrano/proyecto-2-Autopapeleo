@@ -43,9 +43,17 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
      */
     Validador validador = new Validador();
 
-    /**
+     /**
      * Constructor por defecto que inicializa sus atributos al valor de los parámetros enviados.
-     */
+     * @param personasDAO Atributo que ayuda a utilizar aquellos métodos para la
+     * búsqueda de personas.
+     * @param vehiculosDAO Atributo que ayuda a utilizar aquellos métodos para
+     * la búsqueda de vehículos.
+     * @param persona Persona seleccionada anteriormente.
+     * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
+     * consultar los trámites realizados por una persona.
+     * @param numSerie Numero de serie recibido del registro de vehículos.
+     */ 
     public FrmTramitarPlacas(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO, Persona persona, String numSerie) {
         initComponents();
         this.personasDAO = personasDAO;
@@ -299,8 +307,8 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
                 .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblTramitarPlacas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblNombrePersona, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblNombrePersona, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jpnBarraLayout.setVerticalGroup(

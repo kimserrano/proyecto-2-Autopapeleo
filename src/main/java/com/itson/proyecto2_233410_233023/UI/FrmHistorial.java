@@ -67,7 +67,6 @@ public class FrmHistorial extends javax.swing.JFrame {
      * consultar los trámites realizados por una persona.
      */
     public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO) {
-        
         initComponents();
         this.tramitesDAO = tramitesDAO;
         this.personasDAO = personasDAO;
@@ -75,6 +74,8 @@ public class FrmHistorial extends javax.swing.JFrame {
         txtRfc.setEnabled(false);
         txtNombres.setEnabled(false);
         dtpFechaNacimiento.setEnabled(false);
+        txtNombresReporte.setEnabled(false);
+        jPanelFondoReporte.setVisible(false);
 
     }
 
@@ -100,12 +101,15 @@ public class FrmHistorial extends javax.swing.JFrame {
      * regresa null.
      */
     private String obtenerRFC() {
-        if (!txtRfc.getText().equals("")) {
-            return txtRfc.getText();
-        } else {
-            return null;
-        }
-
+        String rfc = txtRfc.getText();
+            try {
+                validador.validaRFC(rfc);
+                return rfc;
+            } catch (PersistenciaException ex) {
+              mostrarMensaje(ex.getMessage());
+            }
+        
+        return null;
     }
 
     /**
@@ -115,71 +119,26 @@ public class FrmHistorial extends javax.swing.JFrame {
      * regresa null.
      */
     private String obtenerNombres() {
-        if (!txtNombres.getText().equals("")) {
-            return txtNombres.getText();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Método que obtiene la fecha de inicio que el usuario seleccionó en el
-     * campo de texto y la transforma en un string, representa el inicio de un
-     * periodo de los trámites que se desean ver.
-     *
-     * @return la cadena con la fecha de inicio del periodo en caso de no estar
-     * vacía de lo contrario regresa null.
-     */
-    private String obtenerFechaInicio() {
-        String fechaFormateada = null;
-        String fechaTexto = dtpDe.getText(); // obtenemos la fecha como una cadena de texto
-        int indiceEspacio = fechaTexto.indexOf(" ");
-        if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
-            String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
-            int cantidadCaracteres = caracteresAntesEspacio.length();
-
-            if (cantidadCaracteres == 1) {
-                fechaTexto = "0" + fechaTexto; // esto se hace porque si la fecha solamente tiene un digito se le debe agregar el 0 al inicio
+        String nombres = txtNombres.getText();
+            try {
+                validador.validaNombre(nombres);
+                return nombres;
+            } catch (PersistenciaException ex) {
+              mostrarMensaje(ex.getMessage());
             }
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
-            LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
-            fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-            return fechaFormateada;
-        }
+         
         return null;
     }
-
-    /**
-     * Método que obtiene la fecha final que el usuario seleccionó en el campo
-     * de texto y la transforma en un string, representa el final de un periodo
-     * de los trámites que se desean ver.
-     *
-     * @return la cadena con la fecha final del periodo en caso de no estar
-     * vacía de lo contrario regresa null.
-     */
-    private String obtenerFechaFin() {
-        String fechaFormateada = null;
-        String fechaTexto = dtpHasta.getText();
-        int indiceEspacio = fechaTexto.indexOf(" ");
-        if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
-            String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
-            int cantidadCaracteres = caracteresAntesEspacio.length();
-
-            if (cantidadCaracteres == 1) {
-                fechaTexto = "0" + fechaTexto;
-            }
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
-            LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
-            fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-            return fechaFormateada;
-        }
-        return null;
+    private String obtenerFechaInicio(){
+        return dtpFechaDe.getText();
     }
-
+    private String obtenerFechaFin(){
+        return dptFechaHasta.getText();
+    }
+    private String obtenerFechaNacimiento(){
+        return dtpFechaNacimiento.getText();
+    }
+    
     /**
      * Método que obtiene fecha de nacimiento que el usuario seleccionó en el
      * campo de texto y la transforma en un string.
@@ -187,27 +146,27 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @return la cadena con la fecha de nacimiento en caso de no estar vacía de
      * lo contrario regresa null.
      */
-    private String obtenerFechaNacimiento() {
-
-        String fechaFormateada = null;
-        String fechaTexto = dtpFechaNacimiento.getText();
-        int indiceEspacio = fechaTexto.indexOf(" ");
-        if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
-            String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
-            int cantidadCaracteres = caracteresAntesEspacio.length();
-
-            if (cantidadCaracteres == 1) {
-                fechaTexto = "0" + fechaTexto;
+    private String validarYFormatearFecha(String fechaTexto) {
+        try {
+            String fechaFormateada = null;
+            validador.validaFechaNacimientoTexto(fechaTexto);
+            int indiceEspacio = fechaTexto.indexOf(" ");
+            if (indiceEspacio >= 0 && indiceEspacio < fechaTexto.length()) {
+                String caracteresAntesEspacio = fechaTexto.substring(0, indiceEspacio);
+                int cantidadCaracteres = caracteresAntesEspacio.length();
+                if (cantidadCaracteres == 1) {
+                    fechaTexto = "0" + fechaTexto;
+                }
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
+                LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
+                fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                validador.validaFechaNacimiento(fechaFormateada);
+                return fechaFormateada;
             }
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
-            LocalDate fecha = LocalDate.parse(fechaTexto, formatter);
-            fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-            return fechaFormateada;
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
         }
         return null;
-
     }
 
     /**
@@ -238,7 +197,6 @@ public class FrmHistorial extends javax.swing.JFrame {
     private String definirTipoTramite(Tramite tramite) {
         String tipo = null;
         List<Tramite> tramites = tramitesDAO.consultarColumnaTipoTramite();
-
         if (tramite instanceof TramiteLicencia) {
             tipo = "TramiteLicencia";
         } else if (tramite instanceof TramitePlaca) {
@@ -270,11 +228,8 @@ public class FrmHistorial extends javax.swing.JFrame {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
             DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
             modeloTablaPersonas.setRowCount(0);
-
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
                 Tramite tramite = tramitesPersonaSeleccionada.get(i);
-                //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Crear un objeto SimpleDateFormat con el formato deseado
-                //sdf.format(tramite.getFechaExpedicion().getTime()); // Formatear la fecha del calendario y convertirla a una cadena de texto 
                 String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
                 if (definirTipoTramite(tramite).equals(tipoTramite)) {
                     Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), tipoTramite,
@@ -295,7 +250,6 @@ public class FrmHistorial extends javax.swing.JFrame {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
             DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
             modeloTablaPersonas.setRowCount(0);
-
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
                 Tramite tramite = tramitesPersonaSeleccionada.get(i);
                 String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
@@ -318,12 +272,11 @@ public class FrmHistorial extends javax.swing.JFrame {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
             DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
             modeloTablaPersonas.setRowCount(0);
-
+            String fechaInicio = validarYFormatearFecha(obtenerFechaInicio());
+            String fechaFin = validarYFormatearFecha(obtenerFechaFin());
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-                if (obtenerFechaInicio() != null && obtenerFechaFin() != null) {
-                    validador.validaFechaNacimiento(obtenerFechaInicio());
-                    validador.validaFechaNacimiento(obtenerFechaFin());
-                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(obtenerFechaInicio(), obtenerFechaFin());
+                if (fechaInicio != null && fechaFin != null) {
+                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
                     Tramite tramite = tramitesPersonaSeleccionada.get(i);
                     if (tramitesPeriodo.contains(tramite)) {
                         String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
@@ -338,7 +291,6 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         }
     }
-
     /**
      * * Método que carga los trámites que ha realizado una persona dentro de
      * un periodo de tiempo sin importar el tipo de trámite.
@@ -350,12 +302,11 @@ public class FrmHistorial extends javax.swing.JFrame {
             List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
             DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
             modeloTablaPersonas.setRowCount(0);
-
+            String fechaInicio = validarYFormatearFecha(obtenerFechaInicio());
+            String fechaFin = validarYFormatearFecha(obtenerFechaFin());
             for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-                if (obtenerFechaInicio() != null && obtenerFechaFin() != null) {
-                    validador.validaFechaNacimiento(obtenerFechaInicio());
-                    validador.validaFechaNacimiento(obtenerFechaFin());
-                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(obtenerFechaInicio(), obtenerFechaFin());
+                if (fechaInicio != null && fechaFin != null) {
+                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
                     Tramite tramite = tramitesPersonaSeleccionada.get(i);
                     if (tramitesPeriodo.contains(tramite)) {
                         String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
@@ -380,54 +331,38 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     private List<Persona> casillasActivas() throws PersistenciaException {
         List<Persona> personas = null;
+        String rfcObtenido = null;
+        String nombresObtenidos = null;
+        String fechaNacimientoObtenida = null;
         // Verificar cuáles JCheckBox están seleccionados
-        boolean filtro1Seleccionado = jcbRfc.isSelected();
-        boolean filtro2Seleccionado = jcbNombres.isSelected();
-        boolean filtro3Seleccionado = jcbFechaNacimiento.isSelected();
-
+        boolean rfc = jcbRfc.isSelected();
+        boolean nombres = jcbNombres.isSelected();
+        boolean fechaNacimiento = jcbFechaNacimiento.isSelected();
+        if (rfc) {
+            rfcObtenido = obtenerRFC();
+        }
+        if (nombres) {
+            nombresObtenidos = obtenerNombres();
+        }
+        if (fechaNacimiento) {
+            fechaNacimientoObtenida = validarYFormatearFecha(obtenerFechaNacimiento());
+        }
         //obtiene los datos de los txt para cada filtro
-        String filtro1Dato = obtenerRFC();
-        String filtro2Dato = obtenerNombres();
-        String filtro3Dato = obtenerFechaNacimiento();
-
+        PersonasDTO personasDTO = new PersonasDTO(rfcObtenido, nombresObtenidos, fechaNacimientoObtenida);
         // Aplicar el filtro correspondiente
-        if (filtro1Seleccionado && filtro2Seleccionado && filtro3Seleccionado) {
-            // Aplicar los tres filtros
-            validador.validaNombre(filtro2Dato);
-            validador.validaRFC(filtro1Dato);
-            validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultasTresPersonasTresFiltro("rfc", "nombre", "fechaNacimiento", filtro1Dato, filtro2Dato, filtro3Dato);
-        } else if (filtro1Seleccionado && filtro2Seleccionado) {
+        if (rfc && nombres && fechaNacimiento) {
+            personas = personasDAO.consultarPersonasTresFiltro(personasDTO);
+        } else if (rfc && nombres) {
             // Aplicar los filtros 1 y 2
-            validador.validaNombre(filtro2Dato);
-            validador.validaRFC(filtro1Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("rfc", "nombre", filtro1Dato, filtro2Dato);
-
-        } else if (filtro1Seleccionado && filtro3Seleccionado) {
+            personas = personasDAO.consultarPersonasDosFiltro(personasDTO, "rfc", "nombre");
+        } else if (rfc && fechaNacimiento) {
             // Aplicar los filtros 1 y 3
-            validador.validaRFC(filtro1Dato);
-            validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("rfc", "fechaNacimiento", filtro1Dato, filtro3Dato);
-
-        } else if (filtro2Seleccionado && filtro3Seleccionado) {
+            personas = personasDAO.consultarPersonasDosFiltro(personasDTO, "rfc", "fechaNacimiento");
+        } else if (nombres && fechaNacimiento) {
             // Aplicar los filtros 2 y 3
-            validador.validaFechaNacimiento(filtro3Dato);
-            validador.validaNombre(filtro2Dato);
-            personas = personasDAO.consultarPersonasDosFiltro("fechaNacimiento", "nombre", filtro3Dato, filtro2Dato);
-        } else if (filtro1Seleccionado) {
-            // Aplicar el filtro 1
-            validador.validaRFC(filtro1Dato);
-            personas = personasDAO.consultarPersonasUnFiltro("rfc", filtro1Dato);
-        } else if (filtro2Seleccionado) {
-            // Aplicar el filtro 2
-            validador.validaNombre(filtro2Dato);
-            personas = personas = personasDAO.consultarPersonasUnFiltro("nombre", filtro2Dato);
-        } else if (filtro3Seleccionado) {
-            // Aplicar el filtro 3
-            validador.validaFechaNacimiento(filtro3Dato);
-            personas = personasDAO.consultarPersonasUnFiltro("fechaNacimiento", filtro3Dato);
+            personas = personasDAO.consultarPersonasDosFiltro(personasDTO, "fechaNacimiento", "nombre");
         } else {
-            mostrarMensaje("Por favor seleccione los filtros de su preferencia");
+            personas = personasDAO.consultarPersonasUnFiltro(personasDTO);
         }
         return personas;
     }
@@ -445,7 +380,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         lblTipoTramite = new javax.swing.JLabel();
         lblHistorialSolicitudes = new javax.swing.JLabel();
         txtRfc = new javax.swing.JTextField();
-        btnActualizar = new javax.swing.JButton();
+        btnAplicarFiltros = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jcbRfc = new javax.swing.JCheckBox();
         jcbNombres = new javax.swing.JCheckBox();
@@ -457,15 +392,18 @@ public class FrmHistorial extends javax.swing.JFrame {
         lblListaPersonas = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblHistorial = new javax.swing.JTable();
-        lblBuscar3 = new javax.swing.JLabel();
-        lblBuscar4 = new javax.swing.JLabel();
-        lblBuscar5 = new javax.swing.JLabel();
-        lblBuscar6 = new javax.swing.JLabel();
-        cbxPaginado = new javax.swing.JComboBox<>();
-        btnGenerarReporte = new javax.swing.JButton();
-        dtpHasta = new com.github.lgooddatepicker.components.DatePicker();
-        dtpDe = new com.github.lgooddatepicker.components.DatePicker();
+        jcbReporte = new javax.swing.JCheckBox();
+        lblHistorialSolicitudes1 = new javax.swing.JLabel();
+        jPanelFondoReporte = new javax.swing.JPanel();
+        lblFiltroFecha = new javax.swing.JLabel();
+        lblDe = new javax.swing.JLabel();
+        dtpFechaDe = new com.github.lgooddatepicker.components.DatePicker();
+        lblHasta = new javax.swing.JLabel();
+        dptFechaHasta = new com.github.lgooddatepicker.components.DatePicker();
+        lblNombresReporte = new javax.swing.JLabel();
+        txtNombresReporte = new javax.swing.JTextField();
         btnFiltart = new javax.swing.JButton();
+        btnGenerarReporte = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Autopapeleo Menú ");
@@ -537,12 +475,12 @@ public class FrmHistorial extends javax.swing.JFrame {
 
         txtRfc.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
 
-        btnActualizar.setText("Aplicar filtros");
-        btnActualizar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
-        btnActualizar.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+        btnAplicarFiltros.setText("Aplicar filtros");
+        btnAplicarFiltros.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
+        btnAplicarFiltros.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        btnAplicarFiltros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
+                btnAplicarFiltrosActionPerformed(evt);
             }
         });
 
@@ -556,7 +494,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 429, Short.MAX_VALUE)
+            .addGap(0, 454, Short.MAX_VALUE)
         );
 
         jcbRfc.setText("RFC");
@@ -623,28 +561,47 @@ public class FrmHistorial extends javax.swing.JFrame {
         tblHistorial.setBackground(new java.awt.Color(233, 219, 253));
         jScrollPane1.setViewportView(tblHistorial);
 
-        lblBuscar3.setText("Hasta:");
-        lblBuscar3.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
-        lblBuscar3.setForeground(new java.awt.Color(124, 63, 163));
-
-        lblBuscar4.setText("Filtro de fecha");
-        lblBuscar4.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
-        lblBuscar4.setForeground(new java.awt.Color(124, 63, 163));
-
-        lblBuscar5.setText("De:");
-        lblBuscar5.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
-        lblBuscar5.setForeground(new java.awt.Color(124, 63, 163));
-
-        lblBuscar6.setText("Filtro paginado");
-        lblBuscar6.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
-        lblBuscar6.setForeground(new java.awt.Color(124, 63, 163));
-
-        cbxPaginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "5", "10" }));
-        cbxPaginado.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        cbxPaginado.setForeground(new java.awt.Color(124, 63, 163));
-        cbxPaginado.addActionListener(new java.awt.event.ActionListener() {
+        jcbReporte.setBackground(new java.awt.Color(233, 219, 253));
+        jcbReporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxPaginadoActionPerformed(evt);
+                jcbReporteActionPerformed(evt);
+            }
+        });
+
+        lblHistorialSolicitudes1.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
+        lblHistorialSolicitudes1.setForeground(new java.awt.Color(124, 63, 163));
+        lblHistorialSolicitudes1.setText("Activar modo reporte");
+
+        jPanelFondoReporte.setBackground(new java.awt.Color(233, 219, 253));
+        jPanelFondoReporte.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanelFondoReporte.setForeground(new java.awt.Color(233, 219, 253));
+
+        lblFiltroFecha.setText("Filtro de fecha");
+        lblFiltroFecha.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
+        lblFiltroFecha.setForeground(new java.awt.Color(124, 63, 163));
+
+        lblDe.setText("De:");
+        lblDe.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
+        lblDe.setForeground(new java.awt.Color(124, 63, 163));
+
+        dtpFechaDe.setBackground(new java.awt.Color(233, 219, 253));
+
+        lblHasta.setText("Hasta:");
+        lblHasta.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
+        lblHasta.setForeground(new java.awt.Color(124, 63, 163));
+
+        dptFechaHasta.setBackground(new java.awt.Color(233, 219, 253));
+
+        lblNombresReporte.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
+        lblNombresReporte.setForeground(new java.awt.Color(124, 63, 163));
+        lblNombresReporte.setText("Nombres");
+
+        btnFiltart.setText("Filtrar");
+        btnFiltart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
+        btnFiltart.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
+        btnFiltart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFiltartActionPerformed(evt);
             }
         });
 
@@ -657,18 +614,57 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         });
 
-        dtpHasta.setBackground(new java.awt.Color(233, 219, 253));
-
-        dtpDe.setBackground(new java.awt.Color(233, 219, 253));
-
-        btnFiltart.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
-        btnFiltart.setText("Filtrar");
-        btnFiltart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
-        btnFiltart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFiltartActionPerformed(evt);
-            }
-        });
+        javax.swing.GroupLayout jPanelFondoReporteLayout = new javax.swing.GroupLayout(jPanelFondoReporte);
+        jPanelFondoReporte.setLayout(jPanelFondoReporteLayout);
+        jPanelFondoReporteLayout.setHorizontalGroup(
+            jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoReporteLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanelFondoReporteLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnFiltart, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
+                        .addComponent(lblNombresReporte)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNombresReporte))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
+                        .addComponent(lblHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dptFechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
+                        .addComponent(lblFiltroFecha)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
+                        .addComponent(lblDe, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(dtpFechaDe, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)))
+                .addGap(25, 25, 25))
+        );
+        jPanelFondoReporteLayout.setVerticalGroup(
+            jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelFondoReporteLayout.createSequentialGroup()
+                .addComponent(lblFiltroFecha)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblDe)
+                    .addComponent(dtpFechaDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblHasta)
+                    .addComponent(dptFechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblNombresReporte)
+                    .addComponent(txtNombresReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnFiltart)
+                    .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout jPanelFondoMenuLayout = new javax.swing.GroupLayout(jPanelFondoMenu);
         jPanelFondoMenu.setLayout(jPanelFondoMenuLayout);
@@ -698,44 +694,30 @@ public class FrmHistorial extends javax.swing.JFrame {
                             .addComponent(lblBuscar1)))
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGap(56, 56, 56)
-                        .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAplicarFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbxPersonas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoMenuLayout.createSequentialGroup()
-                                .addComponent(lblBuscar6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                    .addGap(15, 15, 15)
-                                    .addComponent(lblHistorialSolicitudes, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblListaPersonas)
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblBuscar4)
-                                    .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(lblBuscar3, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(lblBuscar5, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(dtpDe, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                                                .addComponent(dtpHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnFiltart, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(37, 37, 37))))
-                    .addComponent(lblListaPersonas)
-                    .addComponent(cbxPersonas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblHistorialSolicitudes, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                        .addGap(85, 85, 85)
+                                        .addComponent(jcbReporte)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(lblHistorialSolicitudes1))
+                                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jPanelFondoReporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanelFondoMenuLayout.setVerticalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -762,7 +744,7 @@ public class FrmHistorial extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dtpFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(38, 38, 38)
-                        .addComponent(btnActualizar)
+                        .addComponent(btnAplicarFiltros)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -771,33 +753,20 @@ public class FrmHistorial extends javax.swing.JFrame {
                         .addComponent(cbxPersonas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(lblHistorialSolicitudes)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addComponent(lblBuscar4)
+                                .addGap(6, 6, 6)
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jcbReporte)
+                                    .addComponent(lblHistorialSolicitudes1)))
+                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(lblBuscar5)
-                                    .addComponent(dtpDe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(dtpHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(lblBuscar3))
-                                .addGap(18, 18, 18)
-                                .addComponent(btnFiltart))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lblHistorialSolicitudes)))
+                        .addGap(12, 12, 12)
                         .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(lblBuscar6)
-                                    .addComponent(cbxPaginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                .addGap(2, 2, 2)
-                                .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(136, 136, 136))))
+                            .addComponent(jPanelFondoReporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(137, 137, 137))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -808,11 +777,11 @@ public class FrmHistorial extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 993, Short.MAX_VALUE)
+            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 1022, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 458, Short.MAX_VALUE)
+            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -860,7 +829,7 @@ public class FrmHistorial extends javax.swing.JFrame {
      *
      * @param evt el click que se le da al botón.
      */
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+    private void btnAplicarFiltrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarFiltrosActionPerformed
         cbxPersonas.removeAllItems();
         tblHistorial.removeAll();
         try {
@@ -869,7 +838,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         } catch (PersistenciaException ex) {
             mostrarMensaje(ex.getMessage());
         }
-    }//GEN-LAST:event_btnActualizarActionPerformed
+    }//GEN-LAST:event_btnAplicarFiltrosActionPerformed
 
     private void cbxTipoTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTipoTramiteActionPerformed
 
@@ -885,10 +854,6 @@ public class FrmHistorial extends javax.swing.JFrame {
       //  personaSeleccionada = (Persona) cbxPersonas.getSelectedItem();
         filtroComboBoxTipo();
     }//GEN-LAST:event_cbxPersonasActionPerformed
-
-    private void cbxPaginadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPaginadoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cbxPaginadoActionPerformed
 
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
 
@@ -954,42 +919,61 @@ public class FrmHistorial extends javax.swing.JFrame {
         } catch (PersistenciaException ex) {
             mostrarMensaje(ex.getMessage());
         }
-        if (dtpDe.getText().isBlank()|| dtpHasta.getText().isBlank()) {
+        if (dtpFechaDe.getText().isEmpty()|| dptFechaHasta.getText().isEmpty()) {
             mostrarMensaje("No hay un periodo seleccionado");
         }
     }//GEN-LAST:event_btnFiltartActionPerformed
 
+    private void jcbReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbReporteActionPerformed
+       if (jcbReporte.isSelected()) {
+            btnAplicarFiltros.setEnabled(false);
+            cbxPersonas.setEnabled(false);
+            txtNombresReporte.setEnabled(true);
+            jPanelFondoReporte.setVisible(true);
+            lblHistorialSolicitudes.setText("Reporte de trámites realizados");
+        } else {
+             btnAplicarFiltros.setEnabled(true);
+             cbxPersonas.setEnabled(true);
+             txtNombresReporte.setEnabled(false);
+             jPanelFondoReporte.setVisible(false);
+             lblHistorialSolicitudes.setText("Historial de solicitudes");
+        }
+    }//GEN-LAST:event_jcbReporteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAplicarFiltros;
     private javax.swing.JButton btnFiltart;
     private javax.swing.JButton btnGenerarReporte;
     private javax.swing.JButton btnVolver;
-    private javax.swing.JComboBox<String> cbxPaginado;
     private javax.swing.JComboBox<Persona> cbxPersonas;
     private javax.swing.JComboBox<String> cbxTipoTramite;
-    private com.github.lgooddatepicker.components.DatePicker dtpDe;
+    private com.github.lgooddatepicker.components.DatePicker dptFechaHasta;
+    private com.github.lgooddatepicker.components.DatePicker dtpFechaDe;
     private com.github.lgooddatepicker.components.DatePicker dtpFechaNacimiento;
-    private com.github.lgooddatepicker.components.DatePicker dtpHasta;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelBarra;
     private javax.swing.JPanel jPanelFondoMenu;
+    private javax.swing.JPanel jPanelFondoReporte;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar jToolBarMenu;
     private javax.swing.JCheckBox jcbFechaNacimiento;
     private javax.swing.JCheckBox jcbNombres;
+    private javax.swing.JCheckBox jcbReporte;
     private javax.swing.JCheckBox jcbRfc;
     private javax.swing.JLabel lblBuscar1;
-    private javax.swing.JLabel lblBuscar3;
-    private javax.swing.JLabel lblBuscar4;
-    private javax.swing.JLabel lblBuscar5;
-    private javax.swing.JLabel lblBuscar6;
+    private javax.swing.JLabel lblDe;
+    private javax.swing.JLabel lblFiltroFecha;
+    private javax.swing.JLabel lblHasta;
     private javax.swing.JLabel lblHistorial;
     private javax.swing.JLabel lblHistorialSolicitudes;
+    private javax.swing.JLabel lblHistorialSolicitudes1;
     private javax.swing.JLabel lblListaPersonas;
+    private javax.swing.JLabel lblNombresReporte;
     private javax.swing.JLabel lblTipoTramite;
     private javax.swing.JTable tblHistorial;
     private javax.swing.JTextField txtNombres;
+    private javax.swing.JTextField txtNombresReporte;
     private javax.swing.JTextField txtRfc;
     // End of variables declaration//GEN-END:variables
 }

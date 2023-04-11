@@ -7,6 +7,8 @@ import com.itson.proyecto2_233410_233023.dominio.*;
 import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
@@ -59,8 +61,18 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         this.personaSeleccionada = persona;
         lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
         calculoVigencia();
+        calcularPrecioInicio();
     }
-
+    /**
+     * Método para calcular el precio al inicio del frame.
+     */
+    public void calcularPrecioInicio(){
+         if (personaSeleccionada.getDiscapacitado().equals(Discapacitado.SI)) {
+            costosDiscapacidos();
+        } else {
+            costos();
+        }
+    }
     /**
      * Obtiene los datos para crear la licencia, obtiene la fecja actual, los
      * años de vigencia que seleccionó asi como el monto establecido.
@@ -146,9 +158,9 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblTramitarLicencia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblNombrePersona, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(31, 31, 31)
+                .addComponent(lblNombrePersona, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelBarraLayout.setVerticalGroup(
             jPanelBarraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,6 +173,11 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         cbxVigencia.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         cbxVigencia.setForeground(new java.awt.Color(124, 63, 163));
         cbxVigencia.setModel(modeloComboBox);
+        cbxVigencia.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbxVigenciaItemStateChanged(evt);
+            }
+        });
         cbxVigencia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxVigenciaActionPerformed(evt);
@@ -277,12 +294,16 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
      * @return regresa ese trámite.
      */
     public TramiteLicencia revisarRegistro() {
-        for (int i = 0; i < tramitesDAO.consultarTramitesLicencia().size(); i++) {
-            if (tramitesDAO.consultarTramitesLicencia().get(i).getPersona().equals(personaSeleccionada)
-                    && tramitesDAO.consultarTramitesLicencia().get(i).getLicencia().getEstado().equals(Estado.ACTIVA)) {
-                TramiteLicencia tramiteLicencia = tramitesDAO.consultarTramitesLicencia().get(i);
-                return tramiteLicencia;
+        try {
+            for (int i = 0; i < tramitesDAO.consultarTramitesLicencia().size(); i++) {
+                if (tramitesDAO.consultarTramitesLicencia().get(i).getPersona().equals(personaSeleccionada)
+                        && tramitesDAO.consultarTramitesLicencia().get(i).getLicencia().getEstado().equals(Estado.ACTIVA)) {
+                    TramiteLicencia tramiteLicencia = tramitesDAO.consultarTramitesLicencia().get(i);
+                    return tramiteLicencia;
+                }
             }
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
         }
         return null;
     }
@@ -429,6 +450,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         this.dispose();
         new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO).setVisible(true);
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
+
+    private void cbxVigenciaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxVigenciaItemStateChanged
+       
+    }//GEN-LAST:event_cbxVigenciaItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
