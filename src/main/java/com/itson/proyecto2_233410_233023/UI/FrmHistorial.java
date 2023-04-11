@@ -277,6 +277,13 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }
 
+    private void verificarRegistros(List<Tramite> tramites) {
+        if (tblHistorial.getModel().getRowCount() <= 0 && !dtpFechaDe.getText().isEmpty()
+                && !dptFechaHasta.getText().isEmpty() && !txtNombresReporte.getText().isEmpty()) {
+            mostrarMensaje("No se encontraron registros");
+        }
+    }
+
     /**
      * Método que carga los trámites que ha realizado una persona dentro de un
      * periodo de tiempo y dependiendo del tipo de trámite que se desea ver.
@@ -289,50 +296,44 @@ public class FrmHistorial extends javax.swing.JFrame {
         String fechaFin = validarYFormatearFecha(obtenerFechaFin());
         DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
         modeloTablaPersonas.setRowCount(0);
-        if (personaSeleccionada != null) {
-            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-                if (fechaInicio != null && fechaFin != null) {
-                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
-                    Tramite tramite = tramitesPersonaSeleccionada.get(i);
-                    if (tramitesPeriodo.contains(tramite)) {
-                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
-                        if (definirTipoTramite(tramite).equals(tipoTramite)) {
-                            Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(tramite),
-                                fechaExpedicion, "$ " + tramite.getCosto()};
-                            modeloTablaPersonas.addRow(filaNueva);
-
-                        }
-                    }
-                }
-            }
-        } else {
-            List<Persona> personas = casillasActivas();
-            List<Tramite> tramites = new ArrayList<Tramite>();
-            for (int i = 0; i < personas.size(); i++) {
-                tramites.addAll(personas.get(i).getTramites());
-            }
-
-            if (tramites.isEmpty()) {
-                mostrarMensaje("No se encontraron registros");
-            }
-
-            for (int i = 0; i < tramites.size(); i++) {
-                List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
-                Tramite tramite = tramites.get(i);
-                if (tramitesPeriodo.contains(tramite)) {
-                    String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
-                    if (definirTipoTramite(tramite).equals(tipoTramite)) {
-
-                        Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), definirTipoTramite(tramite),
-                            fechaExpedicion, "$ " + tramite.getCosto()};
-                        modeloTablaPersonas.addRow(filaNueva);
-                    }
-                }
-
-            }
-
+//        if (personaSeleccionada != null) {
+//            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
+//            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
+//                if (fechaInicio != null && fechaFin != null) {
+//                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
+//                    Tramite tramite = tramitesPersonaSeleccionada.get(i);
+//                    if (tramitesPeriodo.contains(tramite)) {
+//                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+//                        if (definirTipoTramite(tramite).equals(tipoTramite)) {
+//                            Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(tramite),
+//                                fechaExpedicion, "$ " + tramite.getCosto()};
+//                            modeloTablaPersonas.addRow(filaNueva);
+//
+//                        }
+//                    }
+//                }
+//            }
+//        } else {
+        List<Persona> personas = casillasActivas();
+        List<Tramite> tramites = new ArrayList<Tramite>();
+        for (int i = 0; i < personas.size(); i++) {
+            tramites.addAll(personas.get(i).getTramites());
         }
+
+        for (int i = 0; i < tramites.size(); i++) {
+            List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
+            Tramite tramite = tramites.get(i);
+            if (tramitesPeriodo.contains(tramite)) {
+                String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                if (definirTipoTramite(tramite).equals(tipoTramite)) {
+                    Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), definirTipoTramite(tramite),
+                        fechaExpedicion, "$ " + tramite.getCosto()};
+                    modeloTablaPersonas.addRow(filaNueva);
+                }
+            }
+        }
+        verificarRegistros(tramites);
+//        }
     }
 
     /**
@@ -346,43 +347,39 @@ public class FrmHistorial extends javax.swing.JFrame {
         String fechaFin = validarYFormatearFecha(obtenerFechaFin());
         DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
         modeloTablaPersonas.setRowCount(0);
-        if (personaSeleccionada != null) {
-            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-                if (fechaInicio != null && fechaFin != null) {
-                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
-                    Tramite tramite = tramitesPersonaSeleccionada.get(i);
-                    if (tramitesPeriodo.contains(tramite)) {
-                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
-                        Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), tramite,
-                            fechaExpedicion, "$ " + tramite.getCosto()};
-                        modeloTablaPersonas.addRow(filaNueva);
-                    }
-                }
-            }
-        } else {
-            List<Persona> personas = casillasActivas();
-            List<Tramite> tramites = new ArrayList<Tramite>();
-            for (int i = 0; i < personas.size(); i++) {
-                tramites.addAll(personas.get(i).getTramites());
-            }
+//        if (personaSeleccionada != null) {
+//            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
+//            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
+//                if (fechaInicio != null && fechaFin != null) {
+//                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
+//                    Tramite tramite = tramitesPersonaSeleccionada.get(i);
+//                    if (tramitesPeriodo.contains(tramite)) {
+//                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+//                        Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), tramite,
+//                            fechaExpedicion, "$ " + tramite.getCosto()};
+//                        modeloTablaPersonas.addRow(filaNueva);
+//                    }
+//                }
+//            }
+//        } else {
+        List<Persona> personas = casillasActivas();
+        List<Tramite> tramites = new ArrayList<Tramite>();
+        for (int i = 0; i < personas.size(); i++) {
+            tramites.addAll(personas.get(i).getTramites());
+        }
 
-            if (tramites.isEmpty()) {
-                mostrarMensaje("No se encontraron registros");
-            }
-
-            for (int i = 0; i < tramites.size(); i++) {
-                List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
-                Tramite tramite = tramites.get(i);
-                if (tramitesPeriodo.contains(tramite)) {
-                    String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
-                    Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), tramite.getClass().getSimpleName(),
-                        fechaExpedicion, "$ " + tramite.getCosto()};
-                    modeloTablaPersonas.addRow(filaNueva);
-                }
-
+        for (int i = 0; i < tramites.size(); i++) {
+            List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
+            Tramite tramite = tramites.get(i);
+            if (tramitesPeriodo.contains(tramite)) {
+                String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
+                Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), tramite.getClass().getSimpleName(),
+                    fechaExpedicion, "$ " + tramite.getCosto()};
+                modeloTablaPersonas.addRow(filaNueva);
             }
         }
+        verificarRegistros(tramites);
+//        }
     }
 
     /**
@@ -887,20 +884,18 @@ public class FrmHistorial extends javax.swing.JFrame {
     }
 
     public void filtrarConsultasPeriodo() throws PersistenciaException {
-
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
-        model.setRowCount(0);
-        if (filtroComboBoxTipo().equals("Ambos")) {
-            cargarTablaPeriodoTramites();
-        } else if (filtroComboBoxTipo().equals("Licencias")) {
-            cargarTablaPeriodoTramitesPorTipo("TramiteLicencia");
+        if (dtpFechaDe.getText().isEmpty() && dptFechaHasta.getText().isEmpty() && txtNombresReporte.getText().isEmpty()) {
+            mostrarMensaje("No hay datos que buscar");
         } else {
-            cargarTablaPeriodoTramitesPorTipo("TramitePlaca");
-        }
-
-        if (dtpFechaDe.getText().isEmpty() || dptFechaHasta.getText().isEmpty()) {
-            mostrarMensaje("No hay un periodo seleccionado");
+            DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+            model.setRowCount(0);
+            if (filtroComboBoxTipo().equals("Ambos")) {
+                cargarTablaPeriodoTramites();
+            } else if (filtroComboBoxTipo().equals("Licencias")) {
+                cargarTablaPeriodoTramitesPorTipo("TramiteLicencia");
+            } else {
+                cargarTablaPeriodoTramitesPorTipo("TramitePlaca");
+            }
         }
     }
 

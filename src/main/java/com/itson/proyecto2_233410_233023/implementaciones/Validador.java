@@ -182,7 +182,7 @@ public class Validador {
                 throw new PersistenciaException("Fórmato de fecha inválido.");
             }
         } else {
-              throw new PersistenciaException("Ingrese una fecha de nacimiento.");
+              throw new PersistenciaException("Ingrese una fecha.");
         }
     }
     /**
@@ -197,7 +197,7 @@ public class Validador {
         if (!fechaNacimiento.equals("")) {
             return true;
         } else {
-              throw new PersistenciaException("Ingrese una fecha de nacimiento.");
+              throw new PersistenciaException("Ingrese una fecha.");
         }
     }
 }

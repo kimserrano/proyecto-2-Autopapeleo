@@ -300,7 +300,7 @@ public class PersonasDAO implements IPersonasDAO {
         List<Persona> busqueda = new ArrayList<Persona>();
         busqueda = consultarPersonas();
         for (int i = 0; i < busqueda.size(); i++) {
-            if (busqueda.get(i).getNombre().toLowerCase().contains(dato.toLowerCase())) {
+            if (busqueda.get(i).getNombre().toLowerCase().contains(dato.toLowerCase()) || busqueda.get(i).getApellidoPaterno().toLowerCase().contains(dato.toLowerCase())) {
                 personas.add(busqueda.get(i));
             }
         }
