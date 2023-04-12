@@ -19,16 +19,6 @@ import java.util.List;
 public interface ITramitesDAO {
 
     /**
-     * Método que se encarga de hacer el insert de una licencia a la base de
-     * datos.
-     *
-     * @param licencia la cual se requiere hacer un insert a la base.
-     * @return true si fue posible.
-     * @throws Exception lanza una expeción en caso de no poder.
-     */
-    Boolean registrarLicencia(Licencia licencia) throws Exception;
-
-    /**
      * * Método que se encarga de hacer el insert de una tramite de una
      * licencia a la base de datos.
      *
@@ -46,7 +36,7 @@ public interface ITramitesDAO {
      * @throws Exception lanza un una excepción en caso de no lograrse la
      * actualización.
      */
-    void actualizarLicencia(Licencia licenciaActual, TramiteLicencia tramiteLicencia) throws Exception;
+    void actualizarLicencia(Licencia licenciaActual) throws Exception;
 
     /**
      * Método que se encarga de buscar si una persona tiene una licencia que
@@ -58,17 +48,10 @@ public interface ITramitesDAO {
      * @throws Exception si no se encuentra la licencia activa.
      */
     Licencia buscarLicenciaActiva(Persona persona) throws Exception;
-    
-    /**
-     * Método que se encarga de hacer el insert de una placa a la base de datos.
-     *
-     * @param placa la cual se requiere hacer un insert a la base.
-     * @return true si fue posible.
-     * @throws Exception lanza una expeción en caso de no poder.
-     */
-    Boolean registrarPlaca(Placa placa) throws Exception;
+
     /**
      * Método para tramitar una placa.
+     *
      * @param tramite Tramite de placa a realizar.
      * @return Valor booleano.
      * @throws Exception Excepción a lanzar en caso de fallar el trámite.
@@ -78,6 +61,7 @@ public interface ITramitesDAO {
     /**
      * Método que cambia el estado de la placa a inactiva y la fecha de
      * expedicion por la del trámite.
+     *
      * @param placaActual Placa actual.
      * @param tramite Tramite actual.
      */
@@ -85,6 +69,7 @@ public interface ITramitesDAO {
 
     /**
      * Método para buscar una placa activa.
+     *
      * @param tramite Tramite actual.
      * @return Placa activa encontrada.
      * @throws Exception Excepción en caso de no poder realizar la búsqueda.
@@ -98,14 +83,6 @@ public interface ITramitesDAO {
      * @throws Exception si no se puede consultar la lista.
      */
     List<TramiteLicencia> consultarTramitesLicencia() throws Exception;
-
-    /**
-     * Método que realiza una consulta de trámites de tipo placa.
-     *
-     * @return lista de trámites de tipo placa.
-     * @throws Exception si no se puede consultar la lista.
-     */
-    List<TramitePlaca> consultarTramitesPlaca() throws Exception;
 
     /**
      * Método que consulta un Stored Procedure en la base de datos de los días

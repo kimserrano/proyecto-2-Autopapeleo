@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
@@ -43,28 +44,6 @@ public class TramitesDAO implements ITramitesDAO {
     }
 
     /**
-     * Método que se encarga de hacer el insert de una licencia a la base de
-     * datos, lanza una expeción en caso de no poder.
-     *
-     * @param licencia Licencia a registrar.
-     * @return Valor booleano.
-     * @throws Exception Excepción a lanzar.
-     */
-    @Override
-    public Boolean registrarLicencia(Licencia licencia) throws Exception {
-        try {
-            conexionBD.getEM().getTransaction().begin();
-            conexionBD.getEM().persist(licencia);
-            conexionBD.getEM().getTransaction().commit();
-            return true;
-        } catch (Exception ex) {
-            throw new PersistenciaException("No se pudo registrar la licencia.");
-        } finally {
-            conexionBD.getEM().clear();
-        }
-    }
-
-    /**
      * Método que se encarga de hacer el insert de una tramite de una licencia a
      * la base de datos.
      *
@@ -91,36 +70,17 @@ public class TramitesDAO implements ITramitesDAO {
      * Método que actualiza el estado de una licencia y lanza un una excepción
      * en caso de no lograrse la actualización.
      */
-    public void actualizarLicencia(Licencia licenciaActual, TramiteLicencia tramiteLicencia) throws Exception {
+    public void actualizarLicencia(Licencia licenciaActual) throws Exception {
         try {
-            if (licenciaActual != null && tramiteLicencia != null) {
-                licenciaActual.setEstado(Estado.INACTIVA);
-                licenciaActual.setFechaExpedicion(tramiteLicencia.getFechaExpedicion());
-                conexionBD.getEM().merge(licenciaActual);
-            }
-        } catch (Exception ex) {
-            throw new PersistenciaException("No se pudo actualizar la licencia ");
-        } finally {
-            conexionBD.getEM().clear();
-        }
-    }
+            if (licenciaActual != null) {
 
-    /**
-     * Método que se encarga de hacer el insert de una placa a la base de datos.
-     *
-     * @param placa la cual se requiere hacer un insert a la base.
-     * @return true si fue posible.
-     * @throws Exception lanza una expeción en caso de no poder.
-     */
-    @Override
-    public Boolean registrarPlaca(Placa placa) throws Exception {
-        try {
-            conexionBD.getEM().getTransaction().begin();
-            conexionBD.getEM().persist(placa);
-            conexionBD.getEM().getTransaction().commit();
-            return true;
-        } catch (Exception ex) {
-            throw new PersistenciaException("No se pudo registrar la placa");
+                Licencia licenciaActualizada = conexionBD.getEM().find(Licencia.class, licenciaActual.getId());
+                licenciaActualizada.setEstado(Estado.INACTIVA);
+                EntityTransaction tx = conexionBD.getEM().getTransaction();
+                tx.begin();
+                conexionBD.getEM().merge(licenciaActualizada);
+                tx.commit();
+            }
         } finally {
             conexionBD.getEM().clear();
         }
@@ -135,20 +95,12 @@ public class TramitesDAO implements ITramitesDAO {
      */
     @Override
     public Boolean tramitarPlaca(TramitePlaca tramite) throws Exception {
-        try {
-            conexionBD.getEM().getTransaction().begin();
-            Placa placa = buscarPlacaActiva(tramite);
-            actualizarPlaca(placa, tramite);
-            conexionBD.getEM().persist(tramite);
-            conexionBD.getEM().getTransaction().commit();
-            return true;
-        } catch (SQLIntegrityConstraintViolationException ex) {
-            throw new PersistenciaException("Placas duplicadas, no se puede realizar el trámite.");
-        } catch (Exception ex) {
-            throw new PersistenciaException("No se pudo realizar el trámite");
-        } finally {
-            conexionBD.getEM().clear();
-        }
+        conexionBD.getEM().getTransaction().begin();
+        Placa placa = buscarPlacaActiva(tramite);
+        actualizarPlaca(placa, tramite);
+        conexionBD.getEM().persist(tramite);
+        conexionBD.getEM().getTransaction().commit();
+        return true;
     }
 
     /**
@@ -160,14 +112,11 @@ public class TramitesDAO implements ITramitesDAO {
      */
     @Override
     public void actualizarPlaca(Placa placaActual, TramitePlaca tramite) {
-        try {
-            if (placaActual != null) {
-                placaActual.setEstado(Estado.INACTIVA);
-                placaActual.setFechaRecepcion(tramite.getFechaExpedicion());
-                conexionBD.getEM().merge(placaActual);
-            }
-        } finally {
-            conexionBD.getEM().clear();
+
+        if (placaActual != null) {
+            placaActual.setEstado(Estado.INACTIVA);
+            placaActual.setFechaRecepcion(tramite.getFechaExpedicion());
+            conexionBD.getEM().merge(placaActual);
         }
     }
 
@@ -234,25 +183,6 @@ public class TramitesDAO implements ITramitesDAO {
         try {
             TypedQuery<TramiteLicencia> queryTramitesLicencia = conexionBD.getEM().createQuery("SELECT e FROM Tramite e WHERE TYPE(e) = TramiteLicencia", TramiteLicencia.class);
             List<TramiteLicencia> tramitesLicencia = queryTramitesLicencia.getResultList();
-            return tramitesLicencia;
-        } catch (Exception ex) {
-            throw new PersistenciaException("No se pudo consultar la lista de trámites de licencia.");
-        } finally {
-            conexionBD.getEM().clear();
-        }
-    }
-
-    /**
-     * Método que realiza una consulta de trámites de tipo placa.
-     *
-     * @return lista de trámites de tipo placa.
-     * @throws Exception si no se puede consultar la lista.
-     */
-    @Override
-    public List<TramitePlaca> consultarTramitesPlaca() throws Exception {
-        try {
-            TypedQuery<TramitePlaca> queryTramitesLicencia = conexionBD.getEM().createQuery("SELECT e FROM Tramite e WHERE TYPE(e) = TramitePlaca", TramitePlaca.class);
-            List<TramitePlaca> tramitesLicencia = queryTramitesLicencia.getResultList();
             return tramitesLicencia;
         } catch (Exception ex) {
             throw new PersistenciaException("No se pudo consultar la lista de trámites de licencia.");

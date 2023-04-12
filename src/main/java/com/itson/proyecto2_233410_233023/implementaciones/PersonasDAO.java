@@ -313,17 +313,18 @@ public class PersonasDAO implements IPersonasDAO {
      * Método que tiene una lista de todas las personas registradas en la base
      * de datos, pero filtra a las que presentan unicamente el nombre dado.
      *
-     * @param dato nombre que tienen que tener las personas en la lista.
+     * @param nombre nombre que tienen que tener las personas en la lista.
      * @return lista de personas cuyos nombres coinciden con el dato enviado
      * como parametro.
      */
-    private List<Persona> listaPersonasNombres(String dato) {
+    private List<Persona> listaPersonasNombres(String nombre) {
         try {
             List<Persona> personas = new ArrayList<Persona>();
             List<Persona> busqueda = new ArrayList<Persona>();
             busqueda = consultarPersonas();
             for (int i = 0; i < busqueda.size(); i++) {
-                if (busqueda.get(i).getNombre().toLowerCase().contains(dato.toLowerCase()) || busqueda.get(i).getApellidoPaterno().toLowerCase().contains(dato.toLowerCase())) {
+                String nombreCompleto = busqueda.get(i).getNombre() + " " + busqueda.get(i).getApellidoPaterno();
+                if (busqueda.get(i).getNombre().toLowerCase().contains(nombre.toLowerCase()) || nombreCompleto.toLowerCase().contains(nombre.toLowerCase())) {
                     personas.add(busqueda.get(i));
                 }
             }

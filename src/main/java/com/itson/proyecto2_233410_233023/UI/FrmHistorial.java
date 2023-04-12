@@ -60,6 +60,8 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     DefaultComboBoxModel<Persona> modeloComboBox = new DefaultComboBoxModel<Persona>();
 
+    private List<Tramite> tramitesReporte = new ArrayList<Tramite>();
+
     /**
      * Contructor para crear un FrmHistorial.
      *
@@ -327,6 +329,7 @@ public class FrmHistorial extends javax.swing.JFrame {
             if (tramitesPeriodo.contains(tramite)) {
                 String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
                 if (definirTipoTramite(tramite).equals(tipoTramite)) {
+                    tramitesReporte.add(tramite);
                     Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), definirTipoTramite(tramite),
                         fechaExpedicion, "$ " + tramite.getCosto()};
                     modeloTablaPersonas.addRow(filaNueva);
@@ -373,6 +376,7 @@ public class FrmHistorial extends javax.swing.JFrame {
             List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
             Tramite tramite = tramites.get(i);
             if (tramitesPeriodo.contains(tramite)) {
+                tramitesReporte.add(tramite);
                 String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
                 Object[] filaNueva = {tramite.getPersona().getNombre() + " " + tramite.getPersona().getApellidoPaterno(), tramite.getClass().getSimpleName(),
                     fechaExpedicion, "$ " + tramite.getCosto()};
@@ -397,6 +401,7 @@ public class FrmHistorial extends javax.swing.JFrame {
         List<Persona> personas = null;
         String rfcObtenido = null;
         String nombresObtenidos = null;
+        String apellidosObtenidos = null;
         String fechaNacimientoObtenida = null;
         String nombresReporteObtenidos = null;
         // Verificar cuáles JCheckBox están seleccionados
@@ -417,6 +422,7 @@ public class FrmHistorial extends javax.swing.JFrame {
 
         //obtiene los datos de los txt para cada filtro
         PersonasDTO personasDTO = new PersonasDTO(rfcObtenido, nombresObtenidos, fechaNacimientoObtenida);
+        System.out.println("ASI SE CREA -> " + personasDTO);
         // Aplicar el filtro correspondiente
         if (rfc && nombres && fechaNacimiento) {
             personas = personasDAO.consultarPersonasTresFiltro(personasDTO);
@@ -434,6 +440,7 @@ public class FrmHistorial extends javax.swing.JFrame {
             if (nombresReporte) {
                 nombresReporteObtenidos = obtenerNombresReporte();
                 PersonasDTO personasReporteDTO = new PersonasDTO(nombresReporteObtenidos);
+                System.out.println("persina 2  -> " + personasReporteDTO);
                 personas = personasDAO.consultarPersonasUnFiltro(personasReporteDTO);
             }
         }
@@ -998,6 +1005,9 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @param evt el click que se le da al botón.
      */
     private void btnFiltartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltartActionPerformed
+        if (tramitesReporte != null || !tramitesReporte.isEmpty()) {
+            tramitesReporte.clear();
+        }
         try {
             filtrarConsultasPeriodo();
         } catch (PersistenciaException ex) {
