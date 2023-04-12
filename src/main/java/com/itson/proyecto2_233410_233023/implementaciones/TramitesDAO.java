@@ -9,6 +9,8 @@ import com.itson.proyecto2_233410_233023.interfaces.ITramitesDAO;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.NoResultException;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
@@ -39,13 +41,15 @@ public class TramitesDAO implements ITramitesDAO {
     public TramitesDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;
     }
-/**
- * Método que se encarga de hacer el insert de una licencia a la base de
-   datos, lanza una expeción en caso de no poder.
- * @param licencia Licencia a registrar.
- * @return Valor booleano.
- * @throws Exception Excepción a lanzar.
- */
+
+    /**
+     * Método que se encarga de hacer el insert de una licencia a la base de
+     * datos, lanza una expeción en caso de no poder.
+     *
+     * @param licencia Licencia a registrar.
+     * @return Valor booleano.
+     * @throws Exception Excepción a lanzar.
+     */
     @Override
     public Boolean registrarLicencia(Licencia licencia) throws Exception {
         try {
@@ -59,9 +63,10 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().clear();
         }
     }
+
     /**
-     * Método que se encarga de hacer el insert de una tramite de una
-     * licencia a la base de datos.
+     * Método que se encarga de hacer el insert de una tramite de una licencia a
+     * la base de datos.
      *
      * @param tramite el cual se requiere hacer un insert a la base.
      * @return true si fue posible.
@@ -99,6 +104,7 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().clear();
         }
     }
+
     /**
      * Método que se encarga de hacer el insert de una placa a la base de datos.
      *
@@ -119,8 +125,10 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().clear();
         }
     }
-     /**
+
+    /**
      * Método para tramitar una placa.
+     *
      * @param tramite Tramite de placa a realizar.
      * @return Valor booleano.
      * @throws Exception Excepción a lanzar en caso de fallar el trámite.
@@ -142,22 +150,30 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().clear();
         }
     }
+
     /**
      * Método que cambia el estado de la placa a inactiva y la fecha de
      * expedicion por la del trámite.
+     *
      * @param placaActual Placa actual.
      * @param tramite Tramite actual.
      */
     @Override
     public void actualizarPlaca(Placa placaActual, TramitePlaca tramite) {
-        if (placaActual != null) {
-            placaActual.setEstado(Estado.INACTIVA);
-            placaActual.setFechaRecepcion(tramite.getFechaExpedicion());
-            conexionBD.getEM().merge(placaActual);
+        try {
+            if (placaActual != null) {
+                placaActual.setEstado(Estado.INACTIVA);
+                placaActual.setFechaRecepcion(tramite.getFechaExpedicion());
+                conexionBD.getEM().merge(placaActual);
+            }
+        } finally {
+            conexionBD.getEM().clear();
         }
     }
+
     /**
      * Método para buscar una placa activa.
+     *
      * @param tramite Tramite actual.
      * @return Placa activa encontrada.
      * @throws Exception Excepción en caso de no poder realizar la búsqueda.
@@ -178,7 +194,8 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().clear();
         }
     }
-     /**
+
+    /**
      * Método que se encarga de buscar si una persona tiene una licencia que
      * este activa.
      *
@@ -205,6 +222,7 @@ public class TramitesDAO implements ITramitesDAO {
             conexionBD.getEM().clear();
         }
     }
+
     /**
      * Método que realiza una consulta de trámites de tipo licencia.
      *
@@ -212,17 +230,18 @@ public class TramitesDAO implements ITramitesDAO {
      * @throws Exception si no se puede consultar la lista.
      */
     @Override
-    public List<TramiteLicencia> consultarTramitesLicencia() throws Exception{
-        try{
-        TypedQuery<TramiteLicencia> queryTramitesLicencia = conexionBD.getEM().createQuery("SELECT e FROM Tramite e WHERE TYPE(e) = TramiteLicencia", TramiteLicencia.class);
-        List<TramiteLicencia> tramitesLicencia = queryTramitesLicencia.getResultList();
-        return tramitesLicencia;
-        }catch(Exception ex){
+    public List<TramiteLicencia> consultarTramitesLicencia() throws Exception {
+        try {
+            TypedQuery<TramiteLicencia> queryTramitesLicencia = conexionBD.getEM().createQuery("SELECT e FROM Tramite e WHERE TYPE(e) = TramiteLicencia", TramiteLicencia.class);
+            List<TramiteLicencia> tramitesLicencia = queryTramitesLicencia.getResultList();
+            return tramitesLicencia;
+        } catch (Exception ex) {
             throw new PersistenciaException("No se pudo consultar la lista de trámites de licencia.");
-        }finally {
+        } finally {
             conexionBD.getEM().clear();
         }
     }
+
     /**
      * Método que realiza una consulta de trámites de tipo placa.
      *
@@ -230,17 +249,18 @@ public class TramitesDAO implements ITramitesDAO {
      * @throws Exception si no se puede consultar la lista.
      */
     @Override
-    public List<TramitePlaca> consultarTramitesPlaca() throws Exception{
-        try{
-        TypedQuery<TramitePlaca> queryTramitesLicencia = conexionBD.getEM().createQuery("SELECT e FROM Tramite e WHERE TYPE(e) = TramitePlaca", TramitePlaca.class);
-        List<TramitePlaca> tramitesLicencia = queryTramitesLicencia.getResultList();
-        return tramitesLicencia;
-        }catch(Exception ex){
+    public List<TramitePlaca> consultarTramitesPlaca() throws Exception {
+        try {
+            TypedQuery<TramitePlaca> queryTramitesLicencia = conexionBD.getEM().createQuery("SELECT e FROM Tramite e WHERE TYPE(e) = TramitePlaca", TramitePlaca.class);
+            List<TramitePlaca> tramitesLicencia = queryTramitesLicencia.getResultList();
+            return tramitesLicencia;
+        } catch (Exception ex) {
             throw new PersistenciaException("No se pudo consultar la lista de trámites de licencia.");
-        }finally {
+        } finally {
             conexionBD.getEM().clear();
         }
     }
+
     /**
      * Método que consulta un Stored Procedure en la base de datos de los días
      * transcurridos.
@@ -251,16 +271,21 @@ public class TramitesDAO implements ITramitesDAO {
      */
     @Override
     public Long consultarDiasTransurridosSP(Calendar fechaInicio, Calendar fechaFin) {
-        StoredProcedureQuery storedProcedure = conexionBD.getEM().createStoredProcedureQuery("calcular_dias_transcurridos");
-        storedProcedure.registerStoredProcedureParameter("fecha_inicio", Calendar.class, ParameterMode.IN);
-        storedProcedure.registerStoredProcedureParameter("fecha_fin", Calendar.class, ParameterMode.IN);
-        storedProcedure.registerStoredProcedureParameter("dias_transcurridos", Integer.class, ParameterMode.OUT);
-        storedProcedure.setParameter("fecha_inicio", fechaInicio);
-        storedProcedure.setParameter("fecha_fin", fechaFin);
-        storedProcedure.execute();
-        Long diasTranscurridos = (Long) storedProcedure.getOutputParameterValue("dias_transcurridos");
-        return diasTranscurridos;
+        try {
+            StoredProcedureQuery storedProcedure = conexionBD.getEM().createStoredProcedureQuery("calcular_dias_transcurridos");
+            storedProcedure.registerStoredProcedureParameter("fecha_inicio", Calendar.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("fecha_fin", Calendar.class, ParameterMode.IN);
+            storedProcedure.registerStoredProcedureParameter("dias_transcurridos", Integer.class, ParameterMode.OUT);
+            storedProcedure.setParameter("fecha_inicio", fechaInicio);
+            storedProcedure.setParameter("fecha_fin", fechaFin);
+            storedProcedure.execute();
+            Long diasTranscurridos = (Long) storedProcedure.getOutputParameterValue("dias_transcurridos");
+            return diasTranscurridos;
+        } finally {
+            conexionBD.getEM().clear();
+        }
     }
+
     /**
      * Consulta los trámites registrados en la base de datos.
      *
@@ -268,9 +293,14 @@ public class TramitesDAO implements ITramitesDAO {
      */
     @Override
     public List<Tramite> consultarColumnaTipoTramite() {
-        List<Tramite> tramites = conexionBD.getEM().createQuery("SELECT a FROM Tramite a", Tramite.class).getResultList();
-        return tramites;
+        try {
+            List<Tramite> tramites = conexionBD.getEM().createQuery("SELECT a FROM Tramite a", Tramite.class).getResultList();
+            return tramites;
+        } finally {
+            conexionBD.getEM().clear();
+        }
     }
+
     /**
      * Consulta aquellos trámites que están dentro de el periodo enviado como
      * parámetro.
@@ -282,13 +312,17 @@ public class TramitesDAO implements ITramitesDAO {
      */
     @Override
     public List<Tramite> periodoFechaTramite(String fechaInicio, String fechaFin) {
-        CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
-        CriteriaQuery<Tramite> cq = criteriaBuilder.createQuery(Tramite.class);
-        Root<Tramite> root = cq.from(Tramite.class);
-        Predicate periodo = criteriaBuilder.between(root.get("fechaExpedicion"), fechaInicio, fechaFin);
-        cq.select(root).where(periodo);
-        TypedQuery<Tramite> typedQuery = conexionBD.getEM().createQuery(cq);
-        List<Tramite> resultados = typedQuery.getResultList();
-        return resultados;
+        try {
+            CriteriaBuilder criteriaBuilder = conexionBD.getEM().getCriteriaBuilder();
+            CriteriaQuery<Tramite> cq = criteriaBuilder.createQuery(Tramite.class);
+            Root<Tramite> root = cq.from(Tramite.class);
+            Predicate periodo = criteriaBuilder.between(root.get("fechaExpedicion"), fechaInicio, fechaFin);
+            cq.select(root).where(periodo);
+            TypedQuery<Tramite> typedQuery = conexionBD.getEM().createQuery(cq);
+            List<Tramite> resultados = typedQuery.getResultList();
+            return resultados;
+        } finally {
+            conexionBD.getEM().clear();
+        }
     }
 }

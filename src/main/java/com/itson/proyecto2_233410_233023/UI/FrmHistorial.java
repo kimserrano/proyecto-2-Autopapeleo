@@ -68,10 +68,11 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
      * consultar los trámites realizados por una persona.
      */
-    public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO) {
+    public FrmHistorial(IPersonasDAO personasDAO, ITramitesDAO tramitesDAO, IVehiculosDAO vehiculosDAO) {
         initComponents();
         this.tramitesDAO = tramitesDAO;
         this.personasDAO = personasDAO;
+        this.vehiculosDAO = vehiculosDAO;
         //se desactivan los campos de texto
         txtRfc.setEnabled(false);
         txtNombres.setEnabled(false);

@@ -1,4 +1,3 @@
-
 package com.itson.proyecto2_233410_233023.implementaciones;
 
 import com.itson.proyecto2_233410_233023.dominio.Tramite;
@@ -24,7 +23,6 @@ public class PersonasDTO {
     public PersonasDTO(String nombre) {
         this.nombre = nombre;
     }
-    
 
     public String getRfc() {
         return rfc;
