@@ -36,12 +36,13 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      */
     ITramitesDAO tramitesDAO;
     /**
-     * Atributo que sirve para dar un paginado a las consultas que serán realizadas.
+     * Atributo que sirve para dar un paginado a las consultas que serán
+     * realizadas.
      */
     private ConfiguracionPaginado paginado;
     /**
-     * Atributo que ayuda a valida que los campos de textos ingresados por el usuario 
-     * cumplan con los formatos establecidos.
+     * Atributo que ayuda a valida que los campos de textos ingresados por el
+     * usuario cumplan con los formatos establecidos.
      */
     private Validador validador = new Validador();
     /**
@@ -66,7 +67,8 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      */
     private Boolean tramite;
     /**
-     * Representa el paginado de una lista, en este caso se utiliza para nombres.
+     * Representa el paginado de una lista, en este caso se utiliza para
+     * nombres.
      */
     PaginacionLista paginacionLista;
 
@@ -174,8 +176,10 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     /**
      * Valida que la persona exista en la base de datos.
+     *
      * @return verdadero si la persona fue encontrada y falso en caso contrario.
-     * @throws PersistenciaException si existió un error al momento de obtener a la persona.
+     * @throws PersistenciaException si existió un error al momento de obtener a
+     * la persona.
      */
     public boolean validarPersona() throws PersistenciaException {
         String id = obtenerID();
@@ -190,7 +194,8 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     }
 
     /**
-     *  Método encargado de validar que la persona seleccionada sea mayor de edad 
+     * Método encargado de validar que la persona seleccionada sea mayor de edad
+     *
      * @throws PersistenciaException si la persona es menor de 18 años.
      */
     public void validarPersonaMayor18() throws PersistenciaException {
@@ -209,6 +214,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     /**
      * Método que se encarga de validar que una persona tenga licencia activa.
+     *
      * @throws Exception si la persona no tiene licencia activa.
      */
     public void validarPersonaSinLicencia() throws Exception {
@@ -219,6 +225,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     /**
      * Método que valida si una persona tiene registrado su teléfono.
+     *
      * @throws Exception si la persona no tiene teléfono.
      */
     public void validarPersonaSinTelefono() throws Exception {

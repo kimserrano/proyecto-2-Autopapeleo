@@ -63,16 +63,18 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         calculoVigencia();
         calcularPrecioInicio();
     }
+
     /**
      * Método para calcular el precio al inicio del frame.
      */
-    public void calcularPrecioInicio(){
-         if (personaSeleccionada.getDiscapacitado().equals(Discapacitado.SI)) {
+    public void calcularPrecioInicio() {
+        if (personaSeleccionada.getDiscapacitado().equals(Discapacitado.SI)) {
             costosDiscapacidos();
         } else {
             costos();
         }
     }
+
     /**
      * Obtiene los datos para crear la licencia, obtiene la fecja actual, los
      * años de vigencia que seleccionó asi como el monto establecido.
@@ -309,9 +311,9 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     /**
-     * Método que se encarga de avisar si cuando días le quedan a su 
-     * licencia actual en caso de tener una, con el fin de que el usuario conozca que 
-     * aún no es necesario solicitar una nueva licencia.
+     * Método que se encarga de avisar si cuando días le quedan a su licencia
+     * actual en caso de tener una, con el fin de que el usuario conozca que aún
+     * no es necesario solicitar una nueva licencia.
      */
     public void calculoVigencia() {
         if (revisarRegistro() != null) {
@@ -336,12 +338,15 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     /**
-     * Método que se encarga de actualizar la licencia que ya tenía por una actual.
+     * Método que se encarga de actualizar la licencia que ya tenía por una
+     * actual.
      */
     public void actualizacion() {
         if (licencia != null && revisarRegistro() != null) {
             try {
-                tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia(), revisarRegistro());
+                System.out.println("lo intenta");
+                tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia());
+
             } catch (Exception ex) {
                 mostrarMensaje(ex.getMessage());
             }
@@ -349,25 +354,21 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     /**
-     * Método que se encarga de regitar la licencia generada en la base de datos.
-     * @return regresa la licencia en caso de poder registrarse y null en caso contrario.
+     * Método que se encarga de regitar la licencia generada en la base de
+     * datos.
+     *
+     * @return regresa la licencia en caso de poder registrarse y null en caso
+     * contrario.
      */
     public Licencia registrarLicencia() {
         licencia = obtenerDatosLicencia();
-        try {
-            tramitesDAO.registrarLicencia(licencia);
-            mostrarMensaje("Licencia registrada");
-            return licencia;
-
-        } catch (Exception ex) {
-            mostrarMensaje(ex.getMessage());
-        }
-        return null;
+        mostrarMensaje("Licencia registrada");
+        return licencia;
     }
 
     /**
-     * Método que asigna los costos dependiendo de los años que sean seleccionados
-     * para el trámite.
+     * Método que asigna los costos dependiendo de los años que sean
+     * seleccionados para el trámite.
      */
     public void costos() {
         if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
@@ -380,8 +381,9 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     /**
-     * Método que asigna los costros dependiendo de los años que sean selccionados 
-     * para el trámite y si la persona presenta alguna discapacidad.
+     * Método que asigna los costros dependiendo de los años que sean
+     * selccionados para el trámite y si la persona presenta alguna
+     * discapacidad.
      */
     public void costosDiscapacidos() {
         if (cbxVigencia.getSelectedItem().equals(Anios.UNO)) {
@@ -394,8 +396,9 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     /**
-     * Método encargado de obtener los datos para el registrar el trámite de la 
+     * Método encargado de obtener los datos para el registrar el trámite de la
      * licencia solicitada.
+     *
      * @return el tramite generado con los datos correspondientes.
      */
     public TramiteLicencia obtenerDatosTramite() {
@@ -408,7 +411,8 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     /**
      * Método que se utiliza para registrar el trámite de la licencia generada
      * en la base de datos.
-     * @return el trámite de la liencia en caso de poder registarse y null en 
+     *
+     * @return el trámite de la liencia en caso de poder registarse y null en
      * caso contrario.
      */
     public TramiteLicencia registrarTramite() {
@@ -424,9 +428,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }
 
     /**
-     * Cuando el combo box de vigencia se selecciona y la persona es discapacitada 
-     * los costos se ponen con el método costosDiscapacitados y si no es asi, se llama 
-     * al método costos.
+     * Cuando el combo box de vigencia se selecciona y la persona es
+     * discapacitada los costos se ponen con el método costosDiscapacitados y si
+     * no es asi, se llama al método costos.
+     *
      * @param evt el click que se le da al combo box.
      */
     private void cbxVigenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxVigenciaActionPerformed
@@ -438,9 +443,10 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxVigenciaActionPerformed
 
     /**
-     * Botón que se encarga de registar lo que existe en el frame y que cuando acaba 
-     * te regresa al menú.
-     * @param evt 
+     * Botón que se encarga de registar lo que existe en el frame y que cuando
+     * acaba te regresa al menú.
+     *
+     * @param evt
      */
     private void btnRealizarTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarTramiteActionPerformed
         // TODO add your handling code here:
@@ -452,7 +458,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
 
     private void cbxVigenciaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxVigenciaItemStateChanged
-       
+
     }//GEN-LAST:event_cbxVigenciaItemStateChanged
 
 
