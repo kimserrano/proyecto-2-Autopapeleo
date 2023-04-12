@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -19,6 +20,12 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  * Frame que permite visualizar los trámites que ha realizado una persona,
@@ -299,24 +306,6 @@ public class FrmHistorial extends javax.swing.JFrame {
         String fechaFin = validarYFormatearFecha(obtenerFechaFin());
         DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
         modeloTablaPersonas.setRowCount(0);
-//        if (personaSeleccionada != null) {
-//            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-//            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-//                if (fechaInicio != null && fechaFin != null) {
-//                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
-//                    Tramite tramite = tramitesPersonaSeleccionada.get(i);
-//                    if (tramitesPeriodo.contains(tramite)) {
-//                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
-//                        if (definirTipoTramite(tramite).equals(tipoTramite)) {
-//                            Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), definirTipoTramite(tramite),
-//                                fechaExpedicion, "$ " + tramite.getCosto()};
-//                            modeloTablaPersonas.addRow(filaNueva);
-//
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
         List<Persona> personas = casillasActivas();
         List<Tramite> tramites = new ArrayList<Tramite>();
         for (int i = 0; i < personas.size(); i++) {
@@ -337,7 +326,6 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         }
         verificarRegistros(tramites);
-//        }
     }
 
     /**
@@ -351,21 +339,6 @@ public class FrmHistorial extends javax.swing.JFrame {
         String fechaFin = validarYFormatearFecha(obtenerFechaFin());
         DefaultTableModel modeloTablaPersonas = (DefaultTableModel) this.tblHistorial.getModel();
         modeloTablaPersonas.setRowCount(0);
-//        if (personaSeleccionada != null) {
-//            List<Tramite> tramitesPersonaSeleccionada = personaSeleccionada.getTramites();
-//            for (int i = 0; i < tramitesPersonaSeleccionada.size(); i++) {
-//                if (fechaInicio != null && fechaFin != null) {
-//                    List<Tramite> tramitesPeriodo = tramitesDAO.periodoFechaTramite(fechaInicio, fechaFin);
-//                    Tramite tramite = tramitesPersonaSeleccionada.get(i);
-//                    if (tramitesPeriodo.contains(tramite)) {
-//                        String fechaExpedicion = fechaCalendarAString(tramite.getFechaExpedicion());
-//                        Object[] filaNueva = {personaSeleccionada.getNombre() + " " + personaSeleccionada.getApellidoPaterno(), tramite,
-//                            fechaExpedicion, "$ " + tramite.getCosto()};
-//                        modeloTablaPersonas.addRow(filaNueva);
-//                    }
-//                }
-//            }
-//        } else {
         List<Persona> personas = casillasActivas();
         List<Tramite> tramites = new ArrayList<Tramite>();
         for (int i = 0; i < personas.size(); i++) {
@@ -384,7 +357,6 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         }
         verificarRegistros(tramites);
-//        }
     }
 
     /**
@@ -422,7 +394,6 @@ public class FrmHistorial extends javax.swing.JFrame {
 
         //obtiene los datos de los txt para cada filtro
         PersonasDTO personasDTO = new PersonasDTO(rfcObtenido, nombresObtenidos, fechaNacimientoObtenida);
-        System.out.println("ASI SE CREA -> " + personasDTO);
         // Aplicar el filtro correspondiente
         if (rfc && nombres && fechaNacimiento) {
             personas = personasDAO.consultarPersonasTresFiltro(personasDTO);
@@ -440,7 +411,6 @@ public class FrmHistorial extends javax.swing.JFrame {
             if (nombresReporte) {
                 nombresReporteObtenidos = obtenerNombresReporte();
                 PersonasDTO personasReporteDTO = new PersonasDTO(nombresReporteObtenidos);
-                System.out.println("persina 2  -> " + personasReporteDTO);
                 personas = personasDAO.consultarPersonasUnFiltro(personasReporteDTO);
             }
         }
@@ -906,7 +876,37 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         }
     }
-
+    public void limpiarLista(){
+        if (!tramitesReporte.isEmpty()) {
+            tramitesReporte.clear();
+        }
+    }
+    public boolean verificarLista(){
+        if (tramitesReporte.isEmpty()) {
+            mostrarMensaje("No puedes generar un reporte si no hay registros en la tabla.");
+            return false;
+        }
+        return true;
+    }
+    
+    public void generarReporte(){
+        if(verificarLista()){
+          ArrayList listaTramitesDTO = new ArrayList();
+          JasperReport jpTramites = null;
+          for (Tramite tramite : tramitesReporte) {
+              TramitesDTO tDTO = new TramitesDTO(tramite.getPersona().getNombre()+" "+tramite.getPersona().getApellidoPaterno()+" "+tramite.getPersona().getApellidoMaterno(),tramite.getClass().getSimpleName(),fechaCalendarAString(tramite.getFechaExpedicion()),tramite.getCosto());
+              listaTramitesDTO.add(tDTO);
+          }
+          try{
+              jpTramites = (JasperReport) JRLoader.loadObjectFromFile("src\\main\\java\\com\\itson\\proyecto2_233410_233023\\reporte\\ReporteTramites.jasper");
+              JasperPrint jp = JasperFillManager.fillReport(jpTramites,null,new JRBeanCollectionDataSource(listaTramitesDTO));
+              JasperViewer jv = new JasperViewer(jp,false);
+              jv.setVisible(true);
+          }catch(Exception ex){
+              mostrarMensaje("No se pudo generar el reporte de los trámites.");
+          }
+      }
+    }
     /**
      * Botón que se utiliza para volver al menú.
      *
@@ -937,7 +937,7 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAplicarFiltrosActionPerformed
 
     private void cbxTipoTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTipoTramiteActionPerformed
-
+    generarReporte();
     }//GEN-LAST:event_cbxTipoTramiteActionPerformed
 
     /**
@@ -952,11 +952,22 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_cbxPersonasActionPerformed
 
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
-        try {
-            casillasActivas();
-        } catch (PersistenciaException ex) {
-            Logger.getLogger(FrmHistorial.class.getName()).log(Level.SEVERE, null, ex);
-        }
+      if(verificarLista()){
+          ArrayList listaTramitesDTO = new ArrayList();
+          JasperReport jpTramites = null;
+          for (Tramite tramite : tramitesReporte) {
+              TramitesDTO tDTO = new TramitesDTO(tramite.getPersona().getNombre()+" "+tramite.getPersona().getApellidoPaterno()+" "+tramite.getPersona().getApellidoMaterno(),tramite.getClass().getSimpleName(),fechaCalendarAString(tramite.getFechaExpedicion()),tramite.getCosto());
+              listaTramitesDTO.add(tDTO);
+          }
+          try{
+              jpTramites = (JasperReport) JRLoader.loadObjectFromFile("src\\main\\java\\com\\itson\\proyecto2_233410_233023\\reporte\\ReporteTramites.jasper");
+              JasperPrint jp = JasperFillManager.fillReport(jpTramites,null,new JRBeanCollectionDataSource(listaTramitesDTO));
+              JasperViewer jv = new JasperViewer(jp,false);
+              jv.setVisible(true);
+          }catch(Exception ex){
+              mostrarMensaje("No se pudo generar el reporte de los trámites.");
+          }
+      }
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
     /**
@@ -1005,9 +1016,7 @@ public class FrmHistorial extends javax.swing.JFrame {
      * @param evt el click que se le da al botón.
      */
     private void btnFiltartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltartActionPerformed
-        if (tramitesReporte != null || !tramitesReporte.isEmpty()) {
-            tramitesReporte.clear();
-        }
+        limpiarLista();
         try {
             filtrarConsultasPeriodo();
         } catch (PersistenciaException ex) {
@@ -1016,18 +1025,23 @@ public class FrmHistorial extends javax.swing.JFrame {
     }//GEN-LAST:event_btnFiltartActionPerformed
 
     private void jcbReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbReporteActionPerformed
+
         if (jcbReporte.isSelected()) {
             btnAplicarFiltros.setEnabled(false);
             cbxPersonas.setEnabled(false);
             txtNombresReporte.setEnabled(true);
             jPanelFondoReporte.setVisible(true);
             lblHistorialSolicitudes.setText("Reporte de trámites realizados");
+            DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+            model.setRowCount(0);
         } else {
             btnAplicarFiltros.setEnabled(true);
             cbxPersonas.setEnabled(true);
             txtNombresReporte.setEnabled(false);
             jPanelFondoReporte.setVisible(false);
             lblHistorialSolicitudes.setText("Historial de solicitudes");
+            DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
+            model.setRowCount(50000);
         }
     }//GEN-LAST:event_jcbReporteActionPerformed
 
