@@ -126,9 +126,9 @@ public class PersonasDTO {
     }
 
     /**
-     * Metodo usado para escribir y con ello conocer los atributos de esta clase
+     * Metodo usado para escribir y con ello conocer los atributos de esta clase.
      *
-     * @return atributos de la persona en orden
+     * @return atributos de la persona en orden.
      */
     @Override
     public String toString() {

@@ -16,7 +16,8 @@
     <groupId>net.sf.jasperreports</groupId>
     <artifactId>jasperreports</artifactId>
     <version>6.17.0</version>
-</dependency>
+            <type>jar</type>
+        </dependency>
          <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>

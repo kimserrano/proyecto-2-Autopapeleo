@@ -21,7 +21,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     /**
      * Se utiliza para que el combo box permita únicamente valores de tipo
-     * Anuos.
+     * Anios.
      */
     DefaultComboBoxModel<Anios> modeloComboBox = new DefaultComboBoxModel<>(Anios.values());
     /**
@@ -162,7 +162,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 .addComponent(lblTramitarLicencia)
                 .addGap(31, 31, 31)
                 .addComponent(lblNombrePersona, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanelBarraLayout.setVerticalGroup(
             jPanelBarraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,11 +175,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         cbxVigencia.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         cbxVigencia.setForeground(new java.awt.Color(124, 63, 163));
         cbxVigencia.setModel(modeloComboBox);
-        cbxVigencia.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cbxVigenciaItemStateChanged(evt);
-            }
-        });
         cbxVigencia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbxVigenciaActionPerformed(evt);
@@ -192,7 +187,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
         lblMonto.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblMonto.setForeground(new java.awt.Color(124, 63, 163));
-        lblMonto.setText("Monto a pagar");
+        lblMonto.setText("Monto a pagar  $");
 
         txtMonto.setEditable(false);
         txtMonto.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
@@ -211,10 +206,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         jPanelFondoMenuLayout.setHorizontalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelBarra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                .addContainerGap(30, Short.MAX_VALUE)
-                .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(lblVigencia)
@@ -222,14 +213,18 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                 .addComponent(cbxVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblMonto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                    .addContainerGap(346, Short.MAX_VALUE)
-                    .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(32, 32, 32)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                        .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                        .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))))
         );
         jPanelFondoMenuLayout.setVerticalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -243,19 +238,16 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
                     .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(212, 212, 212))
-            .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                    .addGap(115, 115, 115)
-                    .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(139, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(164, 164, 164))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
+            .addComponent(jPanelFondoMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 525, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -318,6 +310,7 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     public void calculoVigencia() {
         if (revisarRegistro() != null) {
             Calendar fechaInicio = revisarRegistro().getFechaExpedicion();
+            Calendar fechaInicioOriginal = (Calendar) fechaInicio.clone();
             Anios anios = revisarRegistro().getLicencia().getAniosVigencia();
             int anioVigencia;
             if (anios == Anios.UNO) {
@@ -331,7 +324,13 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
             if (tramitesDAO.consultarDiasTransurridosSP(fechaInicio, fechaFin) < 0) {
                 mostrarMensaje(" Tu licencia actual vence en: "
                         + tramitesDAO.consultarDiasTransurridosSP(fechaInicio, fechaFin) * -1 + " días");
-
+                fechaInicio.setTime(fechaInicioOriginal.getTime());
+            } else if (tramitesDAO.consultarDiasTransurridosSP(fechaInicio, fechaFin) >= 0) {
+                try {
+                    tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia());
+                } catch (Exception ex) {
+                    mostrarMensaje("Su licencia expiró y falló su actualización.");
+                }
             }
 
         }
@@ -344,7 +343,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
     public void actualizacion() {
         if (licencia != null && revisarRegistro() != null) {
             try {
-                System.out.println("lo intenta");
                 tramitesDAO.actualizarLicencia(revisarRegistro().getLicencia());
 
             } catch (Exception ex) {
@@ -456,10 +454,6 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
         this.dispose();
         new FrmMenu(personasDAO, vehiculosDAO, tramitesDAO).setVisible(true);
     }//GEN-LAST:event_btnRealizarTramiteActionPerformed
-
-    private void cbxVigenciaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbxVigenciaItemStateChanged
-
-    }//GEN-LAST:event_cbxVigenciaItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

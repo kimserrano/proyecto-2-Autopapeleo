@@ -21,6 +21,12 @@ public class Validador {
 
     }
 
+    /**
+     * Método que se utiliza para mostar un mensaje informativo en un
+     * JOptionPane.
+     *
+     * @param msj la cadena de texto con lo que se desea mostar en el mensaje.
+     */
     private void mostrarMensaje(String msj) {
         JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -60,7 +66,7 @@ public class Validador {
                 throw new PersistenciaException("Nombre inválido.");
             }
         } else {
-             throw new PersistenciaException("Ingresa nombre.");
+            throw new PersistenciaException("Ingresa nombre.");
         }
     }
 
@@ -182,9 +188,10 @@ public class Validador {
                 throw new PersistenciaException("Fórmato de fecha inválido.");
             }
         } else {
-              throw new PersistenciaException("Ingrese una fecha.");
+            throw new PersistenciaException("Ingrese una fecha.");
         }
     }
+
     /**
      * Método que valida una fecha.
      *
@@ -197,7 +204,7 @@ public class Validador {
         if (!fechaNacimiento.equals("")) {
             return true;
         } else {
-              throw new PersistenciaException("Ingrese una fecha.");
+            throw new PersistenciaException("Ingrese una fecha.");
         }
     }
 }

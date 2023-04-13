@@ -67,6 +67,9 @@ public class FrmHistorial extends javax.swing.JFrame {
      */
     DefaultComboBoxModel<Persona> modeloComboBox = new DefaultComboBoxModel<Persona>();
 
+    /**
+     * Lista de tramites que se utiliza para generar el reporte.
+     */
     private List<Tramite> tramitesReporte = new ArrayList<Tramite>();
 
     /**
@@ -142,18 +145,44 @@ public class FrmHistorial extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que obtiene la fecha de inicio del periodo del que se requieren
+     * los trámites.
+     *
+     * @return la cadena con la fecha de inicio que ingresó el usuario.
+     */
     private String obtenerFechaInicio() {
         return dtpFechaDe.getText();
     }
 
+    /**
+     * Método que obtiene la fecha final del periodo del que se requieren los
+     * trámites.
+     *
+     * @return la cadena con la fecha final que ingresó el usuario.
+     */
     private String obtenerFechaFin() {
         return dptFechaHasta.getText();
     }
 
+    /**
+     * Método que obtiene la fecha de nacimiento de la persona que se desea
+     * buscar.
+     *
+     * @return la cadena que contiene la fecha de nacimiento de la persona
+     * buscada.
+     */
     private String obtenerFechaNacimiento() {
         return dtpFechaNacimiento.getText();
     }
 
+    /**
+     * Método que obtiene los nombres que puede tener la persona que se desea
+     * consultar.
+     *
+     * @return la cadena de texto que contiene los nombres de la persona a
+     * buscar.
+     */
     private String obtenerNombresReporte() {
         String nombres = txtNombresReporte.getText();
         try {
@@ -287,6 +316,12 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Método que sirve para verificar que la persona cuente con un registro de
+     * trámites, de no ser así muestra un mensaje de error.
+     *
+     * @param tramites recibe los posibles trámistes que tiene la persona.
+     */
     private void verificarRegistros(List<Tramite> tramites) {
         if (tblHistorial.getModel().getRowCount() <= 0 && !dtpFechaDe.getText().isEmpty()
                 && !dptFechaHasta.getText().isEmpty() && !txtNombresReporte.getText().isEmpty()) {
@@ -509,11 +544,6 @@ public class FrmHistorial extends javax.swing.JFrame {
         cbxTipoTramite.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Placas", "Licencias", "Ambos" }));
         cbxTipoTramite.setFont(new java.awt.Font("Microsoft JhengHei", 1, 14)); // NOI18N
         cbxTipoTramite.setForeground(new java.awt.Color(124, 63, 163));
-        cbxTipoTramite.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxTipoTramiteActionPerformed(evt);
-            }
-        });
 
         lblTipoTramite.setText("Tipo de trámite");
         lblTipoTramite.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
@@ -642,9 +672,9 @@ public class FrmHistorial extends javax.swing.JFrame {
 
         dptFechaHasta.setBackground(new java.awt.Color(233, 219, 253));
 
+        lblNombresReporte.setText("Nombres");
         lblNombresReporte.setFont(new java.awt.Font("Microsoft JhengHei", 1, 18)); // NOI18N
         lblNombresReporte.setForeground(new java.awt.Color(124, 63, 163));
-        lblNombresReporte.setText("Nombres");
 
         btnFiltart.setText("Filtrar");
         btnFiltart.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(124, 63, 163)));
@@ -672,26 +702,27 @@ public class FrmHistorial extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanelFondoReporteLayout.createSequentialGroup()
+                        .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
+                                .addComponent(lblFiltroFecha)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
+                                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblNombresReporte)
+                                    .addComponent(lblHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblDe, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(dtpFechaDe, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(dptFechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtNombresReporte))))
+                        .addGap(19, 19, 19))
+                    .addGroup(jPanelFondoReporteLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnFiltart, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
-                        .addComponent(lblNombresReporte)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombresReporte))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
-                        .addComponent(lblHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dptFechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
-                        .addComponent(lblFiltroFecha)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoReporteLayout.createSequentialGroup()
-                        .addComponent(lblDe, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
-                        .addComponent(dtpFechaDe, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)))
-                .addGap(25, 25, 25))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnFiltart, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13))))
         );
         jPanelFondoReporteLayout.setVerticalGroup(
             jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -709,10 +740,10 @@ public class FrmHistorial extends javax.swing.JFrame {
                 .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNombresReporte)
                     .addComponent(txtNombresReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(40, 40, 40)
                 .addGroup(jPanelFondoReporteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnFiltart)
-                    .addComponent(btnGenerarReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGenerarReporte)
+                    .addComponent(btnFiltart, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -757,16 +788,15 @@ public class FrmHistorial extends javax.swing.JFrame {
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(lblHistorialSolicitudes, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                        .addGap(85, 85, 85)
+                                        .addGap(44, 44, 44)
                                         .addComponent(jcbReporte)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(lblHistorialSolicitudes1))
-                                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jPanelFondoReporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                    .addComponent(jPanelFondoReporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 8, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanelFondoMenuLayout.setVerticalGroup(
@@ -861,6 +891,15 @@ public class FrmHistorial extends javax.swing.JFrame {
         return null;
     }
 
+    /**
+     * Método que se ecnarga de llamar a los métodos de cargar tabla
+     * correspondiente dependiendo del valor seleccionado en la combo box de
+     * tipo de trámite.
+     *
+     * @throws PersistenciaException lanza un error si no encuentra los trámites
+     * para cargar la tabla y/o muestra un mensaje si el usuario no ingresó los
+     * datos de busqueda.
+     */
     public void filtrarConsultasPeriodo() throws PersistenciaException {
         if (dtpFechaDe.getText().isEmpty() && dptFechaHasta.getText().isEmpty() && txtNombresReporte.getText().isEmpty()) {
             mostrarMensaje("No hay datos que buscar");
@@ -876,37 +915,57 @@ public class FrmHistorial extends javax.swing.JFrame {
             }
         }
     }
-    public void limpiarLista(){
+
+    /**
+     * Método que limpia la lista de trámites para generar los reportes.
+     */
+    public void limpiarLista() {
         if (!tramitesReporte.isEmpty()) {
             tramitesReporte.clear();
         }
     }
-    public boolean verificarLista(){
+
+    /**
+     * Método que verifica la lista de trámites para generar los reportes.
+     *
+     * @return false si la lista esta vacía y true en caso contrario.
+     */
+    public boolean verificarLista() {
         if (tramitesReporte.isEmpty()) {
             mostrarMensaje("No puedes generar un reporte si no hay registros en la tabla.");
             return false;
         }
         return true;
     }
-    
-    public void generarReporte(){
-        if(verificarLista()){
-          ArrayList listaTramitesDTO = new ArrayList();
-          JasperReport jpTramites = null;
-          for (Tramite tramite : tramitesReporte) {
-              TramitesDTO tDTO = new TramitesDTO(tramite.getPersona().getNombre()+" "+tramite.getPersona().getApellidoPaterno()+" "+tramite.getPersona().getApellidoMaterno(),tramite.getClass().getSimpleName(),fechaCalendarAString(tramite.getFechaExpedicion()),tramite.getCosto());
-              listaTramitesDTO.add(tDTO);
-          }
-          try{
-              jpTramites = (JasperReport) JRLoader.loadObjectFromFile("src\\main\\java\\com\\itson\\proyecto2_233410_233023\\reporte\\ReporteTramites.jasper");
-              JasperPrint jp = JasperFillManager.fillReport(jpTramites,null,new JRBeanCollectionDataSource(listaTramitesDTO));
-              JasperViewer jv = new JasperViewer(jp,false);
-              jv.setVisible(true);
-          }catch(Exception ex){
-              mostrarMensaje("No se pudo generar el reporte de los trámites.");
-          }
-      }
+
+    /**
+     * Método que crea una TramiteDTO para cada tramite en la lista de tramites
+     * para generar reportes, para con esto llenar el mismo. Llama a la
+     * direccion ReporteTramites.jasper que es donde se encuentra el formato y
+     * lo llena con los datos de la clase DTO, además muestra un mensaje en caso
+     * de existir un error al generar los trámites.
+     */
+    public void generarReporte() {
+        if (verificarLista()) {
+            ArrayList listaTramitesDTO = new ArrayList();
+            JasperReport jpTramites = null;
+            for (Tramite tramite : tramitesReporte) {
+                TramitesDTO tDTO = new TramitesDTO(tramite.getPersona().getNombre() + " "
+                        + tramite.getPersona().getApellidoPaterno() + " " + tramite.getPersona().getApellidoMaterno(),
+                        tramite.getClass().getSimpleName(), fechaCalendarAString(tramite.getFechaExpedicion()), tramite.getCosto());
+                listaTramitesDTO.add(tDTO);
+            }
+            try {
+                jpTramites = (JasperReport) JRLoader.loadObjectFromFile("src\\main\\java\\com\\itson\\proyecto2_233410_233023\\reporte\\ReporteTramites.jasper");
+                JasperPrint jp = JasperFillManager.fillReport(jpTramites, null, new JRBeanCollectionDataSource(listaTramitesDTO));
+                JasperViewer jv = new JasperViewer(jp, false);
+                jv.setVisible(true);
+            } catch (Exception ex) {
+                mostrarMensaje("No se pudo generar el reporte de los trámites.");
+            }
+        }
     }
+
     /**
      * Botón que se utiliza para volver al menú.
      *
@@ -936,10 +995,6 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAplicarFiltrosActionPerformed
 
-    private void cbxTipoTramiteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTipoTramiteActionPerformed
-    generarReporte();
-    }//GEN-LAST:event_cbxTipoTramiteActionPerformed
-
     /**
      * Combo box que sirve para seleccionar a la persona de la cual se desea
      * conocer el historial.
@@ -951,23 +1006,14 @@ public class FrmHistorial extends javax.swing.JFrame {
         filtroComboBoxTipo();
     }//GEN-LAST:event_cbxPersonasActionPerformed
 
+    /**
+     * Botón que genera un reporte de los trámites especificados por el usuario.
+     *
+     * @param evt el click que se le da al botón.
+     */
     private void btnGenerarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarReporteActionPerformed
-      if(verificarLista()){
-          ArrayList listaTramitesDTO = new ArrayList();
-          JasperReport jpTramites = null;
-          for (Tramite tramite : tramitesReporte) {
-              TramitesDTO tDTO = new TramitesDTO(tramite.getPersona().getNombre()+" "+tramite.getPersona().getApellidoPaterno()+" "+tramite.getPersona().getApellidoMaterno(),tramite.getClass().getSimpleName(),fechaCalendarAString(tramite.getFechaExpedicion()),tramite.getCosto());
-              listaTramitesDTO.add(tDTO);
-          }
-          try{
-              jpTramites = (JasperReport) JRLoader.loadObjectFromFile("src\\main\\java\\com\\itson\\proyecto2_233410_233023\\reporte\\ReporteTramites.jasper");
-              JasperPrint jp = JasperFillManager.fillReport(jpTramites,null,new JRBeanCollectionDataSource(listaTramitesDTO));
-              JasperViewer jv = new JasperViewer(jp,false);
-              jv.setVisible(true);
-          }catch(Exception ex){
-              mostrarMensaje("No se pudo generar el reporte de los trámites.");
-          }
-      }
+        generarReporte();
+
     }//GEN-LAST:event_btnGenerarReporteActionPerformed
 
     /**
@@ -1024,6 +1070,13 @@ public class FrmHistorial extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnFiltartActionPerformed
 
+    /**
+     * Jcb que representa lo visible para poder activar el modo reporte, que
+     * consiste en deshabilitar los botones de búsqueda por persona y activar la
+     * búqueda solamente por nombres y periodos.
+     *
+     * @param evt el click que se le da a la casilla.
+     */
     private void jcbReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbReporteActionPerformed
 
         if (jcbReporte.isSelected()) {

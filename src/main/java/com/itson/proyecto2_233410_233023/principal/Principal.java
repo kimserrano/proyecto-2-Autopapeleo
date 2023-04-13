@@ -4,22 +4,10 @@ Clase Principal.java creada el 29/03/2023.
 package com.itson.proyecto2_233410_233023.principal;
 
 import com.itson.proyecto2_233410_233023.UI.FrmMenu;
-import com.itson.proyecto2_233410_233023.dominio.*;
 import com.itson.proyecto2_233410_233023.implementaciones.*;
 import com.itson.proyecto2_233410_233023.interfaces.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 
 /**
  *

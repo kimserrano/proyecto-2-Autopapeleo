@@ -13,6 +13,7 @@ import javax.persistence.Persistence;
  * @author Gabriel x Kim
  */
 public class ConexionBD implements IConexionBD {
+
     /**
      * Atributo que representa el entityManager.
      */
@@ -21,8 +22,10 @@ public class ConexionBD implements IConexionBD {
      * Atributo que representa el nombre de la persistencia.
      */
     private String nombrePersistencia;
+
     /**
      * Método constructor que crea el entityManager de la conexión.
+     *
      * @param nombrePersistencia Nombre de la persistencia.
      */
     public ConexionBD(String nombrePersistencia) {
@@ -30,8 +33,10 @@ public class ConexionBD implements IConexionBD {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(nombrePersistencia);
         entityManager = entityManagerFactory.createEntityManager();
     }
+
     /**
      * Método para obtener el entityManager de la conexión.
+     *
      * @return EntityManager.
      */
     public EntityManager getEM() {

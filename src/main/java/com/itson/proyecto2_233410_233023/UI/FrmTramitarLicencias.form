@@ -29,7 +29,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanelFondoMenu" alignment="0" pref="525" max="32767" attributes="0"/>
+          <Component id="jPanelFondoMenu" alignment="0" min="-2" pref="525" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -59,11 +59,6 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="jPanelBarra" alignment="0" max="32767" attributes="0"/>
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="30" max="32767" attributes="0"/>
-                  <Component id="jToolBarMenu" min="-2" pref="489" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
                   <Component id="lblVigencia" min="-2" max="-2" attributes="0"/>
@@ -71,15 +66,21 @@
                   <Component id="cbxVigencia" min="-2" pref="104" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="lblMonto" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="txtMonto" min="-2" pref="113" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
-              <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="346" max="32767" attributes="0"/>
-                      <Component id="btnRealizarTramite" min="-2" pref="147" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="jToolBarMenu" min="-2" pref="489" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="btnRealizarTramite" min="-2" pref="147" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
           </Group>
@@ -97,14 +98,9 @@
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="jToolBarMenu" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="212" max="-2" attributes="0"/>
-              </Group>
-              <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="115" max="-2" attributes="0"/>
-                      <Component id="btnRealizarTramite" min="-2" pref="45" max="-2" attributes="0"/>
-                      <EmptySpace pref="139" max="32767" attributes="0"/>
-                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="btnRealizarTramite" min="-2" pref="30" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="164" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -146,7 +142,7 @@
                       <Component id="lblTramitarLicencia" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                       <Component id="lblNombrePersona" min="-2" pref="214" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="12" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -216,7 +212,6 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cbxVigenciaItemStateChanged"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbxVigenciaActionPerformed"/>
           </Events>
           <AuxValues>
@@ -242,7 +237,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="a3" green="3f" red="7c" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Monto a pagar"/>
+            <Property name="text" type="java.lang.String" value="Monto a pagar  $"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txtMonto">

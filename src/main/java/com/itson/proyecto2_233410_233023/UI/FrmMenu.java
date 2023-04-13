@@ -37,7 +37,7 @@ public class FrmMenu extends javax.swing.JFrame {
 
     }
 
- 
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -169,13 +169,6 @@ public class FrmMenu extends javax.swing.JFrame {
         jPanelFondoMenuLayout.setHorizontalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanelBarra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnInsercion))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                 .addGap(52, 52, 52)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,6 +181,13 @@ public class FrmMenu extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                         .addComponent(btnTramitarLicencia)
                         .addGap(68, 68, 68))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 489, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelFondoMenuLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnInsercion))
         );
         jPanelFondoMenuLayout.setVerticalGroup(
             jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,9 +199,9 @@ public class FrmMenu extends javax.swing.JFrame {
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnTramitarPlaca)
                     .addComponent(btnTramitarLicencia, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addComponent(btnHistorial1)
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
                 .addComponent(btnInsercion)
                 .addContainerGap())
         );
@@ -229,8 +229,11 @@ public class FrmMenu extends javax.swing.JFrame {
     private void mensajeConfirmacion(String mensaje, String titulo) {
         new JOptionPane().showMessageDialog(this, mensaje, titulo, JOptionPane.INFORMATION_MESSAGE);
     }
+
     /**
-     * Evento Action del botón tramitar licencia el cual inicia el frame de TramitarLicencia.
+     * Evento Action del botón tramitar licencia el cual inicia el frame de
+     * TramitarLicencia.
+     *
      * @param evt Evento del botón.
      */
     private void btnTramitarLicenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarLicenciaActionPerformed
@@ -239,8 +242,10 @@ public class FrmMenu extends javax.swing.JFrame {
         frmsp.setVisible(true);
 
     }//GEN-LAST:event_btnTramitarLicenciaActionPerformed
- /**
-     * Evento Action del botón tramitar placa el cual inicia el frame de TramitarPlaca.
+    /**
+     * Evento Action del botón tramitar placa el cual inicia el frame de
+     * TramitarPlaca.
+     *
      * @param evt Evento del botón.
      */
     private void btnTramitarPlacaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTramitarPlacaActionPerformed
@@ -248,8 +253,10 @@ public class FrmMenu extends javax.swing.JFrame {
         this.setVisible(false);
         frmsp.setVisible(true);
     }//GEN-LAST:event_btnTramitarPlacaActionPerformed
- /**
-     * Evento Action del botón inserción el cual realiza la inserción masiva de personas.
+    /**
+     * Evento Action del botón inserción el cual realiza la inserción masiva de
+     * personas.
+     *
      * @param evt Evento del botón.
      */
     private void btnInsercionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsercionActionPerformed
@@ -257,8 +264,9 @@ public class FrmMenu extends javax.swing.JFrame {
             mensajeConfirmacion("Registro de personas realizado correctamente", "Confirmación");
         }
     }//GEN-LAST:event_btnInsercionActionPerformed
- /**
+    /**
      * Evento Action del botón historial el cual inicia el frame de Historial.
+     *
      * @param evt Evento del botón.
      */
     private void btnHistorial1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistorial1ActionPerformed
@@ -266,8 +274,9 @@ public class FrmMenu extends javax.swing.JFrame {
         this.setVisible(false);
         frmh.setVisible(true);
     }//GEN-LAST:event_btnHistorial1ActionPerformed
- /**
+    /**
      * Evento Action del botón salir el cual cierra el programa.
+     *
      * @param evt Evento del botón.
      */
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
