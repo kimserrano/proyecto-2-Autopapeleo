@@ -1093,8 +1093,6 @@ public class FrmHistorial extends javax.swing.JFrame {
             txtNombresReporte.setEnabled(false);
             jPanelFondoReporte.setVisible(false);
             lblHistorialSolicitudes.setText("Historial de solicitudes");
-            DefaultTableModel model = (DefaultTableModel) tblHistorial.getModel();
-            model.setRowCount(50000);
         }
     }//GEN-LAST:event_jcbReporteActionPerformed
 

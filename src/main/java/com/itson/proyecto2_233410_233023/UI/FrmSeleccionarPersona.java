@@ -314,6 +314,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Seleccionar persona");
+        setResizable(false);
 
         jPanelFondo.setBackground(new java.awt.Color(233, 219, 253));
         jPanelFondo.setForeground(new java.awt.Color(233, 219, 253));

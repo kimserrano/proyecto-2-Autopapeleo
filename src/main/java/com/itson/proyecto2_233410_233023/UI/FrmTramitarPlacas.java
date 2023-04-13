@@ -63,13 +63,13 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         this.vehiculosDAO = vehiculosDAO;
         this.tramitesDAO = tramitesDAO;
         this.personaSeleccionada = persona;
-        btnBuscar.setVisible(false);
+        btnBuscar.setEnabled(false);
         txtNumeroSerie.setText(numSerie);
         txtNumeroSerie.setEditable(false);
-        btnBuscarRegistrado.setVisible(false);
+        btnBuscarRegistrado.setEnabled(false);
         txtCosto.setText("1500.00");
-        lblPlacasAnteriores.setVisible(false);
-        txtPlacasAnteriores.setVisible(false);
+        lblPlacasAnteriores.setEnabled(false);
+        txtPlacasAnteriores.setEnabled(false);
         lblNombrePersona.setText(persona.getNombre() + " " + persona.getApellidoPaterno());
     }
 
@@ -78,28 +78,27 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
      */
     public void mostrarOpciones() {
         if (cbxVehiculo.getSelectedItem().toString().equals("Nuevo")) {
-
-            btnRegistrar.setVisible(true);
-            btnBuscar.setVisible(false);
+            btnRegistrar.setEnabled(true);
+            btnBuscar.setEnabled(false);
             txtNumeroSerie.setEditable(false);
-            btnBuscarRegistrado.setVisible(false);
-            lblPlacasAnteriores.setVisible(false);
-            txtPlacasAnteriores.setVisible(false);
+            btnBuscarRegistrado.setEnabled(false);
+            lblPlacasAnteriores.setEnabled(false);
+            txtPlacasAnteriores.setEnabled(false);
             txtCosto.setText("1500.00");
         } else if (cbxVehiculo.getSelectedItem().toString().equals("Registrado sin historial")) {
             txtNumeroSerie.setEditable(true);
-            btnRegistrar.setVisible(false);
-            btnBuscarRegistrado.setVisible(true);
-            lblPlacasAnteriores.setVisible(false);
-            txtPlacasAnteriores.setVisible(false);
+            btnRegistrar.setEnabled(false);
+            btnBuscarRegistrado.setEnabled(true);
+            lblPlacasAnteriores.setEnabled(false);
+            txtPlacasAnteriores.setEnabled(false);
             txtCosto.setText("1500.00");
         } else {
             txtNumeroSerie.setEditable(false);
-            btnBuscarRegistrado.setVisible(false);
-            btnRegistrar.setVisible(false);
-            btnBuscar.setVisible(true);
-            txtPlacasAnteriores.setVisible(true);
-            lblPlacasAnteriores.setVisible(true);
+            btnBuscarRegistrado.setEnabled(false);
+            btnRegistrar.setEnabled(false);
+            btnBuscar.setEnabled(true);
+            txtPlacasAnteriores.setEnabled(true);
+            lblPlacasAnteriores.setEnabled(true);
             txtCosto.setText("1000.00");
         }
     }
@@ -189,7 +188,22 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
             mostrarMensaje(ex.getMessage());
         }
     }
-
+    public boolean validarPlacaDuplicada(Placa placa){
+        try {
+            Placa placaObtenida = tramitesDAO.obtenerPlaca(placa.getNumeroAlfanumerico());
+            if (placaObtenida != null) {
+                if (placa.getNumeroAlfanumerico().equalsIgnoreCase(placaObtenida.getNumeroAlfanumerico())) {
+                    mostrarMensaje("Ya hay una placa con ese número alfanumérico.");
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        } catch (Exception ex) {
+            mostrarMensaje(ex.getMessage());
+        }
+        return false;
+    }
     /**
      * Método para realizar el trámite, primero se obtiene la placa a partir de
      * los datos, si se válida, se realiza el trámite.
@@ -198,7 +212,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
      */
     public boolean realizarTramite() {
         Placa placa = obtenerDatos();
-        if (validarDatos(placa) != null) {
+        if ((validarDatos(placa) != null) && validarPlacaDuplicada(placa)) {
             try {
                 TramitePlaca tramite = new TramitePlaca(placa, placa.getCosto(), placa.getFechaEmision(), personaSeleccionada);
                 tramitesDAO.tramitarPlaca(tramite);
@@ -462,11 +476,9 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
         jpnBotonTramiteLayout.setVerticalGroup(
             jpnBotonTramiteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpnBotonTramiteLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(btnBuscarRegistrado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(45, 45, 45)
-                .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(btnBuscarRegistrado)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+                .addComponent(btnRealizarTramite, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanelFondoMenuLayout = new javax.swing.GroupLayout(jPanelFondoMenu);
@@ -481,19 +493,19 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
                         .addComponent(lblPlacasAnteriores)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtPlacasAnteriores, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
-                            .addComponent(lblCosto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoMenuLayout.createSequentialGroup()
-                            .addComponent(lblNuevaPlaca)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtNuevaPlaca, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelFondoMenuLayout.createSequentialGroup()
-                            .addComponent(lblNumeroSerie)
-                            .addGap(23, 23, 23)
-                            .addComponent(txtNumeroSerie, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
+                                .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblNumeroSerie)
+                                    .addComponent(lblNuevaPlaca))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(lblCosto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtCosto, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                            .addComponent(txtNuevaPlaca, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNumeroSerie, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelFondoMenuLayout.createSequentialGroup()
                         .addGap(15, 15, 15)
@@ -512,7 +524,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
                 .addComponent(lblVehiculo1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cbxVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
+                .addGap(42, 42, 42)
                 .addComponent(btnRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -526,7 +538,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
                     .addComponent(cbxVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblVehiculo1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jToolBarMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelFondoMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

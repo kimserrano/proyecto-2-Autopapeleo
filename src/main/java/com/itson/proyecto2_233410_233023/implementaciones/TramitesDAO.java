@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 /**
  * Clase para implementar toda la lógica de consultas de trámites.
@@ -95,14 +96,42 @@ public class TramitesDAO implements ITramitesDAO {
      */
     @Override
     public Boolean tramitarPlaca(TramitePlaca tramite) throws Exception {
+        try{
         conexionBD.getEM().getTransaction().begin();
         Placa placa = buscarPlacaActiva(tramite);
         actualizarPlaca(placa, tramite);
         conexionBD.getEM().persist(tramite);
         conexionBD.getEM().getTransaction().commit();
         return true;
+        }catch(DatabaseException ex){
+            throw new PersistenciaException("El número de placa ya está registrado.");
+        }catch(Exception ex){
+             throw new PersistenciaException("Error al realizar el trámite.");
+        }finally{
+            conexionBD.getEM().clear();
+        }
     }
-
+    /**
+     * Método para obtener una placa a partir del número alfanumérico.
+     * @param numeroAlfa Número alfanumérico.
+     * @return Placa encontrada.
+     * @throws Exception Excepción a lanzar en caso de fallar la búsqueda.
+     */
+    @Override
+    public Placa obtenerPlaca(String numeroAlfa) throws Exception{
+        try {
+            Placa placaObtenida = conexionBD.getEM().createQuery("SELECT p FROM Placa p WHERE p.numeroAlfanumerico = :numeroAlfa", Placa.class)
+                    .setParameter("numeroAlfa",numeroAlfa)
+                    .getSingleResult();
+            return placaObtenida;
+        } catch (NoResultException ex) {
+            return null;
+        } catch (Exception ex) {
+            throw new PersistenciaException("No se pudo realizar la búsqueda de la placa.");
+        } finally {
+            conexionBD.getEM().clear();
+        }
+    }
     /**
      * Método que cambia el estado de la placa a inactiva y la fecha de
      * expedicion por la del trámite.

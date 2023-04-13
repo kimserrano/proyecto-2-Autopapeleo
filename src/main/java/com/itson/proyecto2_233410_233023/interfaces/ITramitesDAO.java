@@ -57,7 +57,13 @@ public interface ITramitesDAO {
      * @throws Exception Excepción a lanzar en caso de fallar el trámite.
      */
     Boolean tramitarPlaca(TramitePlaca tramite) throws Exception;
-
+    /**
+     * Método para obtener una placa a partir del número alfanumérico.
+     * @param numeroAlfa Número alfanumérico.
+     * @return Placa encontrada.
+     * @throws Exception Excepción a lanzar en caso de fallar la búsqueda.
+     */
+    public Placa obtenerPlaca(String numeroAlfa) throws Exception;
     /**
      * Método que cambia el estado de la placa a inactiva y la fecha de
      * expedicion por la del trámite.
