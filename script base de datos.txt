@@ -1,0 +1,12 @@
+CREATE DATABASE proyecto2_autopapeleo;
+USE `proyecto2_autopapeleo`;
+DROP procedure IF EXISTS `calcular_dias_transcurridos`;
+
+DELIMITER $$
+USE `proyecto2_autopapeleo`$$
+CREATE PROCEDURE `calcular_dias_transcurridos` (IN fecha_inicio DATE, IN fecha_fin DATE, OUT dias_transcurridos INT)
+BEGIN
+  SET dias_transcurridos = DATEDIFF(fecha_fin, fecha_inicio);
+END$$
+
+DELIMITER ;
