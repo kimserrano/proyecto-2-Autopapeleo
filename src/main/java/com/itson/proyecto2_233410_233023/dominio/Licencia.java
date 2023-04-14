@@ -74,7 +74,7 @@ public class Licencia implements Serializable {
      * realizada
      * @param aniosVigencia Representa los anios de vigencia que tiene la
      * licencia
-     * @param estado 
+     * @param estado Estado de la licencia.
      */
     public Licencia(Float monto, Calendar fechaExpedicion, Anios aniosVigencia, Estado estado) {
         this.monto = monto;

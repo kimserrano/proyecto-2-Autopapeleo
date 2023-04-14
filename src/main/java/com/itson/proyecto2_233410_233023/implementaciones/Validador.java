@@ -22,20 +22,11 @@ public class Validador {
     }
 
     /**
-     * Método que se utiliza para mostar un mensaje informativo en un
-     * JOptionPane.
-     *
-     * @param msj la cadena de texto con lo que se desea mostar en el mensaje.
-     */
-    private void mostrarMensaje(String msj) {
-        JOptionPane.showMessageDialog(null, msj, "Info", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    /**
      * Método que valida una ID.
      *
      * @param id ID a validar.
      * @return Valor booleano.
+     * @throws PersistenciaException en caso de no coincidir con el patrón.
      */
     public boolean validaID(String id) throws PersistenciaException {
 
@@ -54,6 +45,7 @@ public class Validador {
      *
      * @param nombre símbolos a validar.
      * @return Valor booleano.
+     * @throws PersistenciaException en caso de no coincidir con el patrón.
      */
     public boolean validaNombre(String nombre) throws PersistenciaException {
         if (!nombre.equals("")) {
@@ -75,6 +67,7 @@ public class Validador {
      *
      * @param rfc RFC a validar.
      * @return Valor booleano.
+     * @throws PersistenciaException en caso de no coincidir con el patrón.
      */
     public boolean validaRFC(String rfc) throws PersistenciaException {
         if (!rfc.equals("")) {
@@ -114,7 +107,7 @@ public class Validador {
      * Método que valida un texto.
      *
      * @param texto texto a validar.
-     * @param tipo
+     * @param tipo Campo válidado en el frame.
      * @return true si el formato es correcto.
      * @throws PersistenciaException en caso de que el formato no sea el
      * indicado.

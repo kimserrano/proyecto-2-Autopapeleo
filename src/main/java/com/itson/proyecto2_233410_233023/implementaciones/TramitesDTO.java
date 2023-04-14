@@ -92,7 +92,7 @@ public class TramitesDTO {
     /**
      * Establece la fecha de expedición del trámite.
      *
-     * @param fechala fecha en la que se realizó el trámite.
+     * @param fecha fecha en la que se realizó el trámite.
      */
     public void setFecha(String fecha) {
         this.fecha = fecha;

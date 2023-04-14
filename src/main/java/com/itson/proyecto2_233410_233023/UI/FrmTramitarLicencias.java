@@ -51,6 +51,12 @@ public class FrmTramitarLicencias extends javax.swing.JFrame {
 
     /**
      * Para crear un form de FrmTramitarLicencias.
+     * @param personasDAO Atributo que ayuda a utilizar aquellos métodos para la
+     * búsqueda de personas.
+     * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
+     * consultar los trámites realizados por una persona.
+     * @param persona Persona seleccionada.
+     * @param vehiculosDAO Atributo que ayuda a utilizar aquellos métodos para la búsqueda de automóviles.
      */
     public FrmTramitarLicencias(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Persona persona, ITramitesDAO tramitesDAO) {
         initComponents();

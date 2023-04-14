@@ -30,7 +30,7 @@ import javax.persistence.Table;
 public class Tramite implements Serializable {
 
     /**
-     * Id unico que identifica a un tramite especifico
+     * Id unico que identifica a un trámite especifico.
      */
     @Id
     @Column(name = "id")
@@ -38,35 +38,35 @@ public class Tramite implements Serializable {
     private Long id;
 
     /**
-     * Representa el costo que tiene el tramite
+     * Representa el costo que tiene el trámite.
      */
     @Column(name = "costo", nullable = false)
     private Float costo;
 
     /**
-     * Representa la fecha en la que se genero el tramite
+     * Representa la fecha en la que se generó el trámite.
      */
     @Column(name = "fecha_expedicion", nullable = false)
     private Calendar fechaExpedicion;
 
     /**
-     * Representa a la persona a la que se le esta haciendo el tramite
+     * Representa a la persona a la que se le está haciendo el trámite.
      */
     @ManyToOne()
     @JoinColumn(name = "id_persona", nullable = false)
     private Persona persona;
 
     /**
-     * Constructor por defecto para crear un tramite
+     * Constructor por defecto para crear un trámite.
      */
     public Tramite() {
     }
 
     /**
-     * Contructor para crear un tramite recibiendo atributos
+     * Contructor para crear un trámite recibiendo atributos
      *
-     * @param costo Representa el costo que tiene el tramite
-     * @param fechaExpedicion Representa la fecha en la que se genero el tramite
+     * @param costo Representa el costo que tiene el trámite
+     * @param fechaExpedicion Representa la fecha en la que se genero el trámite
      */
     public Tramite(Float costo, Calendar fechaExpedicion) {
         this.costo = costo;
@@ -76,10 +76,10 @@ public class Tramite implements Serializable {
     /**
      * Contructor para crear un tramite recibiendo atributos
      *
-     * @param costo Representa el costo que tiene el tramite
-     * @param fechaExpedicion Representa la fecha en la que se genero el tramite
-     * @param persona Representa a la persona a la que se le esta haciendo el
-     * tramite
+     * @param costo Representa el costo que tiene el trámite
+     * @param fechaExpedicion Representa la fecha en la que se genero el trámite
+     * @param persona Representa a la persona a la que se le está haciendo el
+     * trámite
      */
     public Tramite(Float costo, Calendar fechaExpedicion, Persona persona) {
         this.costo = costo;
@@ -98,7 +98,7 @@ public class Tramite implements Serializable {
     /**
      * Obtiene el costo
      *
-     * @return Representa el costo que tiene el tramite
+     * @return Representa el costo que tiene el trámite
      */
     public Float getCosto() {
         return costo;
@@ -107,25 +107,25 @@ public class Tramite implements Serializable {
     /**
      * Establece el costo
      *
-     * @param costo Representa el costo que tiene el tramite
+     * @param costo Representa el costo que tiene el trámite
      */
     public void setCosto(Float costo) {
         this.costo = costo;
     }
 
     /**
-     * Obtiene la fecha de expedicion del tramite
+     * Obtiene la fecha de expedicion del trámite
      *
-     * @return Representa la fecha en la que se genero el tramite
+     * @return Representa la fecha en la que se genero el trámite
      */
     public Calendar getFechaExpedicion() {
         return fechaExpedicion;
     }
 
     /**
-     * Establece la fecha de expedicion del tramite
+     * Establece la fecha de expedicion del trámite
      *
-     * @param fechaExpedicion Representa la fecha en la que se genero el tramite
+     * @param fechaExpedicion Representa la fecha en la que se genero el trámite
      */
     public void setFechaExpedicion(Calendar fechaExpedicion) {
         this.fechaExpedicion = fechaExpedicion;
@@ -134,7 +134,7 @@ public class Tramite implements Serializable {
     /**
      * Obtiene el id
      *
-     * @return Id unico que identifica a un tramite especifico
+     * @return Id unico que identifica a un trámite especifico
      */
     public Long getId() {
         return id;
@@ -143,16 +143,16 @@ public class Tramite implements Serializable {
     /**
      * Establece el id
      *
-     * @param id Id unico que identifica a un tramite especifico
+     * @param id Id unico que identifica a un trámite especifico
      */
     public void setId(Long id) {
         this.id = id;
     }
 
     /**
-     * Obtiene el hash de un tramite en especifico usando el id
+     * Obtiene el hash de un trámite en especifico usando el id
      *
-     * @return
+     * @return hashCode del trámite.
      */
     @Override
     public int hashCode() {
@@ -181,9 +181,9 @@ public class Tramite implements Serializable {
     }
 
     /**
-     * Escribe los atributos de los tramites de manera ordenada
+     * Escribe los atributos de los trámites de manera ordenada
      *
-     * @return imprime los atributos de un tramite generado
+     * @return imprime los atributos de un trámite generado
      */
     @Override
     public String toString() {

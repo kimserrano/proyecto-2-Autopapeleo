@@ -6,7 +6,6 @@ package com.itson.proyecto2_233410_233023.principal;
 import com.itson.proyecto2_233410_233023.UI.FrmMenu;
 import com.itson.proyecto2_233410_233023.implementaciones.*;
 import com.itson.proyecto2_233410_233023.interfaces.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -18,7 +17,7 @@ public class Principal {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         // TODO code application logic here
         ConexionBD conexionBD = new ConexionBD("com.itson.proyecto2_233410_233023");
         IPersonasDAO personasDAO = new PersonasDAO(conexionBD);

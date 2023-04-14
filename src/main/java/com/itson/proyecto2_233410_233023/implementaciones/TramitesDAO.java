@@ -38,7 +38,7 @@ public class TramitesDAO implements ITramitesDAO {
     /**
      * Constructor para inicializar la conexión con la base de datos.
      *
-     * @param conexionBD
+     * @param conexionBD conexión con la base de datos.
      */
     public TramitesDAO(IConexionBD conexionBD) {
         this.conexionBD = conexionBD;

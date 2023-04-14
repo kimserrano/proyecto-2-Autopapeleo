@@ -75,6 +75,13 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
     /**
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
+     *
+     * @param personasDAO Atributo que ayuda a utilizar aquellos métodos para la
+     * búsqueda de personas.
+     * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
+     * consultar los trámites realizados por una persona.
+     * @param tramite Valor booleano para identificar si el frame a llamar es de trámite de placas o trámite de licencias.
+     * @param vehiculosDAO Atributo que ayuda a utilizar aquellos métodos para la búsqueda de automóviles.
      */
     public FrmSeleccionarPersona(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, Boolean tramite, ITramitesDAO tramitesDAO) {
         this.personasDAO = personasDAO;
@@ -91,6 +98,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
      * de la opción seleccionada.
      *
      * @return Valor booleano para comprobar la validación.
+     * @throws PersistenciaException en caso de no coincidir con algún patrón de validación.
      */
     public boolean validarBusqueda() throws PersistenciaException {
         if (filtro.equals("id")) {
@@ -236,6 +244,7 @@ public class FrmSeleccionarPersona extends javax.swing.JFrame {
 
     /**
      * Método para obtener la persona a partir de la ID recuperada.
+     * @return Valor booleano en caso de validar a la persona.
      */
     public boolean seleccionarPersona() {
         try {

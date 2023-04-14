@@ -274,9 +274,9 @@ public class Vehiculo implements Serializable {
     }
 
     /**
-     * Obtiene el hash de un vehiculo en especifico usando el id
+     * Obtiene el hash de un vehiculo en especifico usando el id.
      *
-     * @return
+     * @return hashCode de un vehículo en específico.
      */
     @Override
     public int hashCode() {
@@ -286,9 +286,9 @@ public class Vehiculo implements Serializable {
     }
 
     /**
-     * Compara un ejemplo con otro para saber si son iguales
+     * Compara un ejemplo con otro para saber si son iguales.
      *
-     * @param object objeto que deseas comparar
+     * @param obj objeto que se desea comparar.
      * @return true si el objeto es igual y false de caso contrario
      */
     @Override

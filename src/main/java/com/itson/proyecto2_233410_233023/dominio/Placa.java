@@ -133,10 +133,10 @@ public class Placa implements Serializable {
     }
 
     /**
-     * Obtiene el id unico que identifica a una placa en especifico de un
-     * automovil
+     * Obtiene el id único que identifica a una placa en especifico de un
+     * automóvil.
      *
-     * @return
+     * @return id de la placa.
      */
     public Long getId() {
         return id;

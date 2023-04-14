@@ -208,7 +208,7 @@ public class FrmTramitarPlacas extends javax.swing.JFrame {
      * Método para realizar el trámite, primero se obtiene la placa a partir de
      * los datos, si se válida, se realiza el trámite.
      *
-     * @return
+     * @return Valor booleano en caso de haberse realizado del trámite.
      */
     public boolean realizarTramite() {
         Placa placa = obtenerDatos();

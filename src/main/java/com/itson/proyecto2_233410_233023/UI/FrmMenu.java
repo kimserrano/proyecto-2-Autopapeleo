@@ -28,6 +28,12 @@ public class FrmMenu extends javax.swing.JFrame {
     /**
      * Método constructor que inicializa sus atributos al valor de los
      * parámetros enviados.
+     *
+     * @param personasDAO Atributo que ayuda a utilizar aquellos métodos para la
+     * búsqueda de personas.
+     * @param tramitesDAO Atributo que ayuda a utilizar aquellos métodos para
+     * consultar los trámites realizados por una persona.
+     * @param vehiculosDAO Atributo que ayuda a utilizar aquellos métodos para la búsqueda de automóviles.
      */
     public FrmMenu(IPersonasDAO personasDAO, IVehiculosDAO vehiculosDAO, ITramitesDAO tramitesDAO) {
         this.personasDAO = personasDAO;

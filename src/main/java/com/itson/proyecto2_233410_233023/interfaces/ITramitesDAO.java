@@ -32,7 +32,6 @@ public interface ITramitesDAO {
      * Método que actualiza el estado de una licencia. l
      *
      * @param licenciaActual licencia que desea ctualizarse.
-     * @param tramiteLicencia trámite que se usa para su actualización.
      * @throws Exception lanza un una excepción en caso de no lograrse la
      * actualización.
      */
